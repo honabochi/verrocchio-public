@@ -33,6 +33,10 @@ export const initialState = {
     classificationNote: "proceed, review later",
     wetUntil: "23:40",
   },
+  capobottega: {
+    lastInput: "",
+    latest: null,
+  },
   gates: [
     {
       id: "working-product",
@@ -114,7 +118,19 @@ export const initialState = {
 export function loadWorkshop() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? { ...initialState, ...JSON.parse(stored) } : initialState;
+    if (!stored) return initialState;
+    const parsed = JSON.parse(stored);
+    return {
+      ...initialState,
+      ...parsed,
+      contract: { ...initialState.contract, ...parsed.contract },
+      giornata: { ...initialState.giornata, ...parsed.giornata },
+      capobottega: { ...initialState.capobottega, ...parsed.capobottega },
+      gates: initialState.gates.map((gate) => ({
+        ...gate,
+        ...(parsed.gates || []).find((saved) => saved.id === gate.id),
+      })),
+    };
   } catch {
     return initialState;
   }

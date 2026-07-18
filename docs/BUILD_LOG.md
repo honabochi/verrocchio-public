@@ -41,3 +41,42 @@ Runtime GPT-5.6 integration remains a missing gate. The intended CAPOBOTTEGA int
 - Official rules: https://openai.devpost.com/rules
 
 The official pages remain authoritative and must be checked again before final submission.
+
+## 2026-07-18 — GIORNATA 02
+
+### CAPOBOTTEGA runtime
+
+- Added a server-only `/api/capobottega` route using the Responses API.
+- Pinned the runtime to `gpt-5.6-sol` with medium reasoning effort.
+- Constrained output with a strict JSON Schema covering material,
+  evidence-based reason, next stroke, human action, scope effect, submission
+  gate, and ledger note.
+- Kept `OPENAI_API_KEY` out of the browser bundle.
+- A successful model response automatically records evidence and closes the
+  GPT-5.6 MANCA gate.
+
+### Live proof
+
+The end-to-end browser flow asked CAPOBOTTEGA to classify publishing the
+verified integration to the public demo site.
+
+- Classification: `AFFRESCO`
+- Human action: `FIRMA_REQUIRED`
+- Scope effect: `PRESERVES`
+- Gate: `working-product`
+- Model: `gpt-5.6-sol`
+- Response ID:
+  `[public-response-id-removed]`
+
+The UI then moved MANCA from 06 to 05, increased OLTREMARE from 42 to 46,
+activated FERMO, updated the GIORNATA, and wrote both the decision and model
+response ID to EVIDENCE.
+
+### Checks
+
+- Automated model, server-contract, and interaction tests: 9 passed.
+- Production build: passed.
+- Desktop browser: CAPOBOTTEGA dialog, real GPT-5.6 response, FERMO state, and
+  evidence ledger verified with no console warnings or errors.
+- Mobile browser: 390×844 viewport, no horizontal overflow, decision surface
+  collapsed to one readable column.

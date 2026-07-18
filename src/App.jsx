@@ -130,7 +130,7 @@ function GateLedger({ gates, onToggle, onEvidence }) {
   );
 }
 
-function GiornateView({ state, setState, onEvidence }) {
+function GiornateView({ state, setState, onEvidence, onCapobottega }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
 
   const toggleGate = (id) => {
@@ -200,6 +200,12 @@ function GiornateView({ state, setState, onEvidence }) {
           <p>
             {state.giornata.classification} · {state.giornata.classificationNote}
           </p>
+          {state.capobottega.latest && (
+            <div className="capobottega-proof">
+              CAPOBOTTEGA · {state.capobottega.latest.model} ·{" "}
+              {state.capobottega.latest.responseId}
+            </div>
+          )}
           {state.isHeld && <div className="hold-message">FERMO ACTIVE · waiting for direction</div>}
           <div className="work-actions">
             <button className="primary-action" onClick={begin} type="button">
@@ -211,6 +217,10 @@ function GiornateView({ state, setState, onEvidence }) {
                 ||
               </span>
               CALL FERMO
+            </button>
+            <button className="capobottega-action" onClick={onCapobottega} type="button">
+              ASK CAPOBOTTEGA
+              <small>GPT-5.6 SOL</small>
             </button>
           </div>
         </div>
@@ -438,9 +448,113 @@ function EvidenceDialog({ gate, onClose, onSave }) {
   );
 }
 
+function CapobottegaDialog({ state, onClose, onClassify }) {
+  const [work, setWork] = useState(
+    state.capobottega.lastInput || state.giornata.title,
+  );
+  const [decision, setDecision] = useState(state.capobottega.latest);
+  const [status, setStatus] = useState("idle");
+  const [error, setError] = useState("");
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setStatus("loading");
+    setError("");
+    try {
+      const nextDecision = await onClassify(work);
+      setDecision(nextDecision);
+      setStatus("complete");
+    } catch (requestError) {
+      setError(requestError.message || "CAPOBOTTEGA could not answer.");
+      setStatus("error");
+    }
+  };
+
+  return (
+    <div className="dialog-backdrop capobottega-backdrop" role="presentation">
+      <section
+        aria-labelledby="capobottega-title"
+        aria-modal="true"
+        className="capobottega-dialog"
+        role="dialog"
+      >
+        <button
+          aria-label="Close CAPOBOTTEGA"
+          className="dialog-close"
+          onClick={onClose}
+          type="button"
+        >
+          ×
+        </button>
+        <header>
+          <span>IL CAPOBOTTEGA</span>
+          <h2 id="capobottega-title">One stroke. One material.</h2>
+          <p>
+            GPT-5.6 Sol classifies the next move by reversibility, scope, and
+            submission value.
+          </p>
+        </header>
+        <form onSubmit={submit}>
+          <label>
+            Proposed work
+            <textarea
+              autoFocus
+              maxLength={2000}
+              minLength={6}
+              onChange={(event) => setWork(event.target.value)}
+              value={work}
+            />
+          </label>
+          <button className="capobottega-submit" disabled={status === "loading"} type="submit">
+            {status === "loading" ? "CAPOBOTTEGA IS LOOKING…" : "CLASSIFY THE STROKE"}
+          </button>
+        </form>
+        {error && (
+          <div className="capobottega-error" role="alert">
+            FERMO · {error}
+          </div>
+        )}
+        {decision && (
+          <article className="capobottega-decision" aria-live="polite">
+            <div className={`decision-material is-${decision.classification.toLowerCase()}`}>
+              <span>MATERIAL</span>
+              <strong>{decision.classification}</strong>
+            </div>
+            <div className="decision-copy">
+              <p>{decision.reason}</p>
+              <dl>
+                <div>
+                  <dt>Next stroke</dt>
+                  <dd>{decision.nextStroke}</dd>
+                </div>
+                <div>
+                  <dt>Human</dt>
+                  <dd>{decision.humanAction.replaceAll("_", " ")}</dd>
+                </div>
+                <div>
+                  <dt>Scope</dt>
+                  <dd>{decision.scopeEffect}</dd>
+                </div>
+                <div>
+                  <dt>Gate</dt>
+                  <dd>{decision.submissionGate}</dd>
+                </div>
+              </dl>
+              <small>
+                {decision.model} · {decision.responseId}
+              </small>
+            </div>
+          </article>
+        )}
+      </section>
+    </div>
+  );
+}
+
 export default function App() {
   const [state, setState] = useState(loadWorkshop);
   const [evidenceGate, setEvidenceGate] = useState(null);
+  const [capobottegaOpen, setCapobottegaOpen] = useState(false);
 
   useEffect(() => persistWorkshop(state), [state]);
 
@@ -461,6 +575,86 @@ export default function App() {
       ],
     }));
     setEvidenceGate(null);
+  };
+
+  const classifyWithCapobottega = async (work) => {
+    const missingGates = state.gates
+      .filter((gate) => !gate.done)
+      .map((gate) => `${gate.id}: ${gate.title}`);
+    const response = await fetch("/api/capobottega", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        work,
+        objective: state.contract.objective,
+        irreversibleRule: state.contract.irreversibleRule,
+        manca,
+        missingGates,
+      }),
+    });
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload.error || "CAPOBOTTEGA is unavailable.");
+    }
+
+    setState((current) => {
+      const attentionCost =
+        payload.humanAction === "FIRMA_REQUIRED"
+          ? 4
+          : payload.humanAction === "REVIEW_LATER"
+            ? 1
+            : 0;
+      const proof = `${payload.model} · ${payload.responseId} · ${payload.createdAt}`;
+      return {
+        ...current,
+        attentionMinutes: Math.min(
+          current.attentionCeiling,
+          current.attentionMinutes + attentionCost,
+        ),
+        isHeld: payload.humanAction === "FIRMA_REQUIRED" ? true : current.isHeld,
+        isRunning: payload.humanAction === "FIRMA_REQUIRED" ? false : current.isRunning,
+        giornata: {
+          ...current.giornata,
+          title: payload.nextStroke,
+          classification: payload.classification,
+          classificationNote: payload.reason,
+        },
+        capobottega: {
+          lastInput: work,
+          latest: payload,
+        },
+        gates: current.gates.map((gate) =>
+          gate.id === "gpt-evidence"
+            ? { ...gate, done: true, evidence: proof }
+            : gate,
+        ),
+        decisions: [
+          {
+            id: `decision-${crypto.randomUUID()}`,
+            time: payload.createdAt,
+            type: payload.classification,
+            title: payload.nextStroke,
+            actor: `CAPOBOTTEGA · ${payload.model}`,
+            rationale: payload.reason,
+            responseId: payload.responseId,
+          },
+          ...current.decisions,
+        ],
+        events: [
+          createEvent(
+            "CAPOBOTTEGA",
+            `${payload.classification} · ${payload.evidenceNote} · ${payload.responseId}`,
+          ),
+          createEvent(
+            "EVIDENCE",
+            `GPT-5.6 runtime proof attached: ${payload.model} · ${payload.responseId}.`,
+          ),
+          ...current.events,
+        ],
+      };
+    });
+
+    return payload;
   };
 
   return (
@@ -486,7 +680,12 @@ export default function App() {
       />
       <section className="workspace" aria-label={views[state.activeView]}>
         {state.activeView === "giornate" && (
-          <GiornateView state={state} setState={setState} onEvidence={setEvidenceGate} />
+          <GiornateView
+            state={state}
+            setState={setState}
+            onEvidence={setEvidenceGate}
+            onCapobottega={() => setCapobottegaOpen(true)}
+          />
         )}
         {state.activeView === "contratto" && (
           <ContrattoView state={state} setState={setState} />
@@ -503,6 +702,13 @@ export default function App() {
         onClose={() => setEvidenceGate(null)}
         onSave={saveEvidence}
       />
+      {capobottegaOpen && (
+        <CapobottegaDialog
+          state={state}
+          onClose={() => setCapobottegaOpen(false)}
+          onClassify={classifyWithCapobottega}
+        />
+      )}
     </main>
   );
 }

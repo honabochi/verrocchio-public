@@ -488,14 +488,27 @@ textarea:focus-visible {
   font-size: 11px;
 }
 
+.capobottega-proof {
+  margin-top: 11px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .work-actions {
   display: flex;
+  align-items: center;
   gap: 34px;
   margin-top: 38px;
 }
 
 .primary-action,
-.secondary-action {
+.secondary-action,
+.capobottega-action {
   min-height: 64px;
   border: 0;
   font-family: var(--mono);
@@ -506,7 +519,8 @@ textarea:focus-visible {
 }
 
 .primary-action:hover,
-.secondary-action:hover {
+.secondary-action:hover,
+.capobottega-action:hover {
   transform: translateY(-2px);
 }
 
@@ -537,6 +551,23 @@ textarea:focus-visible {
   padding: 0 19px;
   color: white;
   background: transparent;
+}
+
+.capobottega-action {
+  min-width: 150px;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.46);
+  color: white;
+  background: transparent;
+  text-align: left;
+}
+
+.capobottega-action small {
+  display: block;
+  margin-top: 5px;
+  color: #d9e2ff;
+  font-size: 8px;
+  letter-spacing: 0.1em;
 }
 
 .pause-mark {
@@ -1037,6 +1068,202 @@ textarea:focus-visible {
   background: var(--blue);
 }
 
+.capobottega-backdrop {
+  overflow-y: auto;
+  place-items: start center;
+  padding-block: clamp(24px, 6vh, 72px);
+}
+
+.capobottega-dialog {
+  position: relative;
+  width: min(840px, 100%);
+  padding: clamp(30px, 5vw, 58px);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, var(--blue) 0 8px, transparent 8px),
+    var(--gesso);
+  box-shadow: 14px 14px 0 rgba(4, 21, 77, 0.38);
+}
+
+.dialog-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.capobottega-dialog header {
+  padding-right: 48px;
+}
+
+.capobottega-dialog header > span {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+.capobottega-dialog h2 {
+  margin: 12px 0 5px;
+  font-family: var(--serif);
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 500;
+  line-height: 0.98;
+}
+
+.capobottega-dialog header p {
+  max-width: 600px;
+  margin: 14px 0 28px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.capobottega-dialog form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+}
+
+.capobottega-dialog label {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.capobottega-dialog textarea {
+  width: 100%;
+  min-height: 112px;
+  display: block;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--ink);
+  background: white;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.capobottega-submit {
+  min-height: 112px;
+  padding: 0 23px;
+  border: 1px solid var(--blue);
+  border-radius: 0;
+  color: white;
+  background: var(--blue);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.capobottega-submit:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.capobottega-error {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.capobottega-decision {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  margin-top: 28px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.decision-material {
+  min-height: 250px;
+  display: grid;
+  align-content: center;
+  padding: 26px;
+  border-right: 1px solid var(--ink);
+}
+
+.decision-material span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.decision-material strong {
+  margin-top: 8px;
+  color: var(--blue);
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.decision-material.is-affresco strong {
+  color: var(--danger);
+}
+
+.decision-copy {
+  padding: 27px 30px;
+}
+
+.decision-copy > p {
+  margin: 0 0 22px;
+  font-family: var(--serif);
+  font-size: 25px;
+  line-height: 1.18;
+}
+
+.decision-copy dl {
+  margin: 0;
+}
+
+.decision-copy dl > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 15px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.decision-copy dt {
+  color: var(--blue);
+  text-transform: uppercase;
+}
+
+.decision-copy dd {
+  margin: 0;
+}
+
+.decision-copy > small {
+  display: block;
+  margin-top: 18px;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
 @media (max-width: 1120px) {
   .app-shell {
     grid-template:
@@ -1188,7 +1415,8 @@ textarea:focus-visible {
   }
 
   .primary-action,
-  .secondary-action {
+  .secondary-action,
+  .capobottega-action {
     min-height: 52px;
     font-size: 12px;
   }
@@ -1204,6 +1432,10 @@ textarea:focus-visible {
   .pause-mark {
     width: 40px;
     height: 40px;
+  }
+
+  .capobottega-action {
+    min-width: 130px;
   }
 
   .drying-scale {
@@ -1396,10 +1628,43 @@ textarea:focus-visible {
   }
 
   .primary-action,
-  .secondary-action {
+  .secondary-action,
+  .capobottega-action {
     width: 100%;
     min-width: 0;
     justify-content: flex-start;
+  }
+
+  .capobottega-action {
+    min-height: 56px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  .capobottega-dialog {
+    padding: 34px 24px 28px;
+  }
+
+  .capobottega-dialog form,
+  .capobottega-decision {
+    grid-template-columns: 1fr;
+  }
+
+  .capobottega-submit {
+    min-height: 58px;
+  }
+
+  .decision-material {
+    min-height: 120px;
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .decision-copy {
+    padding: 24px 0;
+  }
+
+  .decision-copy dl > div {
+    grid-template-columns: 95px 1fr;
   }
 
   .document-view {

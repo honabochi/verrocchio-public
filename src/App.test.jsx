@@ -1,10 +1,15 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
 
 describe("VERROCCHIO core path", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.unstubAllGlobals();
+  });
+
   test("renders the live workshop instead of an empty shell", () => {
     render(<App />);
 
@@ -40,5 +45,37 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: "CALL FERMO" }));
     expect(screen.getByText("FERMO ACTIVE · waiting for direction")).toBeVisible();
     expect(screen.getByRole("button", { name: "RESUME GIORNATA" })).toBeVisible();
+  });
+
+  test("CAPOBOTTEGA records a GPT-5.6 decision and closes its evidence gate", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          classification: "GESSO",
+          reason: "This is safe local test work.",
+          nextStroke: "Add the endpoint contract test.",
+          humanAction: "NONE",
+          scopeEffect: "PRESERVES",
+          submissionGate: "working-product",
+          evidenceNote: "The runtime classifier directed its own verification.",
+          source: "openai",
+          model: "gpt-5.6-sol",
+          responseId: "resp_test_capobottega",
+          createdAt: "2026-07-18T12:00:00.000Z",
+          usage: { inputTokens: 120, outputTokens: 80, totalTokens: 200 },
+        }),
+      }),
+    );
+
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA GPT-5.6 SOL" }));
+    await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
+
+    expect(await screen.findByText("This is safe local test work.")).toBeVisible();
+    expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(2);
+    expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
   });
 });

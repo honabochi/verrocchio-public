@@ -9,4 +9,8 @@ const hostingDirectory = resolve(root, "dist/.openai");
 await mkdir(serverDirectory, { recursive: true });
 await mkdir(hostingDirectory, { recursive: true });
 await cp(resolve(root, "worker/index.js"), resolve(serverDirectory, "index.js"));
+await cp(
+  resolve(root, "worker/capobottega.js"),
+  resolve(serverDirectory, "capobottega.js"),
+);
 await cp(resolve(root, ".openai/hosting.json"), resolve(hostingDirectory, "hosting.json"));

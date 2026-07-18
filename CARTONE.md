@@ -4,9 +4,14 @@
 
 CONTRATTO → six MANCA gates → GIORNATA → FERMO/FIRMA → evidence export → CENACOLO.
 
-## G2 — Self-proof
+## G2 — Self-proof · working
 
 Use VERROCCHIO to direct and document its own implementation. The evidence ledger is a product feature and a submission artifact.
+
+CAPOBOTTEGA now classifies VERROCCHIO's own proposed work with GPT-5.6 Sol.
+The first end-to-end browser decision classified public deployment as
+`AFFRESCO`, required `FIRMA`, activated `FERMO`, spent OLTREMARE, reduced
+MANCA, and wrote its response ID to the evidence ledger.
 
 ## G3 — Payload
 
