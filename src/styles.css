@@ -1071,6 +1071,169 @@ textarea:focus-visible {
   }
 }
 
+@media (max-height: 850px) and (min-width: 761px) {
+  .app-shell {
+    grid-template:
+      "topbar topbar topbar" 104px
+      "sidebar workspace rail" minmax(646px, 1fr) /
+      250px minmax(600px, 1fr) 244px;
+  }
+
+  .topbar {
+    padding-top: 18px;
+    padding-bottom: 17px;
+  }
+
+  .brand-mark {
+    width: 54px;
+    height: 54px;
+  }
+
+  .brand-mark svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand strong {
+    font-size: 46px;
+  }
+
+  .brand small {
+    margin-top: 8px;
+    font-size: 10px;
+  }
+
+  .deadline span {
+    font-size: 35px;
+  }
+
+  .deadline small {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .sidebar {
+    padding-top: 54px;
+  }
+
+  .axis-mark {
+    top: 12px;
+  }
+
+  .nav-item {
+    min-height: 70px;
+  }
+
+  .view-heading {
+    padding: 19px 36px 9px;
+  }
+
+  .view-heading h1 {
+    font-size: 30px;
+  }
+
+  .manca {
+    gap: 15px;
+    margin-top: 3px;
+  }
+
+  .manca span {
+    font-size: 50px;
+  }
+
+  .manca strong {
+    font-size: 78px;
+  }
+
+  .gate-ledger {
+    margin: 0 36px 17px;
+  }
+
+  .gate-ledger li {
+    min-height: 43px;
+  }
+
+  .gate-copy {
+    padding: 6px 0;
+  }
+
+  .gate-copy small {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .work-strip {
+    min-height: 245px;
+  }
+
+  .work-copy {
+    padding: 23px 36px;
+  }
+
+  .work-meta {
+    font-size: 11px;
+  }
+
+  .work-copy h2 {
+    margin: 11px 0 7px;
+    font-size: 36px;
+  }
+
+  .work-copy > p {
+    font-size: 10px;
+  }
+
+  .work-actions {
+    margin-top: 20px;
+  }
+
+  .primary-action,
+  .secondary-action {
+    min-height: 52px;
+    font-size: 12px;
+  }
+
+  .primary-action {
+    min-width: 270px;
+  }
+
+  .action-mark {
+    width: 52px;
+  }
+
+  .pause-mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .drying-scale {
+    margin: 20px 0;
+  }
+
+  .attention-rail {
+    padding-top: 19px;
+  }
+
+  .attention-value strong {
+    font-size: 54px;
+  }
+
+  .attention-gauge {
+    height: 213px;
+    margin-top: 12px;
+  }
+
+  .firma-rule {
+    min-height: 190px;
+    padding-top: 17px;
+  }
+
+  .firma-rule svg {
+    width: 42px;
+    margin-top: 5px;
+  }
+}
+
 @media (max-width: 760px) {
   .app-shell {
     display: block;
