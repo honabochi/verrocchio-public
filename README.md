@@ -100,3 +100,6 @@ contract and verified end-to-end response, and
 [the Phase 1 audit](docs/PHASE1_AUDIT.md) for requirement-by-requirement proof.
 The recommended G3 workpiece and its human decision boundary are recorded in
 [the payload FIRMA](docs/PAYLOAD_FIRMA.md).
+Submission preparation continues in the
+[2:45 demo script](docs/DEMO_SCRIPT.md) and
+[Devpost draft](docs/DEVPOST_DRAFT.md).
