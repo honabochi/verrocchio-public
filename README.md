@@ -4,7 +4,8 @@
 
 VERROCCHIO is a local-first hackathon execution system. It replaces generic task progress with `MANCA`: the number of submission proofs that are still missing. It classifies decisions by reversibility, protects human attention as `OLTREMARE`, and keeps an exportable evidence ledger.
 
-This repository is the first payload of VERROCCHIO: the system is being used to direct and document its own construction.
+This repository is VERROCCHIO's first workpiece: the system is being used to
+direct and document its own construction before it directs a separate payload.
 
 ## Run
 
@@ -22,7 +23,9 @@ npm test
 npm run build
 ```
 
-The automated suite covers the submission-count model plus the core UI path: initial render, GIORNATA start, evidence attachment, MANCA reduction, FERMO, and CENACOLO.
+The automated suite covers the submission-count model plus the core UI path:
+initial render, GIORNATA start, proof-gated MANCA reduction, FERMO, FIRMA,
+CENACOLO, CAPOBOTTEGA, old-state migration, and CARTONE work packets.
 
 ## Core path
 
@@ -36,6 +39,19 @@ The automated suite covers the submission-count model plus the core UI path: ini
 
 State is saved in browser `localStorage`; no account or backend is required for Phase 1.
 
+## CARTONE work packets
+
+`CARTONE` compiles the current contract, CAPOBOTTEGA decision, first missing
+submission proof, role duty, stop rule, and return contract into one copyable
+handoff. The packet can be aimed at:
+
+- `LA PRIMA MANO` — Codex implementation;
+- `VASARI` — adversarial review;
+- `IL COLORISTA` — bounded research and visual synthesis.
+
+Changing the actor changes its duty and stop rule, not the commission. This is
+the bridge from the execution system to the separate payload build.
+
 ## CAPOBOTTEGA
 
 Select `ASK CAPOBOTTEGA` from the active GIORNATA and describe one proposed
@@ -48,8 +64,10 @@ Responses API to return a strict decision contract:
 - the human action, scope effect, and submission gate.
 
 A successful decision is written to the evidence ledger with its OpenAI
-response ID and closes the GPT-5.6 evidence gate. `OPENAI_API_KEY` is required
-in the local or hosted server environment and is never sent to the browser.
+response ID and closes the GPT-5.6 evidence gate. An `AFFRESCO` decision with
+`FIRMA_REQUIRED` hard-locks the GIORNATA; resume is unavailable until the human
+explicitly gives FIRMA. `OPENAI_API_KEY` is required in the local or hosted
+server environment and is never sent to the browser.
 
 ## Supported platform
 
@@ -73,8 +91,10 @@ See [the build log](docs/BUILD_LOG.md) for the first self-referential evidence r
 
 Phase 1 implements the visual workshop, local state machine, server-side
 CAPOBOTTEGA runtime, strict decision schema, evidence ledger, and responsive
-interaction path. The separate payload application, public repository, demo
-video, and Devpost submission remain open gates.
+interaction path. Locally, the Phase 1 control loop is complete and verified.
+The production secret/deployment, separate payload application, public
+repository, demo video, and Devpost submission remain open gates.
 
 See [the CAPOBOTTEGA evidence note](docs/CAPOBOTTEGA.md) for the runtime
-contract and verified end-to-end response.
+contract and verified end-to-end response, and
+[the Phase 1 audit](docs/PHASE1_AUDIT.md) for requirement-by-requirement proof.

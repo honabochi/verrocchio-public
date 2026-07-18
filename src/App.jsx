@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  buildWorkPacket,
   createEvent,
   exportWorkshop,
+  getPacketRoles,
   loadWorkshop,
   navItems,
   persistWorkshop,
@@ -130,12 +132,24 @@ function GateLedger({ gates, onToggle, onEvidence }) {
   );
 }
 
-function GiornateView({ state, setState, onEvidence, onCapobottega }) {
+function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
 
   const toggleGate = (id) => {
+    const gate = state.gates.find((item) => item.id === id);
+    if (!gate.done && !gate.evidence.trim()) {
+      setState((current) => ({
+        ...current,
+        events: [
+          createEvent("FERMO", `${gate.title} cannot close without attached proof.`),
+          ...current.events,
+        ],
+      }));
+      onEvidence(gate);
+      return;
+    }
+
     setState((current) => {
-      const gate = current.gates.find((item) => item.id === id);
       const nextDone = !gate.done;
       return {
         ...current,
@@ -154,6 +168,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega }) {
   };
 
   const begin = () => {
+    if (state.firmaPending) return;
     setState((current) => ({
       ...current,
       isRunning: true,
@@ -207,10 +222,28 @@ function GiornateView({ state, setState, onEvidence, onCapobottega }) {
             </div>
           )}
           {state.isHeld && <div className="hold-message">FERMO ACTIVE · waiting for direction</div>}
+          {state.firmaPending && (
+            <div className="firma-pending" role="status">
+              <strong>FIRMA REQUIRED</strong>
+              <span>{state.firmaPending.title}</span>
+              <small>{state.firmaPending.reason}</small>
+            </div>
+          )}
           <div className="work-actions">
-            <button className="primary-action" onClick={begin} type="button">
+            <button
+              className="primary-action"
+              disabled={Boolean(state.firmaPending)}
+              onClick={begin}
+              type="button"
+            >
               <span className="action-mark" aria-hidden="true" />
-              {state.isRunning ? "GIORNATA ACTIVE" : state.isHeld ? "RESUME GIORNATA" : "BEGIN GIORNATA"}
+              {state.firmaPending
+                ? "LOCKED BY FIRMA"
+                : state.isRunning
+                  ? "GIORNATA ACTIVE"
+                  : state.isHeld
+                    ? "RESUME GIORNATA"
+                    : "BEGIN GIORNATA"}
             </button>
             <button className="secondary-action" onClick={callFermo} type="button">
               <span className="pause-mark" aria-hidden="true">
@@ -222,6 +255,12 @@ function GiornateView({ state, setState, onEvidence, onCapobottega }) {
               ASK CAPOBOTTEGA
               <small>GPT-5.6 SOL</small>
             </button>
+            {state.firmaPending && (
+              <button className="firma-action" onClick={onFirma} type="button">
+                GIVE FIRMA
+                <small>AUTHORIZE THIS STROKE</small>
+              </button>
+            )}
           </div>
         </div>
         <div className="drying-scale" aria-hidden="true">
@@ -292,7 +331,28 @@ function ContrattoView({ state, setState }) {
   );
 }
 
-function CartoneView({ state }) {
+function CartoneView({ state, setState }) {
+  const [copyStatus, setCopyStatus] = useState("COPY PACKET");
+  const roles = getPacketRoles();
+  const packet = buildWorkPacket(state);
+
+  const selectRole = (packetRole) => {
+    setState((current) => ({
+      ...current,
+      packetRole,
+      events: [
+        createEvent("CARTONE", `${packetRole} selected for the next work packet.`),
+        ...current.events,
+      ],
+    }));
+  };
+
+  const copyPacket = async () => {
+    await navigator.clipboard.writeText(packet);
+    setCopyStatus("COPIED");
+    window.setTimeout(() => setCopyStatus("COPY PACKET"), 1_500);
+  };
+
   return (
     <section className="document-view cartone-view">
       <header>
@@ -306,7 +366,7 @@ function CartoneView({ state }) {
           <strong>Walking skeleton</strong>
           <p>Contract → gates → giornata → evidence → final poll.</p>
         </div>
-        <em>NOW</em>
+        <em>PROVEN</em>
       </div>
       <div className="cartone-line">
         <span>G2</span>
@@ -314,7 +374,7 @@ function CartoneView({ state }) {
           <strong>Self-proof</strong>
           <p>Use VERROCCHIO to direct and document its own implementation.</p>
         </div>
-        <em>NEXT</em>
+        <em>PROVEN</em>
       </div>
       <div className="cartone-line">
         <span>G3</span>
@@ -322,8 +382,32 @@ function CartoneView({ state }) {
           <strong>Payload application</strong>
           <p>Build one app under the same contract and submit the pair.</p>
         </div>
-        <em>QUEUED</em>
+        <em>AWAITING FIRMA</em>
       </div>
+      <section className="packet-builder" aria-labelledby="packet-title">
+        <header>
+          <span>HANDOFF</span>
+          <h2 id="packet-title">One bounded work packet</h2>
+          <p>The role changes the duty and stop rule—not the commission.</p>
+        </header>
+        <div className="packet-roles" aria-label="Work packet role">
+          {roles.map((role) => (
+            <button
+              aria-pressed={state.packetRole === role.id}
+              key={role.id}
+              onClick={() => selectRole(role.id)}
+              type="button"
+            >
+              <strong>{role.label}</strong>
+              <small>{role.model}</small>
+            </button>
+          ))}
+        </div>
+        <pre>{packet}</pre>
+        <button className="packet-copy" onClick={copyPacket} type="button">
+          {copyStatus}
+        </button>
+      </section>
       <footer>
         {state.gates.filter((gate) => gate.done).length} of {state.gates.length} submission gates
         have proof.
@@ -613,6 +697,14 @@ export default function App() {
         ),
         isHeld: payload.humanAction === "FIRMA_REQUIRED" ? true : current.isHeld,
         isRunning: payload.humanAction === "FIRMA_REQUIRED" ? false : current.isRunning,
+        firmaPending:
+          payload.humanAction === "FIRMA_REQUIRED"
+            ? {
+                responseId: payload.responseId,
+                title: payload.nextStroke,
+                reason: payload.reason,
+              }
+            : current.firmaPending,
         giornata: {
           ...current.giornata,
           title: payload.nextStroke,
@@ -657,6 +749,26 @@ export default function App() {
     return payload;
   };
 
+  const grantFirma = () => {
+    setState((current) => {
+      if (!current.firmaPending) return current;
+      const signed = current.firmaPending;
+      return {
+        ...current,
+        firmaPending: null,
+        isHeld: false,
+        isRunning: true,
+        events: [
+          createEvent(
+            "FIRMA",
+            `Human authorized “${signed.title}” from ${signed.responseId}.`,
+          ),
+          ...current.events,
+        ],
+      };
+    });
+  };
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -685,12 +797,15 @@ export default function App() {
             setState={setState}
             onEvidence={setEvidenceGate}
             onCapobottega={() => setCapobottegaOpen(true)}
+            onFirma={grantFirma}
           />
         )}
         {state.activeView === "contratto" && (
           <ContrattoView state={state} setState={setState} />
         )}
-        {state.activeView === "cartone" && <CartoneView state={state} />}
+        {state.activeView === "cartone" && (
+          <CartoneView state={state} setState={setState} />
+        )}
         {state.activeView === "cenacolo" && (
           <CenacoloView state={state} setState={setState} />
         )}

@@ -80,3 +80,35 @@ response ID to EVIDENCE.
   evidence ledger verified with no console warnings or errors.
 - Mobile browser: 390×844 viewport, no horizontal overflow, decision surface
   collapsed to one readable column.
+
+## 2026-07-18 — GIORNATA 03
+
+### Control invariants
+
+- MANCA gates can no longer be closed without attached proof. An attempted
+  proofless close opens the evidence sheet and records FERMO.
+- `AFFRESCO` plus `FIRMA_REQUIRED` now creates a hard GIORNATA lock. The normal
+  resume path is disabled until the human explicitly gives FIRMA.
+- Previously saved held AFFRESCO decisions migrate into the same lock unless a
+  matching FIRMA event proves that the human already signed.
+
+### Payload bridge
+
+- CARTONE now emits bounded, copyable work packets for LA PRIMA MANO, VASARI,
+  or IL COLORISTA.
+- Every packet carries the unchanged commission, current stroke, material,
+  human boundary, first missing proof, role duty, stop rule, and return
+  contract.
+- G3 remains `AWAITING FIRMA`: selecting what the payload should be belongs to
+  the human's WHY, while implementation remains the workshop's HOW.
+
+### Checks
+
+- Automated model, server-contract, migration, and interaction tests: 14
+  passed.
+- Production build: passed.
+- Browser: proofless completion opened ATTACH PROOF and left MANCA unchanged.
+- Browser: an old saved AFFRESCO state migrated to `LOCKED BY FIRMA`, with the
+  explicit `GIVE FIRMA` action as the only resume path.
+- Browser: desktop and 390×844 CARTONE layouts rendered the complete packet
+  builder and all three role choices.

@@ -37,6 +37,8 @@ export const initialState = {
     lastInput: "",
     latest: null,
   },
+  firmaPending: null,
+  packetRole: "prima-mano",
   gates: [
     {
       id: "working-product",
@@ -120,12 +122,31 @@ export function loadWorkshop() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return initialState;
     const parsed = JSON.parse(stored);
+    const latestDecision = parsed.capobottega?.latest;
+    const latestWasSigned = (parsed.events || []).some(
+      (event) =>
+        event.kind === "FIRMA" &&
+        latestDecision?.responseId &&
+        event.message?.includes(latestDecision.responseId),
+    );
+    const firmaPending =
+      parsed.isHeld &&
+      latestDecision?.humanAction === "FIRMA_REQUIRED" &&
+      !latestWasSigned
+        ? {
+            responseId: latestDecision.responseId,
+            title: latestDecision.nextStroke,
+            reason: latestDecision.reason,
+          }
+        : parsed.firmaPending || null;
     return {
       ...initialState,
       ...parsed,
       contract: { ...initialState.contract, ...parsed.contract },
       giornata: { ...initialState.giornata, ...parsed.giornata },
       capobottega: { ...initialState.capobottega, ...parsed.capobottega },
+      firmaPending,
+      packetRole: parsed.packetRole || initialState.packetRole,
       gates: initialState.gates.map((gate) => ({
         ...gate,
         ...(parsed.gates || []).find((saved) => saved.id === gate.id),
@@ -168,4 +189,65 @@ export function exportWorkshop(state) {
     null,
     2,
   );
+}
+
+const packetRoles = {
+  "prima-mano": {
+    label: "LA PRIMA MANO",
+    model: "Codex",
+    duty: "Implement the smallest verified change and leave a reviewable diff.",
+    stop: "Stop before publishing, payment, personal data, scope expansion, or final submission.",
+  },
+  vasari: {
+    label: "VASARI",
+    model: "Critical reviewer",
+    duty: "Attack the claim, identify the likeliest failure, and require evidence for every conclusion.",
+    stop: "Do not rewrite the product purpose or approve your own findings.",
+  },
+  colorista: {
+    label: "IL COLORISTA",
+    model: "Research and visual synthesis",
+    duty: "Gather bounded source material and return a concrete visual or research artifact.",
+    stop: "Do not make product decisions or expand the commission.",
+  },
+};
+
+export function getPacketRoles() {
+  return Object.entries(packetRoles).map(([id, role]) => ({ id, ...role }));
+}
+
+export function buildWorkPacket(state, roleId = state.packetRole) {
+  const role = packetRoles[roleId] || packetRoles["prima-mano"];
+  const nextGate = state.gates.find((gate) => !gate.done);
+  const decision = state.capobottega.latest;
+  const material = decision?.classification || state.giornata.classification;
+  const humanAction = decision?.humanAction || "REVIEW_LATER";
+  const brief = decision?.nextStroke || state.giornata.title;
+
+  return [
+    `# CARTONE PACKET · ${role.label}`,
+    "",
+    `Model role: ${role.model}`,
+    `Commission: ${state.contract.objective}`,
+    `Stroke: ${brief}`,
+    `Material: ${material}`,
+    `Human boundary: ${humanAction.replaceAll("_", " ")}`,
+    `MANCA target: ${nextGate ? `${nextGate.id} · ${nextGate.title}` : "NONE · all gates have proof"}`,
+    "",
+    "## Duty",
+    role.duty,
+    "",
+    "## Required evidence",
+    nextGate?.detail || "Return a final, judge-readable proof record.",
+    "",
+    "## Stop rule",
+    role.stop,
+    "",
+    "## Return contract",
+    "- What changed",
+    "- Verification performed",
+    "- Evidence path or URL",
+    "- Remaining risk",
+    "- Whether FIRMA is required next",
+  ].join("\n");
 }

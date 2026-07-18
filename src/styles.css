@@ -488,6 +488,36 @@ textarea:focus-visible {
   font-size: 11px;
 }
 
+.firma-pending {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  max-width: 760px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border: 1px solid #f0c9a2;
+  color: #fff5dd;
+  font-family: var(--mono);
+}
+
+.firma-pending strong {
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: #ffd8ad;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.firma-pending span {
+  font-family: var(--serif);
+  font-size: 18px;
+}
+
+.firma-pending small {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 9px;
+}
+
 .capobottega-proof {
   margin-top: 11px;
   overflow: hidden;
@@ -501,14 +531,16 @@ textarea:focus-visible {
 
 .work-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 34px;
+  gap: 18px 28px;
   margin-top: 38px;
 }
 
 .primary-action,
 .secondary-action,
-.capobottega-action {
+.capobottega-action,
+.firma-action {
   min-height: 64px;
   border: 0;
   font-family: var(--mono);
@@ -520,8 +552,15 @@ textarea:focus-visible {
 
 .primary-action:hover,
 .secondary-action:hover,
-.capobottega-action:hover {
+.capobottega-action:hover,
+.firma-action:hover {
   transform: translateY(-2px);
+}
+
+.primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
 }
 
 .primary-action {
@@ -568,6 +607,23 @@ textarea:focus-visible {
   color: #d9e2ff;
   font-size: 8px;
   letter-spacing: 0.1em;
+}
+
+.firma-action {
+  min-width: 178px;
+  padding: 0 18px;
+  border: 1px solid #f0c9a2;
+  color: #fff5dd;
+  background: rgba(118, 20, 20, 0.34);
+  text-align: left;
+}
+
+.firma-action small {
+  display: block;
+  margin-top: 5px;
+  color: #ffd8ad;
+  font-size: 8px;
+  letter-spacing: 0.08em;
 }
 
 .pause-mark {
@@ -863,6 +919,111 @@ textarea:focus-visible {
   color: var(--blue);
   font-family: var(--mono);
   font-size: 11px;
+}
+
+.packet-builder {
+  margin-top: 46px;
+  padding-top: 28px;
+  border-top: 3px solid var(--blue);
+}
+
+.packet-builder > header {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 5px 20px;
+  align-items: baseline;
+}
+
+.packet-builder > header > span {
+  grid-row: 1 / span 2;
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.packet-builder h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.packet-builder > header p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.packet-roles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 25px;
+  border: 1px solid var(--ink);
+}
+
+.packet-roles button {
+  min-height: 76px;
+  padding: 13px;
+  border: 0;
+  border-right: 1px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.packet-roles button:last-child {
+  border-right: 0;
+}
+
+.packet-roles button[aria-pressed="true"] {
+  color: white;
+  background: var(--blue);
+}
+
+.packet-roles strong,
+.packet-roles small {
+  display: block;
+  font-family: var(--mono);
+}
+
+.packet-roles strong {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.packet-roles small {
+  margin-top: 6px;
+  font-size: 8px;
+}
+
+.packet-builder pre {
+  max-height: 420px;
+  margin: 0;
+  padding: 24px;
+  overflow: auto;
+  border: 1px solid var(--ink);
+  border-top: 0;
+  color: #e8edff;
+  background: var(--blue-deep);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.packet-copy {
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 0 20px;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
 }
 
 .verdict {
@@ -1416,7 +1577,8 @@ textarea:focus-visible {
 
   .primary-action,
   .secondary-action,
-  .capobottega-action {
+  .capobottega-action,
+  .firma-action {
     min-height: 52px;
     font-size: 12px;
   }
@@ -1436,6 +1598,10 @@ textarea:focus-visible {
 
   .capobottega-action {
     min-width: 130px;
+  }
+
+  .firma-action {
+    min-width: 155px;
   }
 
   .drying-scale {
@@ -1629,7 +1795,8 @@ textarea:focus-visible {
 
   .primary-action,
   .secondary-action,
-  .capobottega-action {
+  .capobottega-action,
+  .firma-action {
     width: 100%;
     min-width: 0;
     justify-content: flex-start;
@@ -1638,6 +1805,10 @@ textarea:focus-visible {
   .capobottega-action {
     min-height: 56px;
     border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  .firma-action {
+    min-height: 56px;
   }
 
   .capobottega-dialog {
@@ -1692,6 +1863,32 @@ textarea:focus-visible {
 
   .cartone-line em {
     grid-column: 2;
+  }
+
+  .packet-builder > header {
+    display: block;
+  }
+
+  .packet-builder > header > span {
+    display: block;
+    margin-bottom: 9px;
+  }
+
+  .packet-builder h2 {
+    font-size: 30px;
+  }
+
+  .packet-roles {
+    grid-template-columns: 1fr;
+  }
+
+  .packet-roles button {
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .packet-roles button:last-child {
+    border-bottom: 0;
   }
 
   .poll-list > div,
