@@ -98,3 +98,5 @@ repository, demo video, and Devpost submission remain open gates.
 See [the CAPOBOTTEGA evidence note](docs/CAPOBOTTEGA.md) for the runtime
 contract and verified end-to-end response, and
 [the Phase 1 audit](docs/PHASE1_AUDIT.md) for requirement-by-requirement proof.
+The recommended G3 workpiece and its human decision boundary are recorded in
+[the payload FIRMA](docs/PAYLOAD_FIRMA.md).

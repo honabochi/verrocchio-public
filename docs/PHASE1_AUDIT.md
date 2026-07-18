@@ -11,7 +11,7 @@ as evidence. “Complete locally” does not mean “published.”
 | One backward-planned path from deadline to submission | Complete locally | Six MANCA gates in `src/model.js`; countdown and gate ledger rendered in GIORNATE |
 | Human is a system component, not a generic approver | Complete locally | Editable DI SUA MANO and AFFRESCO rules; OLTREMARE meter; explicit FIRMA action |
 | Immediate, deferred, and autonomous decision classes | Complete locally | CAPOBOTTEGA strict schema returns AFFRESCO, SECCO, or GESSO plus human action |
-| Irreversible work stops synchronously | Complete locally | AFFRESCO creates `firmaPending`, disables resume, and requires `GIVE FIRMA`; interaction and migration tests |
+| Irreversible work stops synchronously | Complete locally | AFFRESCO creates `firmaPending`, disables resume and further CAPOBOTTEGA decisions, and requires `GIVE FIRMA`; interaction and migration tests |
 | Anyone can stop work | Complete locally | CALL FERMO changes the state and writes evidence |
 | Scope cannot silently expand | Complete locally | CONTRATTO scope ratchet plus CAPOBOTTEGA `scopeEffect`; work-packet stop rules |
 | Proof, not claimed progress, closes a gate | Complete locally | A gate without evidence opens ATTACH PROOF and MANCA remains unchanged |

@@ -251,9 +251,14 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               </span>
               CALL FERMO
             </button>
-            <button className="capobottega-action" onClick={onCapobottega} type="button">
-              ASK CAPOBOTTEGA
-              <small>GPT-5.6 SOL</small>
+            <button
+              className="capobottega-action"
+              disabled={Boolean(state.firmaPending)}
+              onClick={onCapobottega}
+              type="button"
+            >
+              {state.firmaPending ? "CAPOBOTTEGA HELD" : "ASK CAPOBOTTEGA"}
+              <small>{state.firmaPending ? "RESOLVE FIRMA FIRST" : "GPT-5.6 SOL"}</small>
             </button>
             {state.firmaPending && (
               <button className="firma-action" onClick={onFirma} type="button">

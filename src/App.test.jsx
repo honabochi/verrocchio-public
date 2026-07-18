@@ -118,6 +118,9 @@ describe("VERROCCHIO core path", () => {
 
     expect(await screen.findByRole("button", { name: "LOCKED BY FIRMA" })).toBeDisabled();
     expect(screen.getAllByText("FIRMA REQUIRED")[0]).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "CAPOBOTTEGA HELD RESOLVE FIRMA FIRST" }),
+    ).toBeDisabled();
 
     await user.click(screen.getByRole("button", { name: "GIVE FIRMA AUTHORIZE THIS STROKE" }));
 

@@ -89,6 +89,8 @@ response ID to EVIDENCE.
   proofless close opens the evidence sheet and records FERMO.
 - `AFFRESCO` plus `FIRMA_REQUIRED` now creates a hard GIORNATA lock. The normal
   resume path is disabled until the human explicitly gives FIRMA.
+- CAPOBOTTEGA is also held while a FIRMA is pending, so a second decision cannot
+  overwrite the unresolved irreversible boundary.
 - Previously saved held AFFRESCO decisions migrate into the same lock unless a
   matching FIRMA event proves that the human already signed.
 

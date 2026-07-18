@@ -563,6 +563,12 @@ textarea:focus-visible {
   transform: none;
 }
 
+.capobottega-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
 .primary-action {
   display: flex;
   align-items: center;
