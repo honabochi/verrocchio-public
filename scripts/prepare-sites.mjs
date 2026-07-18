@@ -13,4 +13,8 @@ await cp(
   resolve(root, "worker/capobottega.js"),
   resolve(serverDirectory, "capobottega.js"),
 );
+await cp(
+  resolve(root, "worker/workshop-plan.js"),
+  resolve(serverDirectory, "workshop-plan.js"),
+);
 await cp(resolve(root, ".openai/hosting.json"), resolve(hostingDirectory, "hosting.json"));

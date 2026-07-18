@@ -8,7 +8,9 @@ as evidence. “Complete locally” does not mean “published.”
 
 | Requirement | Status | Authoritative evidence |
 | --- | --- | --- |
-| One backward-planned path from deadline to submission | Complete locally | Six MANCA gates in `src/model.js`; countdown and gate ledger rendered in GIORNATE |
+| Mission input is a closed operational world | Complete locally | `MissionView.jsx` captures rules, criteria, deadline, constraints, available hands, deferrals, and human boundary; live browser plan generated |
+| One backward-planned path from deadline to submission | Complete locally | `/api/workshop-plan` returns a strict contract, dynamic gates, strokes, risks, and ISO schedule bounded between request time and deadline |
+| Planning is not silently self-authorizing | Complete locally | Live generated plans remained drafts until `GIVE FIRMA & ADOPT`; revisions 01–03 recorded |
 | Human is a system component, not a generic approver | Complete locally | Editable DI SUA MANO and AFFRESCO rules; OLTREMARE meter; explicit FIRMA action |
 | Immediate, deferred, and autonomous decision classes | Complete locally | CAPOBOTTEGA strict schema returns AFFRESCO, SECCO, or GESSO plus human action |
 | Irreversible work stops synchronously | Complete locally | AFFRESCO creates `firmaPending`, disables resume and further CAPOBOTTEGA decisions, and requires `GIVE FIRMA`; interaction and migration tests |
@@ -19,24 +21,35 @@ as evidence. “Complete locally” does not mean “published.”
 | Codex is the primary implementation hand | Complete locally | Primary task ID in README, initial state, and build log; LA PRIMA MANO packet role |
 | Self-reference is product behavior | Complete locally | CAPOBOTTEGA classified VERROCCHIO's own publication, stopped it, changed state, and wrote its response evidence |
 | AI work can be handed off without losing boundaries | Complete locally | CARTONE compiles role-specific duty and stop rules into a copyable packet |
+| Results return to the target proof gate | Complete locally | Live CARTONE result required change, verification, evidence, and remaining risk; target evidence dialog retained the return |
+| Replanning preserves completed proof | Complete locally | Live revision 02 retained the revision 01 response evidence; unit tests preserve both evidence and done state |
 | Quiet, small-screen workshop UX | Complete locally | Five workshop views; responsive desktop and 390×844 browser checks |
 | Exportable build evidence | Complete locally | EVIDENCE JSON export includes contract, decisions, events, gates, and derived MANCA |
-| Phase 1 production includes the GPT runtime | Not yet complete | Sites version 4 is saved, but production has not received `OPENAI_API_KEY` and version 4 is not deployed |
-| Separate payload chosen and built under VERROCCHIO | Not started by design | G3 is `AWAITING FIRMA`; payload choice belongs to the human WHY |
-| Judge-accessible repository, video, and Devpost receipt | Not yet complete | These remain explicit MANCA gates |
+| Hosted rollout includes the GPT runtime | Pending AFFRESCO | Local runtime is proven; Sites secret and production deployment still require authenticated human action |
+| Separate workpiece selected | Out of Phase 1 by design | Selection is explicitly deferred until the operational exit path passes |
+| Judge-accessible repository, video, and final receipt | Phase 2 | These are later execution targets, not evidence that Phase 1 itself works |
 
 ## Verification snapshot
 
-- Automated tests: 14 passed.
+- Automated contracts and interactions: 22 passed.
 - Production build: passed.
-- Browser proof guard: passed.
-- Browser legacy AFFRESCO migration and FIRMA lock: passed.
-- Browser CARTONE work packet: passed on desktop and mobile.
-- Real GPT-5.6 server and end-to-end UI response: passed.
+- Real GPT-5.6 plan and replan responses:
+  `[public-response-id-removed]`,
+  `[public-response-id-removed]`,
+  and the schedule-bounded
+  `[public-response-id-removed]`.
+- Browser exit path passed: MISSION, DRAFT, FIRMA, CARTONE, RESULT, EVIDENCE,
+  REPLAN, preserved proof, and MANCA 06 → 05.
+- Browser console warnings and errors: zero.
+- Visual proof: `docs/phase1-browser-proof.png` and
+  `docs/phase1-final-viewport.png`.
 
 ## Phase 1 exit condition
 
-The local control loop is finished. Phase 1 exits only after the saved Sites
-version is deployed with the production secret and the hosted CAPOBOTTEGA path
-returns a judge-usable response. Publication remains an AFFRESCO action and
-therefore requires the human's authenticated session and FIRMA.
+The real browser path passed:
+
+`MISSION → DRAFT → FIRMA → CARTONE → RESULT → EVIDENCE → REPLAN`
+
+The production build and automated contracts are green. Phase 1 is therefore
+complete locally. Publishing remains an AFFRESCO action and is intentionally
+outside this local exit condition.

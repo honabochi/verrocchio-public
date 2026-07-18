@@ -2,11 +2,11 @@
 
 ## Commission
 
-Ship one OpenAI Build Week entry composed of:
+Complete VERROCCHIO as the execution system that can carry a hackathon from
+rules to verified submission.
 
-1. VERROCCHIO — the execution system.
-2. A payload application built under VERROCCHIO's control.
-3. Evidence that the workshop was used to build itself and the payload.
+Phase 1 must be operationally complete and self-proven before Phase 2 begins.
+No separate submission workpiece is selected or built inside Phase 1.
 
 ## Launch window
 
@@ -14,14 +14,11 @@ Ship one OpenAI Build Week entry composed of:
 - Japan deadline: 2026-07-22 09:00 JST
 - Track: Developer Tools
 
-## Six submission gates
+## Initial submission evidence
 
-1. Working product plus a judge-accessible test path.
-2. Meaningful GPT-5.6 use and evidence.
-3. Codex build trail plus the primary `/feedback` Session ID.
-4. Judge-accessible repository, license, README, setup, sample data, and test guidance.
-5. Public YouTube demo, three minutes or less, with a working demo and English audio explaining Codex and GPT-5.6 use.
-6. Devpost description, Developer Tools category, links, and final submission receipt.
+The seed ledger contains the known contest deliverables, but it is not the
+planner. MISSION INTAKE must dynamically compile current rules into four to ten
+proof gates, and a replan must preserve any completed proof.
 
 ## DI SUA MANO
 

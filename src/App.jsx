@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  adoptWorkshopPlan,
   buildWorkPacket,
   createEvent,
   exportWorkshop,
@@ -10,6 +11,7 @@ import {
   remainingTime,
 } from "./model";
 import { NavIcon, SignatureIcon, WorkshopMark } from "./icons";
+import MissionView from "./MissionView";
 
 const views = {
   contratto: "CONTRATTO",
@@ -28,13 +30,22 @@ function Deadline({ deadline }) {
   }, []);
 
   const value = remainingTime(deadline, now);
+  const deadlineLabel = Number.isNaN(Date.parse(deadline))
+    ? deadline
+    : new Intl.DateTimeFormat("en", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short",
+      }).format(new Date(deadline));
 
   return (
     <div className="deadline" aria-label="Time remaining">
       <span>
         T−{String(value.days).padStart(2, "0")}d {String(value.hours).padStart(2, "0")}h
       </span>
-      <small>Jul 21 · 17:00 PDT</small>
+      <small>{deadlineLabel}</small>
     </div>
   );
 }
@@ -132,6 +143,44 @@ function GateLedger({ gates, onToggle, onEvidence }) {
   );
 }
 
+function activateStroke(state, strokeId) {
+  const stroke = state.cartone.strokes.find((item) => item.id === strokeId);
+  if (!stroke) return state;
+  const index = state.cartone.strokes.indexOf(stroke);
+  return {
+    ...state,
+    isHeld: false,
+    isRunning: true,
+    startedAt: state.startedAt || new Date().toISOString(),
+    packetRole:
+      stroke.role === "human" ? state.packetRole : stroke.role,
+    cartone: {
+      ...state.cartone,
+      strokes: state.cartone.strokes.map((item) =>
+        item.id === strokeId
+          ? { ...item, status: "active" }
+          : item.status === "active"
+            ? { ...item, status: "queued" }
+            : item,
+      ),
+    },
+    giornata: {
+      ...state.giornata,
+      id: String(index + 1).padStart(2, "0"),
+      title: stroke.title,
+      classification: stroke.classification,
+      classificationNote: stroke.outcome,
+    },
+    events: [
+      createEvent(
+        "GIORNATA",
+        `${stroke.title} began for ${stroke.gateId}.`,
+      ),
+      ...state.events,
+    ],
+  };
+}
+
 function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
 
@@ -175,7 +224,10 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
       isHeld: false,
       startedAt: current.startedAt || new Date().toISOString(),
       events: [
-        createEvent("GIORNATA", "GIORNATA 01 began: VERROCCHIO is controlling its own build."),
+        createEvent(
+          "GIORNATA",
+          `GIORNATA ${current.giornata.id} began: ${current.giornata.title}.`,
+        ),
         ...current.events,
       ],
     }));
@@ -280,66 +332,13 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   );
 }
 
-function ContrattoView({ state, setState }) {
-  const update = (field, value) =>
-    setState((current) => ({
-      ...current,
-      contract: { ...current.contract, [field]: value },
-      events: [
-        createEvent("SECCO", `CONTRATTO field “${field}” updated for later review.`),
-        ...current.events,
-      ],
-    }));
-
-  return (
-    <section className="document-view">
-      <header>
-        <span>01</span>
-        <h1>CONTRATTO</h1>
-        <p>The commission that every stroke must answer to.</p>
-      </header>
-      <label>
-        Objective
-        <textarea
-          value={state.contract.objective}
-          onChange={(event) => update("objective", event.target.value)}
-        />
-      </label>
-      <div className="contract-grid">
-        <label>
-          Track
-          <input
-            value={state.contract.track}
-            onChange={(event) => update("track", event.target.value)}
-          />
-        </label>
-        <label>
-          Launch window
-          <input readOnly value="2026-07-21 · 17:00 PDT / 2026-07-22 · 09:00 JST" />
-        </label>
-      </div>
-      <label>
-        DI SUA MANO · the human hand
-        <textarea
-          value={state.contract.humanRule}
-          onChange={(event) => update("humanRule", event.target.value)}
-        />
-      </label>
-      <label>
-        AFFRESCO rule
-        <textarea
-          value={state.contract.irreversibleRule}
-          onChange={(event) => update("irreversibleRule", event.target.value)}
-        />
-      </label>
-    </section>
-  );
-}
-
-function CartoneView({ state, setState }) {
+function CartoneView({ state, setState, onBeginStroke, onResult }) {
   const [copyStatus, setCopyStatus] = useState("COPY PACKET");
   const roles = getPacketRoles();
   const packet = buildWorkPacket(state);
+  const activeStroke = state.cartone.strokes.find(
+    (stroke) => stroke.status === "active",
+  );
 
   const selectRole = (packetRole) => {
     setState((current) => ({
@@ -363,32 +362,53 @@ function CartoneView({ state, setState }) {
       <header>
         <span>02</span>
         <h1>CARTONE</h1>
-        <p>Only lines that lead to CONSEGNA survive.</p>
+        <p>
+          Revision {String(state.cartone.revision).padStart(2, "0")} · only
+          lines that lead to CONSEGNA survive.
+        </p>
       </header>
-      <div className="cartone-line">
-        <span>G1</span>
-        <div>
-          <strong>Walking skeleton</strong>
-          <p>Contract → gates → giornata → evidence → final poll.</p>
+      <p className="cartone-rationale">{state.cartone.rationale}</p>
+      {state.cartone.strokes.map((stroke, index) => (
+        <div className={`cartone-line is-${stroke.status}`} key={stroke.id}>
+          <span>G{String(index + 1).padStart(2, "0")}</span>
+          <div>
+            <strong>{stroke.title}</strong>
+            <p>{stroke.outcome}</p>
+            <small>
+              {stroke.role} · {stroke.classification} · gate {stroke.gateId}
+            </small>
+          </div>
+          <div className="stroke-command">
+            <em>{stroke.status.toUpperCase()}</em>
+            {stroke.status === "queued" && (
+              <button
+                disabled={Boolean(activeStroke || state.firmaPending)}
+                onClick={() => onBeginStroke(stroke)}
+                type="button"
+              >
+                BEGIN
+              </button>
+            )}
+            {stroke.status === "active" && (
+              <button onClick={() => onResult(stroke)} type="button">
+                RETURN RESULT
+              </button>
+            )}
+          </div>
         </div>
-        <em>PROVEN</em>
-      </div>
-      <div className="cartone-line">
-        <span>G2</span>
-        <div>
-          <strong>Self-proof</strong>
-          <p>Use VERROCCHIO to direct and document its own implementation.</p>
-        </div>
-        <em>PROVEN</em>
-      </div>
-      <div className="cartone-line">
-        <span>G3</span>
-        <div>
-          <strong>Payload application</strong>
-          <p>Build one app under the same contract and submit the pair.</p>
-        </div>
-        <em>AWAITING FIRMA</em>
-      </div>
+      ))}
+      {state.cartone.schedule.length > 0 && (
+        <section className="cartone-schedule">
+          <h2>BACKWARD SCHEDULE</h2>
+          {state.cartone.schedule.map((item) => (
+            <div key={`${item.label}-${item.dueAt}`}>
+              <time>{item.dueAt}</time>
+              <strong>{item.label}</strong>
+              <span>{item.deliverable}</span>
+            </div>
+          ))}
+        </section>
+      )}
       <section className="packet-builder" aria-labelledby="packet-title">
         <header>
           <span>HANDOFF</span>
@@ -414,8 +434,9 @@ function CartoneView({ state, setState }) {
         </button>
       </section>
       <footer>
-        {state.gates.filter((gate) => gate.done).length} of {state.gates.length} submission gates
-        have proof.
+        {state.gates.filter((gate) => gate.done).length} of {state.gates.length} gates
+        are closed with proof · {state.cartone.strokes.filter((stroke) => stroke.status === "done").length} of{" "}
+        {state.cartone.strokes.length} strokes returned.
       </footer>
     </section>
   );
@@ -519,6 +540,7 @@ function EvidenceDialog({ gate, onClose, onSave }) {
           Evidence note or URL
           <textarea
             autoFocus
+            required
             value={value}
             onChange={(event) => setValue(event.target.value)}
             placeholder="Describe the proof, paste a URL, or record the session ID."
@@ -530,6 +552,78 @@ function EvidenceDialog({ gate, onClose, onSave }) {
           </button>
           <button className="dialog-save" type="submit">
             ATTACH EVIDENCE
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function ResultDialog({ stroke, onClose, onSave }) {
+  const [result, setResult] = useState({
+    summary: "",
+    verification: "",
+    evidence: "",
+    remainingRisk: "",
+  });
+  if (!stroke) return null;
+
+  const update = (field, value) =>
+    setResult((current) => ({ ...current, [field]: value }));
+
+  return (
+    <div className="dialog-backdrop" onMouseDown={onClose} role="presentation">
+      <form
+        className="evidence-dialog result-dialog"
+        onMouseDown={(event) => event.stopPropagation()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave(result);
+        }}
+      >
+        <div className="dialog-rule" />
+        <span>RETURN TO THE WORKSHOP</span>
+        <h2>{stroke.title}</h2>
+        <p>{stroke.evidenceExpected}</p>
+        <label>
+          What changed
+          <textarea
+            autoFocus
+            onChange={(event) => update("summary", event.target.value)}
+            required
+            value={result.summary}
+          />
+        </label>
+        <label>
+          Verification performed
+          <textarea
+            onChange={(event) => update("verification", event.target.value)}
+            required
+            value={result.verification}
+          />
+        </label>
+        <label>
+          Evidence path, URL, or response ID
+          <textarea
+            onChange={(event) => update("evidence", event.target.value)}
+            required
+            value={result.evidence}
+          />
+        </label>
+        <label>
+          Remaining risk
+          <textarea
+            onChange={(event) => update("remainingRisk", event.target.value)}
+            required
+            value={result.remainingRisk}
+          />
+        </label>
+        <div>
+          <button className="dialog-cancel" onClick={onClose} type="button">
+            CANCEL
+          </button>
+          <button className="dialog-save" type="submit">
+            ATTACH RESULT
           </button>
         </div>
       </form>
@@ -644,6 +738,7 @@ export default function App() {
   const [state, setState] = useState(loadWorkshop);
   const [evidenceGate, setEvidenceGate] = useState(null);
   const [capobottegaOpen, setCapobottegaOpen] = useState(false);
+  const [resultStroke, setResultStroke] = useState(null);
 
   useEffect(() => persistWorkshop(state), [state]);
 
@@ -653,10 +748,12 @@ export default function App() {
   );
 
   const saveEvidence = (value) => {
+    const proof = value.trim();
+    if (!proof) return;
     setState((current) => ({
       ...current,
       gates: current.gates.map((gate) =>
-        gate.id === evidenceGate.id ? { ...gate, evidence: value } : gate,
+        gate.id === evidenceGate.id ? { ...gate, evidence: proof } : gate,
       ),
       events: [
         createEvent("EVIDENCE", `Proof attached to ${evidenceGate.title}.`),
@@ -664,6 +761,149 @@ export default function App() {
       ],
     }));
     setEvidenceGate(null);
+  };
+
+  const generateWorkshop = async () => {
+    setState((current) => ({
+      ...current,
+      mission: {
+        ...current.mission,
+        planningStatus: "loading",
+        planningError: "",
+      },
+    }));
+    try {
+      const response = await fetch("/api/workshop-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: state.mission.status === "adopted" ? "replan" : "plan",
+          mission: state.mission,
+          current: {
+            gates: state.gates,
+            strokes: state.cartone.strokes,
+            evidence: state.events.map((event) => event.message),
+          },
+        }),
+      });
+      const plan = await response.json();
+      if (!response.ok) {
+        throw new Error(plan.error || "CAPOBOTTEGA could not forge the workshop.");
+      }
+      setState((current) => ({
+        ...current,
+        mission: {
+          ...current.mission,
+          planningStatus: "draft",
+          planningError: "",
+          draftPlan: plan,
+        },
+        events: [
+          createEvent(
+            "CAPOBOTTEGA",
+            `Workshop revision drafted by ${plan.model} · ${plan.responseId}; awaiting FIRMA.`,
+          ),
+          ...current.events,
+        ],
+      }));
+    } catch (error) {
+      setState((current) => ({
+        ...current,
+        mission: {
+          ...current.mission,
+          planningStatus: "error",
+          planningError: error.message,
+        },
+      }));
+    }
+  };
+
+  const adoptPlan = () =>
+    setState((current) =>
+      current.mission.draftPlan
+        ? adoptWorkshopPlan(current, current.mission.draftPlan)
+        : current,
+    );
+
+  const discardPlan = () =>
+    setState((current) => ({
+      ...current,
+      mission: {
+        ...current.mission,
+        planningStatus: "idle",
+        draftPlan: null,
+      },
+      events: [
+        createEvent("PENTIMENTO", "Unsigned workshop draft discarded."),
+        ...current.events,
+      ],
+    }));
+
+  const beginStroke = (stroke) => {
+    setState((current) => {
+      if (current.firmaPending) return current;
+      if (stroke.classification === "AFFRESCO") {
+        return {
+          ...current,
+          isHeld: true,
+          isRunning: false,
+          firmaPending: {
+            responseId: `cartone-${stroke.id}`,
+            strokeId: stroke.id,
+            title: stroke.title,
+            reason: `${stroke.evidenceExpected} CARTONE classified this stroke as irreversible.`,
+          },
+          events: [
+            createEvent("FERMO", `${stroke.title} stopped for FIRMA.`),
+            ...current.events,
+          ],
+        };
+      }
+      return activateStroke(current, stroke.id);
+    });
+  };
+
+  const saveResult = (result) => {
+    setState((current) => {
+      const stroke = current.cartone.strokes.find(
+        (item) => item.id === resultStroke.id,
+      );
+      const evidence = `${result.summary} Verification: ${result.verification} Evidence: ${result.evidence} Risk: ${result.remainingRisk}`;
+      const strokes = current.cartone.strokes.map((item) =>
+        item.id === stroke.id ? { ...item, status: "done", result } : item,
+      );
+      const next = strokes.find((item) => item.status === "queued");
+      return {
+        ...current,
+        isRunning: false,
+        cartone: { ...current.cartone, strokes },
+        gates: current.gates.map((gate) =>
+          gate.id === stroke.gateId
+            ? {
+                ...gate,
+                evidence: [gate.evidence, evidence].filter(Boolean).join("\n"),
+              }
+            : gate,
+        ),
+        giornata: next
+          ? {
+              ...current.giornata,
+              id: String(strokes.indexOf(next) + 1).padStart(2, "0"),
+              title: next.title,
+              classification: next.classification,
+              classificationNote: next.outcome,
+            }
+          : current.giornata,
+        events: [
+          createEvent(
+            "EVIDENCE",
+            `${stroke.title} returned: ${result.evidence}. Remaining risk: ${result.remainingRisk}`,
+          ),
+          ...current.events,
+        ],
+      };
+    });
+    setResultStroke(null);
   };
 
   const classifyWithCapobottega = async (work) => {
@@ -687,6 +927,12 @@ export default function App() {
     }
 
     setState((current) => {
+      const modelGate = current.gates.find(
+        (gate) =>
+          gate.id === "gpt-evidence" ||
+          gate.id.includes("gpt") ||
+          gate.title.toLowerCase().includes("gpt-5.6"),
+      );
       const attentionCost =
         payload.humanAction === "FIRMA_REQUIRED"
           ? 4
@@ -721,7 +967,7 @@ export default function App() {
           latest: payload,
         },
         gates: current.gates.map((gate) =>
-          gate.id === "gpt-evidence"
+          gate.id === modelGate?.id
             ? { ...gate, done: true, evidence: proof }
             : gate,
         ),
@@ -758,7 +1004,7 @@ export default function App() {
     setState((current) => {
       if (!current.firmaPending) return current;
       const signed = current.firmaPending;
-      return {
+      const nextState = {
         ...current,
         firmaPending: null,
         isHeld: false,
@@ -771,6 +1017,9 @@ export default function App() {
           ...current.events,
         ],
       };
+      return signed.strokeId
+        ? activateStroke(nextState, signed.strokeId)
+        : nextState;
     });
   };
 
@@ -806,10 +1055,21 @@ export default function App() {
           />
         )}
         {state.activeView === "contratto" && (
-          <ContrattoView state={state} setState={setState} />
+          <MissionView
+            onAdopt={adoptPlan}
+            onDiscard={discardPlan}
+            onGenerate={generateWorkshop}
+            setState={setState}
+            state={state}
+          />
         )}
         {state.activeView === "cartone" && (
-          <CartoneView state={state} setState={setState} />
+          <CartoneView
+            onBeginStroke={beginStroke}
+            onResult={setResultStroke}
+            state={state}
+            setState={setState}
+          />
         )}
         {state.activeView === "cenacolo" && (
           <CenacoloView state={state} setState={setState} />
@@ -819,8 +1079,14 @@ export default function App() {
       <AttentionRail state={state} />
       <EvidenceDialog
         gate={evidenceGate}
+        key={evidenceGate?.id || "evidence-closed"}
         onClose={() => setEvidenceGate(null)}
         onSave={saveEvidence}
+      />
+      <ResultDialog
+        onClose={() => setResultStroke(null)}
+        onSave={saveResult}
+        stroke={resultStroke}
       />
       {capobottegaOpen && (
         <CapobottegaDialog

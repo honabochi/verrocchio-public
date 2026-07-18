@@ -3,16 +3,6 @@ export const CAPOBOTTEGA_MODEL = "gpt-5.6-sol";
 const classifications = ["AFFRESCO", "SECCO", "GESSO"];
 const humanActions = ["FIRMA_REQUIRED", "REVIEW_LATER", "NONE"];
 const scopeEffects = ["SHRINKS", "PRESERVES", "EXPANDS"];
-const submissionGates = [
-  "working-product",
-  "gpt-evidence",
-  "codex-evidence",
-  "repository",
-  "demo",
-  "submission",
-  "NONE",
-];
-
 const outputSchema = {
   type: "object",
   properties: {
@@ -27,7 +17,10 @@ const outputSchema = {
     },
     humanAction: { type: "string", enum: humanActions },
     scopeEffect: { type: "string", enum: scopeEffects },
-    submissionGate: { type: "string", enum: submissionGates },
+    submissionGate: {
+      type: "string",
+      description: "One supplied missing gate ID, or NONE.",
+    },
     evidenceNote: {
       type: "string",
       description: "A short ledger entry describing what this decision proves.",
@@ -93,7 +86,8 @@ function validateDecision(value) {
     !classifications.includes(value?.classification) ||
     !humanActions.includes(value?.humanAction) ||
     !scopeEffects.includes(value?.scopeEffect) ||
-    !submissionGates.includes(value?.submissionGate) ||
+    !isString("submissionGate") ||
+    !/^(?:NONE|[a-z0-9]+(?:-[a-z0-9]+)*)$/.test(value.submissionGate) ||
     !isString("reason") ||
     !isString("nextStroke") ||
     !isString("evidenceNote")
@@ -131,7 +125,7 @@ function normalizePayload(payload) {
     objective: String(payload?.objective || "").slice(0, 1_000),
     manca: Number.isFinite(payload?.manca) ? payload.manca : null,
     missingGates: Array.isArray(payload?.missingGates)
-      ? payload.missingGates.map(String).slice(0, 6)
+      ? payload.missingGates.map(String).slice(0, 10)
       : [],
     irreversibleRule: String(payload?.irreversibleRule || "").slice(0, 800),
   };

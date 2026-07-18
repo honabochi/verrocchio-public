@@ -4,8 +4,9 @@
 
 VERROCCHIO is a local-first hackathon execution system. It replaces generic task progress with `MANCA`: the number of submission proofs that are still missing. It classifies decisions by reversibility, protects human attention as `OLTREMARE`, and keeps an exportable evidence ledger.
 
-This repository is VERROCCHIO's first workpiece: the system is being used to
-direct and document its own construction before it directs a separate payload.
+This repository is Phase 1 only: the execution system is being used to direct
+and document its own construction. No separate submission workpiece belongs
+here until the operational loop passes its exit check.
 
 ## Run
 
@@ -23,21 +24,30 @@ npm test
 npm run build
 ```
 
-The automated suite covers the submission-count model plus the core UI path:
-initial render, GIORNATA start, proof-gated MANCA reduction, FERMO, FIRMA,
-CENACOLO, CAPOBOTTEGA, old-state migration, and CARTONE work packets.
+The automated suite covers mission planning, strict server contracts, dynamic
+gate adoption, result return, evidence preservation, proof-gated MANCA
+reduction, FERMO, FIRMA, CENACOLO, CAPOBOTTEGA, migration, and CARTONE packets.
 
 ## Core path
 
-1. Open `GIORNATE`.
-2. Begin the current work session.
-3. Attach evidence to a missing gate by selecting its ledger row.
-4. Mark a gate complete only when proof exists.
-5. Call `FERMO` to hold autonomous work.
-6. Inspect `CENACOLO` for the final go/no-go poll.
-7. Export the evidence ledger from `EVIDENCE`.
+1. Complete `MISSION INTAKE` in `CONTRATTO`.
+2. Ask GPT-5.6 Sol to forge a strict workshop draft.
+3. Inspect the proposed CONTRATTO, MANCA, CARTONE, risks, and schedule.
+4. Give `FIRMA` to adopt the draft.
+5. Run the active CARTONE stroke and return its result contract.
+6. Attach or close proof in `GIORNATE`; replan from current evidence.
+7. Inspect `CENACOLO` and export the ledger from `EVIDENCE`.
 
-State is saved in browser `localStorage`; no account or backend is required for Phase 1.
+State is saved in browser `localStorage`. `OPENAI_API_KEY` is required only by
+the server-side planning and decision routes.
+
+## MISSION and replanning
+
+`/api/workshop-plan` uses `gpt-5.6-sol` with a strict schema to compile the
+mission into a contract, evidence gates, bounded strokes, a backward schedule,
+and risks. A plan is always an unsigned draft until FIRMA. Replanning receives
+the current gates, strokes, and evidence; the client preserves completed proof
+when adopting a revision.
 
 ## CARTONE work packets
 
@@ -49,8 +59,9 @@ handoff. The packet can be aimed at:
 - `VASARI` — adversarial review;
 - `IL COLORISTA` — bounded research and visual synthesis.
 
-Changing the actor changes its duty and stop rule, not the commission. This is
-the bridge from the execution system to the separate payload build.
+Changing the actor changes its duty and stop rule, not the commission. Every
+active stroke must return what changed, verification, evidence, and remaining
+risk before the next stroke begins.
 
 ## CAPOBOTTEGA
 
@@ -89,17 +100,12 @@ See [the build log](docs/BUILD_LOG.md) for the first self-referential evidence r
 
 ## Current phase
 
-Phase 1 implements the visual workshop, local state machine, server-side
-CAPOBOTTEGA runtime, strict decision schema, evidence ledger, and responsive
-interaction path. Locally, the Phase 1 control loop is complete and verified.
-The production secret/deployment, separate payload application, public
-repository, demo video, and Devpost submission remain open gates.
+Phase 1 implements the visual workshop, MISSION intake, dynamic strict planning,
+human adoption boundary, bounded execution packets, structured result return,
+evidence ledger, replanning, deadline-bounded schedules, and CAPOBOTTEGA
+classification. The local Phase 1 exit path is verified. Phase 2 selection,
+public repository preparation, video, and submission now begin as a separate
+commission under the workshop.
 
 See [the CAPOBOTTEGA evidence note](docs/CAPOBOTTEGA.md) for the runtime
-contract and verified end-to-end response, and
-[the Phase 1 audit](docs/PHASE1_AUDIT.md) for requirement-by-requirement proof.
-The recommended G3 workpiece and its human decision boundary are recorded in
-[the payload FIRMA](docs/PAYLOAD_FIRMA.md).
-Submission preparation continues in the
-[2:45 demo script](docs/DEMO_SCRIPT.md) and
-[Devpost draft](docs/DEVPOST_DRAFT.md).
+contract and [the Phase 1 audit](docs/PHASE1_AUDIT.md) for the current evidence.

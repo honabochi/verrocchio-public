@@ -11,7 +11,7 @@ export const navItems = [
 ];
 
 export const initialState = {
-  activeView: "giornate",
+  activeView: "contratto",
   attentionMinutes: 42,
   attentionCeiling: 120,
   isRunning: false,
@@ -20,7 +20,7 @@ export const initialState = {
   deadline: DEADLINE_ISO,
   contract: {
     objective:
-      "Ship VERROCCHIO and the application it directs as one self-proving Build Week entry.",
+      "Complete VERROCCHIO as the execution system that can carry this hackathon from rules to verified submission.",
     track: "Developer Tools",
     irreversibleRule:
       "Publishing, payment, personal data, scope changes, and final submission require FIRMA.",
@@ -36,6 +36,72 @@ export const initialState = {
   capobottega: {
     lastInput: "",
     latest: null,
+  },
+  mission: {
+    status: "seed",
+    planningStatus: "idle",
+    draftPlan: null,
+    name: "OpenAI Build Week",
+    brief:
+      "Finish Phase 1 first: build a meta-cognitive hackathon execution system that ingests the rules, plans backward from submission, assigns bounded AI work, preserves human WHY/NO/FIRMA, collects evidence, replans, and proves readiness. Do not select or build the separate submission workpiece yet.",
+    rules:
+      "A working judge-accessible product, meaningful GPT-5.6 use, Codex build evidence, a judge-accessible repository, a public demo under three minutes, and a complete Devpost submission are required.",
+    judgingCriteria:
+      "Technological implementation, design, potential impact, and quality of the idea.",
+    deadline: DEADLINE_ISO,
+    track: "Developer Tools",
+    constraints:
+      "One person, first hackathon, short deadline, limited human attention, no silent scope expansion, and no external or irreversible action without FIRMA.",
+    availableAI: "Codex; GPT-5.6 Sol; optional bounded review and research roles",
+    candidateIdeas:
+      "Intentionally deferred. Phase 1 must be operationally complete before any submission workpiece is selected.",
+    humanBoundary:
+      "The human owns WHY, NO, taste, scope changes, payment, publishing, personal data, and final submission. The workshop owns HOW.",
+  },
+  cartone: {
+    revision: 0,
+    rationale: "Seed strokes keep the workshop focused on completing Phase 1.",
+    risks: [
+      "Mistaking a working dashboard for a complete execution system.",
+      "Selecting a submission workpiece before the meta-system can direct it.",
+      "Spending the launch window on vocabulary instead of verified execution.",
+    ],
+    schedule: [],
+    strokes: [
+      {
+        id: "mission-intake",
+        title: "Make the mission executable",
+        outcome: "Rules, deadline, criteria, constraints, and human boundaries are captured.",
+        gateId: "working-product",
+        role: "prima-mano",
+        classification: "SECCO",
+        evidenceExpected: "A saved mission that can generate a workshop plan.",
+        status: "active",
+        result: null,
+      },
+      {
+        id: "dynamic-plan",
+        title: "Forge dynamic CONTRATTO, MANCA, and CARTONE",
+        outcome: "GPT-5.6 produces a bounded plan that remains a draft until FIRMA.",
+        gateId: "gpt-evidence",
+        role: "prima-mano",
+        classification: "SECCO",
+        evidenceExpected: "A structured model response and adopted plan revision.",
+        status: "queued",
+        result: null,
+      },
+      {
+        id: "execution-loop",
+        title: "Close the execution and replanning loop",
+        outcome: "Work results attach proof, update the next stroke, and support replanning.",
+        gateId: "working-product",
+        role: "prima-mano",
+        classification: "SECCO",
+        evidenceExpected: "A browser-verified mission-to-result cycle.",
+        status: "queued",
+        result: null,
+      },
+    ],
   },
   firmaPending: null,
   packetRole: "prima-mano",
@@ -145,12 +211,32 @@ export function loadWorkshop() {
       contract: { ...initialState.contract, ...parsed.contract },
       giornata: { ...initialState.giornata, ...parsed.giornata },
       capobottega: { ...initialState.capobottega, ...parsed.capobottega },
+      mission: {
+        ...initialState.mission,
+        ...parsed.mission,
+        draftPlan: parsed.mission?.draftPlan || null,
+      },
+      cartone: {
+        ...initialState.cartone,
+        ...parsed.cartone,
+        strokes: Array.isArray(parsed.cartone?.strokes)
+          ? parsed.cartone.strokes
+          : initialState.cartone.strokes,
+        risks: Array.isArray(parsed.cartone?.risks)
+          ? parsed.cartone.risks
+          : initialState.cartone.risks,
+        schedule: Array.isArray(parsed.cartone?.schedule)
+          ? parsed.cartone.schedule
+          : initialState.cartone.schedule,
+      },
       firmaPending,
       packetRole: parsed.packetRole || initialState.packetRole,
-      gates: initialState.gates.map((gate) => ({
-        ...gate,
-        ...(parsed.gates || []).find((saved) => saved.id === gate.id),
-      })),
+      gates: Array.isArray(parsed.gates)
+        ? parsed.gates.map((gate) => ({
+            ...(initialState.gates.find((seed) => seed.id === gate.id) || {}),
+            ...gate,
+          }))
+        : initialState.gates,
     };
   } catch {
     return initialState;
@@ -218,11 +304,20 @@ export function getPacketRoles() {
 
 export function buildWorkPacket(state, roleId = state.packetRole) {
   const role = packetRoles[roleId] || packetRoles["prima-mano"];
-  const nextGate = state.gates.find((gate) => !gate.done);
+  const activeStroke =
+    state.cartone?.strokes?.find((stroke) => stroke.status === "active") ||
+    state.cartone?.strokes?.find((stroke) => stroke.status === "queued");
+  const nextGate =
+    state.gates.find((gate) => gate.id === activeStroke?.gateId) ||
+    state.gates.find((gate) => !gate.done);
   const decision = state.capobottega.latest;
-  const material = decision?.classification || state.giornata.classification;
+  const material =
+    decision?.classification ||
+    activeStroke?.classification ||
+    state.giornata.classification;
   const humanAction = decision?.humanAction || "REVIEW_LATER";
-  const brief = decision?.nextStroke || state.giornata.title;
+  const brief =
+    decision?.nextStroke || activeStroke?.title || state.giornata.title;
 
   return [
     `# CARTONE PACKET · ${role.label}`,
@@ -250,4 +345,90 @@ export function buildWorkPacket(state, roleId = state.packetRole) {
     "- Remaining risk",
     "- Whether FIRMA is required next",
   ].join("\n");
+}
+
+export function adoptWorkshopPlan(state, plan) {
+  const previousGates = new Map(state.gates.map((gate) => [gate.id, gate]));
+  const previousStrokes = new Map(
+    (state.cartone?.strokes || []).map((stroke) => [stroke.id, stroke]),
+  );
+  const planProof = `${plan.model} · ${plan.responseId} · ${plan.createdAt}`;
+  const plannedGates = plan.gates.map((gate) => {
+    const previous = previousGates.get(gate.id);
+    const isModelGate =
+      gate.id.includes("gpt") || gate.title.toLowerCase().includes("gpt-5.6");
+    return {
+      ...gate,
+      detail: `${gate.detail} Proof: ${gate.proofRequired}`,
+      done: previous?.done || false,
+      evidence: previous?.evidence || (isModelGate ? planProof : ""),
+    };
+  });
+  const plannedGateIds = new Set(plannedGates.map((gate) => gate.id));
+  const gates = [
+    ...plannedGates,
+    ...state.gates.filter(
+      (gate) => gate.done && !plannedGateIds.has(gate.id),
+    ),
+  ];
+  const strokes = plan.strokes.map((stroke, index) => {
+    const previous = previousStrokes.get(stroke.id);
+    return {
+      ...stroke,
+      status: previous?.status || (index === 0 ? "active" : "queued"),
+      result: previous?.result || null,
+    };
+  });
+  const firstOpen =
+    strokes.find((stroke) => stroke.status === "active") ||
+    strokes.find((stroke) => stroke.status === "queued");
+
+  return {
+    ...state,
+    deadline: Number.isNaN(Date.parse(plan.contract.deadline))
+      ? state.deadline
+      : plan.contract.deadline,
+    contract: {
+      objective: plan.contract.objective,
+      track: plan.contract.track,
+      humanRule: plan.contract.humanRule,
+      irreversibleRule: plan.contract.irreversibleRule,
+    },
+    mission: {
+      ...state.mission,
+      status: "adopted",
+      planningStatus: "complete",
+      draftPlan: null,
+    },
+    cartone: {
+      revision: (state.cartone?.revision || 0) + 1,
+      rationale: plan.rationale,
+      risks: plan.risks,
+      schedule: plan.schedule,
+      strokes,
+    },
+    gates,
+    giornata: firstOpen
+      ? {
+          ...state.giornata,
+          id: String(strokes.indexOf(firstOpen) + 1).padStart(2, "0"),
+          title: firstOpen.title,
+          classification: firstOpen.classification,
+          classificationNote: firstOpen.outcome,
+        }
+      : state.giornata,
+    isHeld: false,
+    isRunning: Boolean(firstOpen),
+    events: [
+      createEvent(
+        "FIRMA",
+        `Human adopted workshop revision ${(state.cartone?.revision || 0) + 1} from ${plan.responseId}.`,
+      ),
+      createEvent(
+        "CARTONE",
+        `${plan.gates.length} MANCA gates and ${plan.strokes.length} strokes forged by ${plan.model}.`,
+      ),
+      ...state.events,
+    ],
+  };
 }

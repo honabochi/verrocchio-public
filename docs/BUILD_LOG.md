@@ -4,7 +4,8 @@
 
 ### Commission
 
-Build the Phase 1 walking skeleton of VERROCCHIO, then use it to control the creation of a separate payload application for the OpenAI Build Week submission.
+Build the Phase 1 walking skeleton of VERROCCHIO and prove that it can control
+its own construction before any separate submission workpiece is selected.
 
 ### Codex evidence
 
@@ -94,15 +95,16 @@ response ID to EVIDENCE.
 - Previously saved held AFFRESCO decisions migrate into the same lock unless a
   matching FIRMA event proves that the human already signed.
 
-### Payload bridge
+### Work packet bridge
 
 - CARTONE now emits bounded, copyable work packets for LA PRIMA MANO, VASARI,
   or IL COLORISTA.
 - Every packet carries the unchanged commission, current stroke, material,
   human boundary, first missing proof, role duty, stop rule, and return
   contract.
-- G3 remains `AWAITING FIRMA`: selecting what the payload should be belongs to
-  the human's WHY, while implementation remains the workshop's HOW.
+- Workpiece selection remains outside Phase 1. The workshop must first prove
+  that it can accept a mission, return bounded work, preserve evidence, and
+  replan.
 
 ### Checks
 
@@ -114,3 +116,38 @@ response ID to EVIDENCE.
   explicit `GIVE FIRMA` action as the only resume path.
 - Browser: desktop and 390×844 CARTONE layouts rendered the complete packet
   builder and all three role choices.
+
+## 2026-07-18 — GIORNATA 04
+
+### Scope correction
+
+- Removed every premature submission-workpiece choice and its demo/submission
+  draft from the Phase 1 repository.
+- Re-stated the commission: complete the hackathon execution system before
+  selecting any separate workpiece.
+
+### Operational loop
+
+- Added MISSION INTAKE for rules, judging criteria, deadline, constraints,
+  available hands, explicit deferrals, and the human boundary.
+- Added `/api/workshop-plan`, a strict GPT-5.6 Sol planner that returns dynamic
+  CONTRATTO, MANCA gates, CARTONE strokes, a backward schedule, and risks.
+- Kept every generated plan wet until explicit FIRMA.
+- Replaced fixed CARTONE lines with executable strokes and a structured return
+  contract: change, verification, evidence, and remaining risk.
+- Added evidence-preserving plan adoption so replanning cannot erase completed
+  proof.
+
+### Live exit proof
+
+- Real GPT-5.6 plan adopted as revision 01.
+- The first CARTONE stroke returned change, verification, response evidence,
+  and remaining risk to the working-system gate.
+- Real GPT-5.6 replan adopted as revision 02 without losing the returned proof.
+- MANCA closed only after the preserved proof was inspected, reducing 06 to 05.
+- Added a hard schedule invariant: every due time must be ISO-8601, ascending,
+  no earlier than planning time, and no later than the launch deadline.
+- A final live replan passed that invariant and was adopted as revision 03.
+- Automated contracts and interactions: 22 passed.
+- Production build: passed.
+- Browser console warnings and errors: zero.

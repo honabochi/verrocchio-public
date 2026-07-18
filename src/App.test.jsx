@@ -14,15 +14,18 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
 
     expect(screen.getByText("VERROCCHIO")).toBeVisible();
-    expect(screen.getByRole("heading", { name: "What is missing?" })).toBeVisible();
-    expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
-    expect(screen.getByRole("button", { name: "BEGIN GIORNATA" })).toBeEnabled();
+    expect(screen.getByRole("heading", { name: "CONTRATTO" })).toBeVisible();
+    expect(screen.getByText("MISSION INTAKE")).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /FORGE WORKSHOP/ }),
+    ).toBeEnabled();
   });
 
   test("begins a giornata, attaches proof, and reduces MANCA", async () => {
     const user = userEvent.setup();
     render(<App />);
 
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "BEGIN GIORNATA" }));
     expect(screen.getByRole("button", { name: "GIORNATA ACTIVE" })).toBeVisible();
 
@@ -42,6 +45,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "Mark Working product complete" }));
 
     expect(screen.getByRole("heading", { name: "Working product" })).toBeVisible();
@@ -52,6 +56,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "CALL FERMO" }));
     expect(screen.getByText("FERMO ACTIVE · waiting for direction")).toBeVisible();
     expect(screen.getByRole("button", { name: "RESUME GIORNATA" })).toBeVisible();
@@ -81,6 +86,7 @@ describe("VERROCCHIO core path", () => {
     );
 
     render(<App />);
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA GPT-5.6 SOL" }));
     await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
 
@@ -113,6 +119,7 @@ describe("VERROCCHIO core path", () => {
     );
 
     render(<App />);
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA GPT-5.6 SOL" }));
     await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
 
@@ -137,5 +144,137 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByRole("heading", { name: "One bounded work packet" })).toBeVisible();
     expect(screen.getByText(/CARTONE PACKET · LA PRIMA MANO/)).toBeVisible();
     expect(screen.getByText(/Stop before publishing/)).toBeVisible();
+  });
+
+  test("forges a dynamic workshop draft and requires FIRMA before adoption", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          contract: {
+            objective: "Complete the operational Phase 1 execution loop.",
+            track: "Developer Tools",
+            deadline: "2026-07-22T09:00:00+09:00",
+            humanRule: "The human owns WHY, NO, and FIRMA.",
+            irreversibleRule: "Publishing requires FIRMA.",
+          },
+          gates: [
+            {
+              id: "mission-proof",
+              title: "Mission proof",
+              detail: "Mission is complete.",
+              proofRequired: "Saved intake",
+            },
+            {
+              id: "gpt-plan",
+              title: "GPT-5.6 plan",
+              detail: "Plan is structured.",
+              proofRequired: "Response ID",
+            },
+            {
+              id: "execution-proof",
+              title: "Execution proof",
+              detail: "A result returns.",
+              proofRequired: "Return contract",
+            },
+            {
+              id: "replan-proof",
+              title: "Replan proof",
+              detail: "Evidence survives.",
+              proofRequired: "Revision two",
+            },
+          ],
+          strokes: [
+            {
+              id: "adopt-mission",
+              title: "Adopt the mission",
+              outcome: "The contract is active.",
+              gateId: "mission-proof",
+              role: "prima-mano",
+              classification: "SECCO",
+              evidenceExpected: "Signed contract",
+            },
+            {
+              id: "return-result",
+              title: "Return one result",
+              outcome: "Evidence enters the ledger.",
+              gateId: "execution-proof",
+              role: "prima-mano",
+              classification: "GESSO",
+              evidenceExpected: "Complete return contract",
+            },
+            {
+              id: "replan-proof",
+              title: "Replan from proof",
+              outcome: "Completed proof survives.",
+              gateId: "replan-proof",
+              role: "vasari",
+              classification: "SECCO",
+              evidenceExpected: "Revision two",
+            },
+          ],
+          schedule: [
+            { label: "Mission", dueAt: "T-4h", deliverable: "Contract" },
+            { label: "Return", dueAt: "T-2h", deliverable: "Evidence" },
+            { label: "Replan", dueAt: "T-1h", deliverable: "Revision" },
+          ],
+          risks: ["Dashboard only", "No proof", "Scope drift"],
+          rationale: "Close the operational loop before any workpiece.",
+          scopeEffect: "SHRINKS",
+          humanAction: "FIRMA_REQUIRED",
+          source: "openai",
+          model: "gpt-5.6-sol",
+          responseId: "resp_plan_ui",
+          createdAt: "2026-07-18T12:00:00.000Z",
+        }),
+      }),
+    );
+
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /FORGE WORKSHOP/ }));
+
+    expect(await screen.findByText("The plan is still wet.")).toBeVisible();
+    expect(screen.getByText("Complete the operational Phase 1 execution loop.")).toBeVisible();
+    expect(screen.getByText("MANCA 06")).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "GIVE FIRMA & ADOPT" }));
+
+    expect(screen.getByText("REVISION 01")).toBeVisible();
+    expect(screen.getByText("MANCA 04")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
+    expect(screen.getByText("Adopt the mission")).toBeVisible();
+    expect(screen.getByText("BACKWARD SCHEDULE")).toBeVisible();
+  });
+
+  test("returns a bounded work result into its target evidence gate", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
+    await user.click(screen.getByRole("button", { name: "RETURN RESULT" }));
+    await user.type(screen.getByLabelText("What changed"), "Mission intake works.");
+    await user.type(
+      screen.getByLabelText("Verification performed"),
+      "Browser interaction passed.",
+    );
+    await user.type(
+      screen.getByLabelText("Evidence path, URL, or response ID"),
+      "resp_mission_return",
+    );
+    await user.type(screen.getByLabelText("Remaining risk"), "Replan is still open.");
+    await user.click(screen.getByRole("button", { name: "ATTACH RESULT" }));
+
+    expect(screen.getByText("DONE")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
+    await user.click(
+      screen.getByRole("button", {
+        name: /Working product Live demo or test path/,
+      }),
+    );
+    expect(screen.getByLabelText("Evidence note or URL").value).toContain(
+      "resp_mission_return",
+    );
   });
 });

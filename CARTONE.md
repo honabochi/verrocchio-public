@@ -2,24 +2,39 @@
 
 ## G1 — Walking skeleton
 
-CONTRATTO → six MANCA gates → GIORNATA → FERMO/FIRMA → evidence export → CENACOLO.
+CONTRATTO → MANCA → GIORNATA → FERMO/FIRMA → evidence export → CENACOLO.
 
-## G2 — Self-proof · working
+## G2 — Mission forge
 
-Use VERROCCHIO to direct and document its own implementation. The evidence ledger is a product feature and a submission artifact.
+MISSION INTAKE captures the hackathon, rules, judging criteria, deadline,
+constraints, available hands, explicit deferrals, and human boundary.
+GPT-5.6 Sol forges a strict draft containing:
 
-CAPOBOTTEGA now classifies VERROCCHIO's own proposed work with GPT-5.6 Sol.
-The first end-to-end browser decision classified public deployment as
-`AFFRESCO`, required `FIRMA`, activated `FERMO`, spent OLTREMARE, reduced
-MANCA, and wrote its response ID to the evidence ledger.
+- a purpose-preserving CONTRATTO;
+- four to ten evidence gates;
+- three to twelve bounded work strokes;
+- a backward schedule and explicit risks.
 
-## G3 — Payload
+The draft cannot change the workshop until the human gives FIRMA.
 
-Choose and build one application under the same contract. The final entry presents the workshop and the work it produced as one system.
+## G3 — Execution loop
+
+The adopted CARTONE selects one active stroke, emits a bounded work packet,
+requires a four-part return contract, attaches the result to its target gate,
+and can replan from accumulated evidence without discarding completed proof.
+
+## Phase 1 exit
+
+Phase 1 is complete when the full loop is verified in a real browser:
+
+MISSION → DRAFT → FIRMA → CARTONE → RESULT → EVIDENCE → REPLAN.
+
+Selecting or building a separate submission workpiece begins only after this
+exit condition. No candidate belongs in the Phase 1 repository.
 
 ## ABORT rules
 
 - No more renaming or world-building unless a concrete usability failure requires it.
-- No feature without a direct path to one of the six submission gates.
-- If the live demo is not stable, cut integrations before cutting the core state machine.
-- Record the demo while the product is still changing; do not leave all evidence capture to the last night.
+- No feature without a direct path to a Phase 1 evidence gate.
+- No external action, publication, or final submission without FIRMA.
+- No workpiece selection before the Phase 1 exit condition is proven.

@@ -33,7 +33,7 @@ describe("CAPOBOTTEGA server contract", () => {
     const decision = await classifyWork(
       {
         work: "Add the CAPOBOTTEGA decision surface.",
-        objective: "Ship the workshop and its payload.",
+        objective: "Complete and prove the hackathon execution workshop.",
         manca: 6,
         missingGates: ["working-product"],
       },
