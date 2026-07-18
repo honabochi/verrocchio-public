@@ -27,9 +27,11 @@ Runtime GPT-5.6 integration remains a missing gate. The intended CAPOBOTTEGA int
 
 ### Checks
 
-- Model tests: passed.
+- Model and interaction tests: 5 passed.
 - Production build: passed.
 - Local browser interaction: not verified because the active browser policy rejected the localhost URL. No alternate browser workaround was used.
+- Sites v1 rendered as an empty shell. The deployment screenshot exposed a JSX transform defect: production code referenced an undefined `React` global before mounting.
+- Codex enabled the React JSX transform, added DOM interaction coverage, and rebuilt v2. The tests now cover initial mount, GIORNATA start, evidence attachment, MANCA reduction, FERMO, and CENACOLO.
 
 ### Official sources checked
 

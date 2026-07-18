@@ -22,6 +22,8 @@ npm test
 npm run build
 ```
 
+The automated suite covers the submission-count model plus the core UI path: initial render, GIORNATA start, evidence attachment, MANCA reduction, FERMO, and CENACOLO.
+
 ## Core path
 
 1. Open `GIORNATE`.

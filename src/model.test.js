@@ -1,5 +1,4 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { expect, test } from "vitest";
 import { exportWorkshop, initialState, remainingTime } from "./model.js";
 
 test("remainingTime converts the official deadline into a stable countdown", () => {
@@ -8,11 +7,11 @@ test("remainingTime converts the official deadline into a stable countdown", () 
     new Date("2026-07-18T09:00:00+09:00"),
   );
 
-  assert.deepEqual(value, { days: 4, hours: 0, minutes: 0 });
+  expect(value).toEqual({ days: 4, hours: 0, minutes: 0 });
 });
 
 test("exportWorkshop derives MANCA from incomplete gates", () => {
   const exported = JSON.parse(exportWorkshop(initialState));
-  assert.equal(exported.manca, 6);
-  assert.equal(exported.schema, "verrocchio.workshop.v1");
+  expect(exported.manca).toBe(6);
+  expect(exported.schema).toBe("verrocchio.workshop.v1");
 });
