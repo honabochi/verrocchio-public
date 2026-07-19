@@ -19,8 +19,8 @@ const dynamicPlan = {
   },
   gates: [
     {
-      id: "gpt-plan",
-      title: "GPT-5.6 plan",
+      id: "model-plan",
+      title: "Model evidence",
       detail: "A strict workshop plan exists.",
       proofRequired: "Response ID",
     },
@@ -48,7 +48,7 @@ const dynamicPlan = {
       id: "forge-plan",
       title: "Forge the plan",
       outcome: "The plan is adopted.",
-      gateId: "gpt-plan",
+      gateId: "model-plan",
       role: "prima-mano",
       classification: "SECCO",
       evidenceExpected: "Response ID",
@@ -145,7 +145,7 @@ test("loadWorkshop migrates an old held AFFRESCO into a pending FIRMA", () => {
   });
 });
 
-test("adoptWorkshopPlan replaces static gates and records GPT proof", () => {
+test("adoptWorkshopPlan replaces static gates and records model proof", () => {
   const next = adoptWorkshopPlan(initialState, dynamicPlan);
 
   expect(next.contract.objective).toBe(

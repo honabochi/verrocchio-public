@@ -1,4 +1,5 @@
-export const CAPOBOTTEGA_MODEL = "gpt-5.6-sol";
+export const CAPOBOTTEGA_MODEL =
+  globalThis.process?.env?.OPENAI_MODEL || "gpt-5.6-sol";
 
 const classifications = ["AFFRESCO", "SECCO", "GESSO"];
 const humanActions = ["FIRMA_REQUIRED", "REVIEW_LATER", "NONE"];

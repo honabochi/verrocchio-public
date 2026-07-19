@@ -1085,6 +1085,153 @@ textarea:focus-visible {
   font-size: 9px;
 }
 
+.external-cenacolo {
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 3px solid var(--blue);
+}
+
+.external-cenacolo > header > span,
+.external-cenacolo label,
+.external-cenacolo button,
+.review-ledger span,
+.review-ledger em,
+.review-ledger small {
+  font-family: var(--mono);
+}
+
+.external-cenacolo > header > span {
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.external-cenacolo h2 {
+  margin: 9px 0 4px;
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.external-cenacolo > header p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.external-cenacolo form {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid var(--ink);
+}
+
+.review-short-fields,
+.review-two-column {
+  display: grid;
+  gap: 14px;
+}
+
+.review-short-fields {
+  grid-template-columns: 1.4fr 1fr 1fr;
+}
+
+.review-two-column {
+  grid-template-columns: 1fr 1fr;
+}
+
+.external-cenacolo label {
+  display: grid;
+  gap: 7px;
+  color: var(--blue);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.external-cenacolo input,
+.external-cenacolo select,
+.external-cenacolo textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--ink);
+  background: white;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.external-cenacolo textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.external-cenacolo form > button {
+  min-height: 46px;
+  border: 1px solid var(--blue);
+  color: white;
+  background: var(--blue);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.review-ledger {
+  margin-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+
+.review-ledger article {
+  display: grid;
+  grid-template-columns: 180px 90px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.review-ledger article > div {
+  display: grid;
+  gap: 5px;
+}
+
+.review-ledger span,
+.review-ledger small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.review-ledger strong {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.review-ledger em {
+  color: var(--blue);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.review-ledger em.is-fermo {
+  color: var(--danger);
+}
+
+.review-ledger p {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.review-ledger small {
+  grid-column: 3;
+}
+
 .consegna {
   margin-top: 38px;
   padding: 18px 25px;
@@ -1434,6 +1581,49 @@ textarea:focus-visible {
 .mission-form {
   padding-bottom: 44px;
   border-bottom: 1px solid var(--rule);
+}
+
+.profile-switcher {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--blue);
+  background: rgba(22, 57, 166, 0.05);
+}
+
+.profile-switcher div {
+  display: grid;
+  gap: 4px;
+}
+
+.profile-switcher strong,
+.profile-switcher span,
+.profile-switcher button {
+  font-family: var(--mono);
+}
+
+.profile-switcher strong {
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+}
+
+.profile-switcher span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.profile-switcher button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  background: transparent;
+  font-size: 9px;
+  cursor: pointer;
 }
 
 .mission-form-heading {
@@ -2241,8 +2431,28 @@ textarea:focus-visible {
   .mission-form-heading,
   .mission-short-fields,
   .mission-two-column,
+  .review-short-fields,
+  .review-two-column,
   .plan-preview-grid {
     display: block;
+  }
+
+  .profile-switcher {
+    grid-template-columns: 1fr;
+  }
+
+  .external-cenacolo label + label,
+  .review-short-fields label + label,
+  .review-two-column label + label {
+    margin-top: 14px;
+  }
+
+  .review-ledger article {
+    grid-template-columns: 1fr;
+  }
+
+  .review-ledger small {
+    grid-column: 1;
   }
 
   .mission-form-heading p {

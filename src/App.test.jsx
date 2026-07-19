@@ -62,7 +62,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByRole("button", { name: "RESUME GIORNATA" })).toBeVisible();
   });
 
-  test("CAPOBOTTEGA records a GPT-5.6 decision and closes its evidence gate", async () => {
+  test("CAPOBOTTEGA records a model decision and closes its evidence gate", async () => {
     const user = userEvent.setup();
     vi.stubGlobal(
       "fetch",
@@ -87,7 +87,7 @@ describe("VERROCCHIO core path", () => {
 
     render(<App />);
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA GPT-5.6 SOL" }));
+    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA MODEL-RECORDED" }));
     await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
 
     expect(await screen.findByText("This is safe local test work.")).toBeVisible();
@@ -120,7 +120,7 @@ describe("VERROCCHIO core path", () => {
 
     render(<App />);
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA GPT-5.6 SOL" }));
+    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA MODEL-RECORDED" }));
     await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
 
     expect(await screen.findByRole("button", { name: "LOCKED BY FIRMA" })).toBeDisabled();
@@ -169,7 +169,7 @@ describe("VERROCCHIO core path", () => {
             },
             {
               id: "gpt-plan",
-              title: "GPT-5.6 plan",
+              title: "Model plan",
               detail: "Plan is structured.",
               proofRequired: "Response ID",
             },
@@ -276,5 +276,27 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByLabelText("Evidence note or URL").value).toContain(
       "resp_mission_return",
     );
+  });
+
+  test("normalizes an external model review without closing a submission gate", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "CENACOLO final poll" }));
+    await user.type(
+      screen.getByLabelText("Finding"),
+      "The demo does not yet prove the judging claim.",
+    );
+    await user.type(
+      screen.getByLabelText("Recommended next stroke"),
+      "Record one judge-path walkthrough.",
+    );
+    await user.click(
+      screen.getByRole("button", { name: "RETURN REVIEW TO CENACOLO" }),
+    );
+
+    expect(screen.getByText("Claude Fable 5")).toBeVisible();
+    expect(screen.getByText("The demo does not yet prove the judging claim.")).toBeVisible();
+    expect(screen.getByText("6 proofs are missing.")).toBeVisible();
   });
 });

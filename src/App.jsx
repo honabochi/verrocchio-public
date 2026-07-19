@@ -7,6 +7,7 @@ import {
   getPacketRoles,
   loadWorkshop,
   navItems,
+  normalizeExternalReview,
   persistWorkshop,
   remainingTime,
 } from "./model";
@@ -310,7 +311,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               type="button"
             >
               {state.firmaPending ? "CAPOBOTTEGA HELD" : "ASK CAPOBOTTEGA"}
-              <small>{state.firmaPending ? "RESOLVE FIRMA FIRST" : "GPT-5.6 SOL"}</small>
+              <small>{state.firmaPending ? "RESOLVE FIRMA FIRST" : "MODEL-RECORDED"}</small>
             </button>
             {state.firmaPending && (
               <button className="firma-action" onClick={onFirma} type="button">
@@ -445,6 +446,42 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
 function CenacoloView({ state, setState }) {
   const manca = state.gates.filter((gate) => !gate.done);
   const ready = manca.length === 0;
+  const [review, setReview] = useState({
+    reviewer: "Claude Fable 5",
+    role: "VASARI",
+    verdict: "REVISE",
+    summary: "",
+    risks: "",
+    recommendation: "",
+    evidence: "",
+  });
+
+  const updateReview = (field, value) =>
+    setReview((current) => ({ ...current, [field]: value }));
+
+  const addReview = (event) => {
+    event.preventDefault();
+    const normalized = normalizeExternalReview(review);
+    setState((current) => ({
+      ...current,
+      reviews: [normalized, ...(current.reviews || [])],
+      events: [
+        createEvent(
+          "CENACOLO",
+          `${normalized.reviewer} returned ${normalized.verdict}; advisory only until human FIRMA.`,
+        ),
+        ...current.events,
+      ],
+    }));
+    setReview((current) => ({
+      ...current,
+      summary: "",
+      risks: "",
+      recommendation: "",
+      evidence: "",
+    }));
+  };
+
   return (
     <section className="document-view cenacolo-view">
       <header>
@@ -465,6 +502,99 @@ function CenacoloView({ state, setState }) {
           </div>
         ))}
       </div>
+      <section className="external-cenacolo" aria-labelledby="external-cenacolo-title">
+        <header>
+          <span>EXTERNAL REVIEW</span>
+          <h2 id="external-cenacolo-title">Different eyes. One return contract.</h2>
+          <p>
+            Claude, Gemini, and other models return advice in the same format.
+            Reviews never close a gate or authorize CONSEGNA by themselves.
+          </p>
+        </header>
+        <form onSubmit={addReview}>
+          <div className="review-short-fields">
+            <label>
+              Reviewer
+              <input
+                onChange={(event) => updateReview("reviewer", event.target.value)}
+                required
+                value={review.reviewer}
+              />
+            </label>
+            <label>
+              Workshop role
+              <select
+                onChange={(event) => updateReview("role", event.target.value)}
+                value={review.role}
+              >
+                <option>VASARI</option>
+                <option>IL COLORISTA</option>
+                <option>MAESTRO</option>
+              </select>
+            </label>
+            <label>
+              Verdict
+              <select
+                onChange={(event) => updateReview("verdict", event.target.value)}
+                value={review.verdict}
+              >
+                <option>PROCEED</option>
+                <option>REVISE</option>
+                <option>FERMO</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Finding
+            <textarea
+              onChange={(event) => updateReview("summary", event.target.value)}
+              placeholder="Paste the reviewer's strongest finding."
+              required
+              value={review.summary}
+            />
+          </label>
+          <div className="review-two-column">
+            <label>
+              Risks
+              <textarea
+                onChange={(event) => updateReview("risks", event.target.value)}
+                value={review.risks}
+              />
+            </label>
+            <label>
+              Recommended next stroke
+              <textarea
+                onChange={(event) => updateReview("recommendation", event.target.value)}
+                required
+                value={review.recommendation}
+              />
+            </label>
+          </div>
+          <label>
+            Evidence or conversation URL
+            <input
+              onChange={(event) => updateReview("evidence", event.target.value)}
+              value={review.evidence}
+            />
+          </label>
+          <button type="submit">RETURN REVIEW TO CENACOLO</button>
+        </form>
+        {(state.reviews || []).length > 0 && (
+          <div className="review-ledger">
+            {state.reviews.map((item) => (
+              <article key={item.id}>
+                <div>
+                  <span>{item.role} · {item.status}</span>
+                  <strong>{item.reviewer}</strong>
+                </div>
+                <em className={`is-${item.verdict.toLowerCase()}`}>{item.verdict}</em>
+                <p>{item.summary}</p>
+                <small>Next: {item.recommendation}</small>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
       <button
         className="consegna"
         disabled={!ready}
@@ -673,8 +803,8 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
           <span>IL CAPOBOTTEGA</span>
           <h2 id="capobottega-title">One stroke. One material.</h2>
           <p>
-            GPT-5.6 Sol classifies the next move by reversibility, scope, and
-            submission value.
+            The configured planning model classifies the next move by
+            reversibility, scope, and submission value.
           </p>
         </header>
         <form onSubmit={submit}>
@@ -929,9 +1059,13 @@ export default function App() {
     setState((current) => {
       const modelGate = current.gates.find(
         (gate) =>
-          gate.id === "gpt-evidence" ||
+          gate.id === "model-evidence" ||
+          gate.id.includes("model") ||
+          gate.id.includes("ai-") ||
           gate.id.includes("gpt") ||
-          gate.title.toLowerCase().includes("gpt-5.6"),
+          gate.title.toLowerCase().includes("model evidence") ||
+          gate.title.toLowerCase().includes("ai evidence") ||
+          gate.title.toLowerCase().includes("gpt"),
       );
       const attentionCost =
         payload.humanAction === "FIRMA_REQUIRED"
@@ -990,7 +1124,7 @@ export default function App() {
           ),
           createEvent(
             "EVIDENCE",
-            `GPT-5.6 runtime proof attached: ${payload.model} · ${payload.responseId}.`,
+            `Planning-model runtime proof attached: ${payload.model} · ${payload.responseId}.`,
           ),
           ...current.events,
         ],

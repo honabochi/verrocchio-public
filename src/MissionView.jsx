@@ -85,6 +85,29 @@ export default function MissionView({
       mission: { ...current.mission, [field]: value },
     }));
 
+  const loadProfile = (profileId) =>
+    setState((current) => ({
+      ...current,
+      deadline: createHackathonProfile(profileId).deadline,
+      mission: {
+        ...current.mission,
+        ...createHackathonProfile(profileId),
+        status: "seed",
+        planningStatus: "idle",
+        planningError: "",
+        draftPlan: null,
+      },
+      events: [
+        {
+          id: `profile-${crypto.randomUUID()}`,
+          time: new Date().toISOString(),
+          kind: "CONTRATTO",
+          message: `${profileId} mission profile loaded; official rules still require human verification.`,
+        },
+        ...current.events,
+      ],
+    }));
+
   const submit = (event) => {
     event.preventDefault();
     onGenerate();
@@ -110,6 +133,19 @@ export default function MissionView({
             Capture the closed world: deadline, proof, constraints, available
             hands, and the decisions that remain human.
           </p>
+        </div>
+
+        <div className="profile-switcher" aria-label="Hackathon profile template">
+          <div>
+            <strong>ONE ENGINE · MANY HACKATHONS</strong>
+            <span>Load a clean intake or an editable example. Official rules remain the source of truth.</span>
+          </div>
+          <button onClick={() => loadProfile("blank")} type="button">
+            START BLANK
+          </button>
+          <button onClick={() => loadProfile("openai-build-week-example")} type="button">
+            LOAD EXAMPLE
+          </button>
         </div>
 
         <div className="mission-short-fields">
@@ -207,7 +243,7 @@ export default function MissionView({
               ? "CAPOBOTTEGA IS DRAWING…"
               : state.firmaPending
                 ? "RESOLVE FIRMA FIRST"
-                : "GPT-5.6 SOL · STRICT PLAN"}
+                : "CAPOBOTTEGA · STRICT PLAN"}
           </small>
         </button>
       </form>
@@ -243,3 +279,4 @@ export default function MissionView({
     </section>
   );
 }
+import { createHackathonProfile } from "./hackathonProfiles";

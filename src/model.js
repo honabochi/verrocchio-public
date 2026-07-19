@@ -1,6 +1,8 @@
-export const STORAGE_KEY = "verrocchio-workshop-v1";
+import { createHackathonProfile } from "./hackathonProfiles";
 
-export const DEADLINE_ISO = "2026-07-22T09:00:00+09:00";
+export const STORAGE_KEY = "verrocchio-workshop-v2";
+
+const DEFAULT_MISSION = createHackathonProfile();
 
 export const navItems = [
   { id: "contratto", label: "CONTRATTO", gloss: "contract" },
@@ -17,11 +19,11 @@ export const initialState = {
   isRunning: false,
   isHeld: false,
   startedAt: null,
-  deadline: DEADLINE_ISO,
+  deadline: DEFAULT_MISSION.deadline,
   contract: {
     objective:
-      "Complete VERROCCHIO as the execution system that can carry this hackathon from rules to verified submission.",
-    track: "Developer Tools",
+      "Convert one hackathon profile into a verified, judge-ready submission.",
+    track: DEFAULT_MISSION.track,
     irreversibleRule:
       "Publishing, payment, personal data, scope changes, and final submission require FIRMA.",
     humanRule: "The human owns WHY and NO. The workshop owns HOW.",
@@ -41,22 +43,7 @@ export const initialState = {
     status: "seed",
     planningStatus: "idle",
     draftPlan: null,
-    name: "OpenAI Build Week",
-    brief:
-      "Finish Phase 1 first: build a meta-cognitive hackathon execution system that ingests the rules, plans backward from submission, assigns bounded AI work, preserves human WHY/NO/FIRMA, collects evidence, replans, and proves readiness. Do not select or build the separate submission workpiece yet.",
-    rules:
-      "A working judge-accessible product, meaningful GPT-5.6 use, Codex build evidence, a judge-accessible repository, a public demo under three minutes, and a complete Devpost submission are required.",
-    judgingCriteria:
-      "Technological implementation, design, potential impact, and quality of the idea.",
-    deadline: DEADLINE_ISO,
-    track: "Developer Tools",
-    constraints:
-      "One person, first hackathon, short deadline, limited human attention, no silent scope expansion, and no external or irreversible action without FIRMA.",
-    availableAI: "Codex; GPT-5.6 Sol; optional bounded review and research roles",
-    candidateIdeas:
-      "Intentionally deferred. Phase 1 must be operationally complete before any submission workpiece is selected.",
-    humanBoundary:
-      "The human owns WHY, NO, taste, scope changes, payment, publishing, personal data, and final submission. The workshop owns HOW.",
+    ...DEFAULT_MISSION,
   },
   cartone: {
     revision: 0,
@@ -82,8 +69,8 @@ export const initialState = {
       {
         id: "dynamic-plan",
         title: "Forge dynamic CONTRATTO, MANCA, and CARTONE",
-        outcome: "GPT-5.6 produces a bounded plan that remains a draft until FIRMA.",
-        gateId: "gpt-evidence",
+        outcome: "CAPOBOTTEGA produces a bounded plan that remains a draft until FIRMA.",
+        gateId: "model-evidence",
         role: "prima-mano",
         classification: "SECCO",
         evidenceExpected: "A structured model response and adopted plan revision.",
@@ -114,73 +101,44 @@ export const initialState = {
       evidence: "",
     },
     {
-      id: "gpt-evidence",
-      title: "GPT-5.6 evidence",
-      detail: "Meaningful use, key decisions, and integration documented",
+      id: "model-evidence",
+      title: "Model evidence",
+      detail: "Meaningful AI use, key decisions, and runtime evidence documented",
       done: false,
       evidence: "",
     },
     {
-      id: "codex-evidence",
-      title: "Codex session trail",
-      detail: "Primary build thread and /feedback Session ID recorded",
+      id: "build-evidence",
+      title: "Build trail",
+      detail: "Primary implementation history, decisions, and verification recorded",
       done: false,
-      evidence: "Primary Codex task: 019f74f3-dd34-7403-b286-8f56efb37ad1",
+      evidence: "",
     },
     {
       id: "repository",
-      title: "Public repository",
-      detail: "License, README, setup, sample data, and test instructions",
+      title: "Judge-accessible repository",
+      detail: "Required visibility, license, README, setup, sample data, and tests",
       done: false,
       evidence: "",
     },
     {
       id: "demo",
-      title: "Demo under 3:00",
-      detail: "Public YouTube, working demo, English audio, Codex + GPT-5.6",
+      title: "Demo artifact",
+      detail: "Match the current hackathon's format, duration, language, and access rules",
       done: false,
       evidence: "",
     },
     {
       id: "submission",
-      title: "Devpost submission",
-      detail: "Developer Tools category, description, links, final receipt",
+      title: "Final submission",
+      detail: "All required fields, category, links, declarations, and receipt",
       done: false,
       evidence: "",
     },
   ],
-  decisions: [
-    {
-      id: "decision-001",
-      time: "2026-07-18T20:33:00+09:00",
-      type: "AFFRESCO",
-      title: "Freeze the VERROCCHIO name and workshop vocabulary",
-      actor: "Human + Codex",
-      rationale: "The metaphor compiles into reversible decision classes and UI state.",
-    },
-    {
-      id: "decision-002",
-      time: "2026-07-18T20:42:00+09:00",
-      type: "SECCO",
-      title: "Adopt six submission gates as MANCA",
-      actor: "Codex",
-      rationale: "Each gate maps directly to current official Build Week requirements.",
-    },
-  ],
-  events: [
-    {
-      id: "event-001",
-      time: "2026-07-18T20:19:00+09:00",
-      kind: "EVIDENCE",
-      message: "Primary Codex task opened for the VERROCCHIO build.",
-    },
-    {
-      id: "event-002",
-      time: "2026-07-18T20:42:00+09:00",
-      kind: "CARTONE",
-      message: "Official Build Week submission requirements compiled into six gates.",
-    },
-  ],
+  reviews: [],
+  decisions: [],
+  events: [],
 };
 
 export function loadWorkshop() {
@@ -237,6 +195,7 @@ export function loadWorkshop() {
             ...gate,
           }))
         : initialState.gates,
+      reviews: Array.isArray(parsed.reviews) ? parsed.reviews : [],
     };
   } catch {
     return initialState;
@@ -257,7 +216,9 @@ export function createEvent(kind, message) {
 }
 
 export function remainingTime(deadline, now = new Date()) {
-  const remaining = Math.max(0, new Date(deadline).getTime() - now.getTime());
+  const parsedDeadline = new Date(deadline).getTime();
+  if (Number.isNaN(parsedDeadline)) return { days: 0, hours: 0, minutes: 0 };
+  const remaining = Math.max(0, parsedDeadline - now.getTime());
   const days = Math.floor(remaining / 86_400_000);
   const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
   const minutes = Math.floor((remaining % 3_600_000) / 60_000);
@@ -277,22 +238,46 @@ export function exportWorkshop(state) {
   );
 }
 
+export function normalizeExternalReview(input) {
+  const reviewer = String(input?.reviewer || "").trim();
+  const summary = String(input?.summary || "").trim();
+  const recommendation = String(input?.recommendation || "").trim();
+  if (!reviewer || !summary || !recommendation) {
+    throw new Error("Reviewer, finding, and recommended next stroke are required.");
+  }
+
+  const verdicts = ["PROCEED", "REVISE", "FERMO"];
+  const verdict = verdicts.includes(input?.verdict) ? input.verdict : "REVISE";
+  return {
+    id: `review-${crypto.randomUUID()}`,
+    createdAt: new Date().toISOString(),
+    reviewer,
+    role: String(input?.role || "VASARI").trim(),
+    verdict,
+    summary,
+    risks: String(input?.risks || "").trim(),
+    recommendation,
+    evidence: String(input?.evidence || "").trim(),
+    status: "ADVISORY",
+  };
+}
+
 const packetRoles = {
   "prima-mano": {
     label: "LA PRIMA MANO",
-    model: "Codex",
+    model: "Primary implementation agent",
     duty: "Implement the smallest verified change and leave a reviewable diff.",
     stop: "Stop before publishing, payment, personal data, scope expansion, or final submission.",
   },
   vasari: {
     label: "VASARI",
-    model: "Critical reviewer",
+    model: "Claude Fable, Gemini, or another critical reviewer",
     duty: "Attack the claim, identify the likeliest failure, and require evidence for every conclusion.",
     stop: "Do not rewrite the product purpose or approve your own findings.",
   },
   colorista: {
     label: "IL COLORISTA",
-    model: "Research and visual synthesis",
+    model: "Gemini, Claude Fable, or another research and visual model",
     duty: "Gather bounded source material and return a concrete visual or research artifact.",
     stop: "Do not make product decisions or expand the commission.",
   },
@@ -355,8 +340,14 @@ export function adoptWorkshopPlan(state, plan) {
   const planProof = `${plan.model} · ${plan.responseId} · ${plan.createdAt}`;
   const plannedGates = plan.gates.map((gate) => {
     const previous = previousGates.get(gate.id);
+    const normalizedTitle = gate.title.toLowerCase();
     const isModelGate =
-      gate.id.includes("gpt") || gate.title.toLowerCase().includes("gpt-5.6");
+      gate.id.includes("model") ||
+      gate.id.includes("ai-") ||
+      gate.id.includes("gpt") ||
+      normalizedTitle.includes("model evidence") ||
+      normalizedTitle.includes("ai evidence") ||
+      normalizedTitle.includes("gpt");
     return {
       ...gate,
       detail: `${gate.detail} Proof: ${gate.proofRequired}`,

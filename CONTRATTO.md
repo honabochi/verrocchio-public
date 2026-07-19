@@ -2,23 +2,22 @@
 
 ## Commission
 
-Complete VERROCCHIO as the execution system that can carry a hackathon from
-rules to verified submission.
+Complete VERROCCHIO as the reusable execution system that carries any
+hackathon from a replaceable mission profile to verified submission.
 
 Phase 1 must be operationally complete and self-proven before Phase 2 begins.
 No separate submission workpiece is selected or built inside Phase 1.
 
 ## Launch window
 
-- Official deadline: 2026-07-21 17:00 PDT
-- Japan deadline: 2026-07-22 09:00 JST
-- Track: Developer Tools
+The current event's official deadline, timezone, and track are mission inputs.
+No event-specific launch window is compiled into the engine.
 
 ## Initial submission evidence
 
-The seed ledger contains the known contest deliverables, but it is not the
-planner. MISSION INTAKE must dynamically compile current rules into four to ten
-proof gates, and a replan must preserve any completed proof.
+The neutral seed ledger is only a readiness scaffold. MISSION INTAKE must
+dynamically compile the current official rules into four to ten proof gates,
+and a replan must preserve any completed proof.
 
 ## DI SUA MANO
 

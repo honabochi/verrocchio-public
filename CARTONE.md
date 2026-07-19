@@ -8,7 +8,7 @@ CONTRATTO → MANCA → GIORNATA → FERMO/FIRMA → evidence export → CENACOL
 
 MISSION INTAKE captures the hackathon, rules, judging criteria, deadline,
 constraints, available hands, explicit deferrals, and human boundary.
-GPT-5.6 Sol forges a strict draft containing:
+CAPOBOTTEGA forges a strict draft containing:
 
 - a purpose-preserving CONTRATTO;
 - four to ten evidence gates;

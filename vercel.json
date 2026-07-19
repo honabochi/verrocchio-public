@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/client",
+  "functions": {
+    "api/capobottega.js": {
+      "maxDuration": 60
+    },
+    "api/workshop-plan.js": {
+      "maxDuration": 120
+    }
+  }
+}
