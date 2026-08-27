@@ -3,6 +3,8 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
+import { initialState, STORAGE_KEY } from "./model";
+import { claimWorkResult } from "./workshopCommands";
 
 describe("VERROCCHIO core path", () => {
   beforeEach(() => {
@@ -143,6 +145,39 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByText("このチャットで計画案を依頼してください")).toBeVisible();
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  test("a human can review three checks and return a stale claim with a reason", async () => {
+    const user = userEvent.setup();
+    const claimed = claimWorkResult(initialState, {
+      expectedStateVersion: 0,
+      idempotencyKey: "ui-stale-claim",
+      summary: "計画生成はAI実行設定不足で停止した。",
+      verification: "旧経路だけを確認した。",
+      evidenceRef: "旧WebMCP実行記録",
+      remainingRisk: "現在の鍵なし経路を反映していない。",
+    }).state;
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...claimed, stateVersion: 1 }),
+    );
+
+    render(<App />);
+
+    expect(screen.getByLabelText("証拠主張を確認する三つの観点")).toHaveTextContent(
+      "内容が今も正しい",
+    );
+    await user.click(screen.getByRole("button", { name: /差し戻す/ }));
+    await user.type(
+      screen.getByLabelText(/差し戻す理由/),
+      "情報が古く、現在の鍵なし経路を表していない。",
+    );
+    await user.click(screen.getByRole("button", { name: /理由を付けて差し戻す/ }));
+
+    expect(screen.queryByLabelText("人間による証拠確認待ち")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /作業を開始する/ })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /証拠台帳を開く/ }));
+    expect(screen.getByText(/情報が古く、現在の鍵なし経路を表していない/)).toBeVisible();
   });
 
   test("CARTONE emits a bounded work packet for the next actor", async () => {

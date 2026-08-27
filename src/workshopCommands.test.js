@@ -4,6 +4,7 @@ import {
   claimWorkResult,
   holdWorkshop,
   proposeWorkshopDraft,
+  requestEvidenceChanges,
   verifyEvidenceClaim,
 } from "./workshopCommands";
 
@@ -109,6 +110,43 @@ describe("agent claims and human verification", () => {
     expect(verified.gates[0].claims[0].status).toBe("VERIFIED");
     expect(verified.cartone.strokes[0].status).toBe("done");
     expect(verified.cartone.strokes[1].status).toBe("active");
+  });
+
+  test("a human can request changes without deleting the rejected claim", () => {
+    const claimed = claimWorkResult(initialState, resultInput).state;
+    const claimId = claimed.gates[0].claims[0].id;
+    const returned = requestEvidenceChanges(
+      claimed,
+      claimId,
+      "情報が古く、現在の実行経路を表していない。",
+    );
+
+    expect(returned.gates[0]).toMatchObject({ done: false });
+    expect(returned.gates[0].claims[0]).toMatchObject({
+      id: claimId,
+      status: "CHANGES_REQUESTED",
+      changesRequestedReason: "情報が古く、現在の実行経路を表していない。",
+    });
+    expect(returned.cartone.strokes[0]).toMatchObject({
+      status: "active",
+      result: null,
+    });
+    expect(returned.events[0].kind).toBe("CHANGES_REQUESTED");
+  });
+
+  test("requesting changes requires a reason and clears the human checkpoint", () => {
+    const claimed = claimWorkResult(initialState, resultInput).state;
+    const claimId = claimed.gates[0].claims[0].id;
+
+    expect(() => requestEvidenceChanges(claimed, claimId, " ")).toThrow(
+      "INVALID_CHANGES_REASON",
+    );
+    const returned = requestEvidenceChanges(claimed, claimId, "証拠が再現できない。");
+    expect(
+      returned.gates.flatMap((gate) => gate.claims || []).some(
+        (claim) => claim.status === "CLAIMED",
+      ),
+    ).toBe(false);
   });
 
   test("FERMO and FIRMA both reject agent result mutation", () => {

@@ -28,6 +28,7 @@ import {
   claimWorkResult,
   holdWorkshop,
   proposeWorkshopDraft,
+  requestEvidenceChanges,
   verifyEvidenceClaim,
 } from "./workshopCommands";
 
@@ -212,6 +213,7 @@ function activateStroke(state, strokeId) {
 function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
   const [resumeNotice, setResumeNotice] = useState(false);
+  const [claimForChanges, setClaimForChanges] = useState(null);
   const activeStroke = state.cartone.strokes.find((stroke) => stroke.status === "active");
   const activeGateId =
     activeStroke?.gateId || state.gates.find((gate) => !gate.done)?.id || null;
@@ -316,6 +318,11 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           <header>
             <DualLabel className="section-caption" copy={sections.humanCheckpoint} />
             <h2>AIが返したのは主張であり、まだ証拠ではない。</h2>
+            <div className="claim-review-guide" aria-label="証拠主張を確認する三つの観点">
+              <span><b>01</b> 内容が今も正しい</span>
+              <span><b>02</b> 証拠から再現できる</span>
+              <span><b>03</b> 残るリスクを許容できる</span>
+            </div>
           </header>
           {pendingClaims.map((claim) => (
             <article key={claim.id}>
@@ -324,17 +331,35 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
                 <p>{claim.summary}</p>
                 <small>{claim.evidenceRef} · risk: {claim.remainingRisk}</small>
               </div>
-              <button
-                aria-label={actionAria(actions.verifyClaim)}
-                onClick={() => setState((current) => verifyEvidenceClaim(current, claim.id))}
-                type="button"
-              >
-                <ActionLabel copy={actions.verifyClaim} />
-              </button>
+              <div className="claim-review-actions">
+                <button
+                  aria-label={actionAria(actions.requestChanges)}
+                  className="claim-return"
+                  onClick={() => setClaimForChanges(claim)}
+                  type="button"
+                >
+                  <ActionLabel copy={actions.requestChanges} />
+                </button>
+                <button
+                  aria-label={actionAria(actions.verifyClaim)}
+                  onClick={() => setState((current) => verifyEvidenceClaim(current, claim.id))}
+                  type="button"
+                >
+                  <ActionLabel copy={actions.verifyClaim} />
+                </button>
+              </div>
             </article>
           ))}
         </section>
       )}
+      <ClaimChangesDialog
+        claim={claimForChanges}
+        onClose={() => setClaimForChanges(null)}
+        onSave={(reason) => {
+          setState((current) => requestEvidenceChanges(current, claimForChanges.id, reason));
+          setClaimForChanges(null);
+        }}
+      />
       <section className={`work-strip ${state.isHeld ? "is-held" : ""}`}>
         <div className="work-copy">
           <div className="work-meta">
@@ -814,6 +839,58 @@ function EvidenceDialog({ gate, onClose, onSave }) {
             type="submit"
           >
             <ActionLabel copy={actions.attachEvidence} />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function ClaimChangesDialog({ claim, onClose, onSave }) {
+  const [reason, setReason] = useState("");
+  if (!claim) return null;
+
+  return (
+    <div className="dialog-backdrop" onMouseDown={onClose} role="presentation">
+      <form
+        aria-labelledby="claim-changes-title"
+        className="evidence-dialog claim-changes-dialog"
+        onMouseDown={(event) => event.stopPropagation()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave(reason);
+        }}
+      >
+        <div className="dialog-rule" />
+        <DualLabel className="section-caption" copy={actions.requestChanges} />
+        <h2 id="claim-changes-title">主張を作業者へ戻す。</h2>
+        <p>{claim.summary}</p>
+        <label>
+          <DualLabel className="field-caption" copy={fields.changesReason} />
+          <textarea
+            autoFocus
+            maxLength={500}
+            onChange={(event) => setReason(event.target.value)}
+            placeholder="例：情報が古く、現在の状態を表していない。新しいWebMCP実行記録を添えて再提出してください。"
+            required
+            value={reason}
+          />
+        </label>
+        <div>
+          <button
+            aria-label={actionAria(actions.cancel)}
+            className="dialog-cancel"
+            onClick={onClose}
+            type="button"
+          >
+            <ActionLabel copy={actions.cancel} />
+          </button>
+          <button
+            aria-label={actionAria(actions.confirmChanges)}
+            className="dialog-save"
+            type="submit"
+          >
+            <ActionLabel copy={actions.confirmChanges} />
           </button>
         </div>
       </form>

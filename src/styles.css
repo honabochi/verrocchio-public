@@ -3052,6 +3052,11 @@ textarea:focus-visible {
     min-height: 48px;
   }
 
+  .claim-review-guide,
+  .claim-review-actions {
+    grid-template-columns: 1fr;
+  }
+
   .capobottega-dialog {
     padding: 34px 24px 28px;
   }
@@ -3315,6 +3320,26 @@ textarea:focus-visible {
   margin: 4px 0 12px;
 }
 
+.claim-review-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.claim-review-guide span {
+  border-left: 2px solid rgba(40, 79, 158, 0.35);
+  padding: 7px 9px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.claim-review-guide b {
+  display: block;
+  color: var(--ultramarine, #284f9e);
+}
+
 .evidence-claims article {
   align-items: center;
   border-top: 1px solid rgba(40, 79, 158, 0.2);
@@ -3335,6 +3360,30 @@ textarea:focus-visible {
   cursor: pointer;
   flex: 0 0 auto;
   padding: 10px 14px;
+}
+
+.claim-review-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.evidence-claims .claim-return {
+  border: 1px solid var(--ultramarine, #284f9e);
+  color: var(--ultramarine, #284f9e);
+  background: transparent;
+}
+
+.claim-changes-dialog h2 {
+  font-size: clamp(30px, 5vw, 42px);
+}
+
+@media (max-width: 720px) {
+  .claim-review-guide,
+  .claim-review-actions {
+    grid-template-columns: 1fr;
+  }
 }
 
 .brand-mark,

@@ -6,6 +6,7 @@ import {
   inspectWorkshop,
   registerWorkshopTools,
 } from "./webmcp";
+import { requestEvidenceChanges } from "./workshopCommands";
 
 describe("VERROCCHIO WebMCP read path", () => {
   test("reports the current mission and missing proof without exposing approvals", () => {
@@ -125,6 +126,47 @@ describe("VERROCCHIO WebMCP read path", () => {
       actor: "human",
       action: "VERIFY_EVIDENCE_IN_UI",
     });
+  });
+
+  test("restores mutation tools after the human requests changes", async () => {
+    const registerTool = vi.fn().mockResolvedValue(undefined);
+    const claimed = {
+      ...initialState,
+      gates: [
+        {
+          ...initialState.gates[0],
+          claims: [{
+            id: "claim-returned",
+            strokeId: "mission-intake",
+            status: "CLAIMED",
+          }],
+        },
+        ...initialState.gates.slice(1),
+      ],
+      cartone: {
+        ...initialState.cartone,
+        strokes: initialState.cartone.strokes.map((stroke, index) =>
+          index === 0 ? { ...stroke, status: "claimed" } : stroke,
+        ),
+      },
+    };
+    const returned = requestEvidenceChanges(
+      claimed,
+      "claim-returned",
+      "新しい実行記録が必要。",
+    );
+    const registration = registerWorkshopTools({
+      getState: () => returned,
+      modelContext: { registerTool },
+    });
+
+    await registration.registration;
+    expect(registration.toolNames).toEqual([
+      "inspect_workshop",
+      "call_fermo",
+      "propose_workshop_draft",
+      "return_work_result",
+    ]);
   });
 
   test("returns live state at execution time", async () => {

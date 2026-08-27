@@ -253,3 +253,59 @@ export function verifyEvidenceClaim(state, claimId) {
     ],
   };
 }
+
+export function requestEvidenceChanges(state, claimId, reason) {
+  const normalizedReason = String(reason || "").trim();
+  if (!normalizedReason || normalizedReason.length > 500) {
+    throw new Error("INVALID_CHANGES_REASON: use 1 to 500 characters.");
+  }
+
+  let returnedClaim = null;
+  let returnedGate = null;
+  const requestedAt = new Date().toISOString();
+  const gates = state.gates.map((gate) => {
+    const claim = (gate.claims || []).find((item) => item.id === claimId);
+    if (!claim || claim.status !== "CLAIMED") return gate;
+    returnedClaim = claim;
+    returnedGate = gate;
+    return {
+      ...gate,
+      claims: gate.claims.map((item) =>
+        item.id === claimId
+          ? {
+              ...item,
+              status: "CHANGES_REQUESTED",
+              changesRequestedAt: requestedAt,
+              changesRequestedReason: normalizedReason,
+            }
+          : item,
+      ),
+    };
+  });
+
+  if (!returnedClaim || !returnedGate) return state;
+
+  const strokes = state.cartone.strokes.map((stroke) =>
+    stroke.id === returnedClaim.strokeId && stroke.status === "claimed"
+      ? { ...stroke, status: "active", result: null }
+      : stroke,
+  );
+  const returnedStroke = strokes.find((stroke) => stroke.id === returnedClaim.strokeId);
+
+  return {
+    ...state,
+    gates,
+    isRunning: false,
+    cartone: { ...state.cartone, strokes },
+    giornata: returnedStroke
+      ? { ...state.giornata, title: returnedStroke.title }
+      : state.giornata,
+    events: [
+      createEvent(
+        "CHANGES_REQUESTED",
+        `Human returned ${returnedClaim.id} for ${returnedGate.title}: ${normalizedReason}`,
+      ),
+      ...state.events,
+    ],
+  };
+}

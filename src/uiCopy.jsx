@@ -50,6 +50,7 @@ export const fields = {
   resultEvidence: { primary: "EVIDENCE PATH, URL, OR RESPONSE ID", assist: "証拠の場所", lang: "en" },
   remainingRisk: { primary: "REMAINING RISK", assist: "残るリスク", lang: "en" },
   proposedWork: { primary: "PROPOSED WORK", assist: "検討する作業", lang: "en" },
+  changesReason: { primary: "WHY THIS NEEDS CHANGES", assist: "差し戻す理由", lang: "en" },
 };
 
 export const actions = {
@@ -71,6 +72,8 @@ export const actions = {
   capobottegaHeld: { primary: "CAPOBOTTEGA HELD", assist: "計画役も停止中", lang: "en" },
   returnResult: { primary: "RETURN RESULT", assist: "結果を返す", lang: "en" },
   verifyClaim: { primary: "VERIFY CLAIM", assist: "証拠主張を確認する", lang: "en" },
+  requestChanges: { primary: "REQUEST CHANGES", assist: "差し戻す", lang: "en" },
+  confirmChanges: { primary: "RETURN FOR REVISION", assist: "理由を付けて差し戻す", lang: "en" },
   copyPacket: { primary: "COPY PACKET", assist: "作業票をコピー", lang: "en" },
   exportJson: { primary: "EXPORT JSON", assist: "台帳を書き出す", lang: "en" },
   signConsegna: { primary: "SIGN CONSEGNA", assist: "提出を承認する", lang: "en" },
