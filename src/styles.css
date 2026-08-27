@@ -17,6 +17,7 @@
   --danger: #b6322d;
   --serif: "Cormorant Garamond", Georgia, serif;
   --mono: "IBM Plex Mono", monospace;
+  --sans-ja: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
 }
 
 * {
@@ -168,6 +169,14 @@ textarea:focus-visible {
   letter-spacing: 0.04em;
 }
 
+.topbar-manca small {
+  margin-left: 4px;
+  color: var(--muted);
+  font-family: var(--sans-ja);
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+
 .sidebar {
   grid-area: sidebar;
   position: relative;
@@ -234,31 +243,95 @@ textarea:focus-visible {
   border-left-color: var(--blue);
 }
 
-.nav-item svg {
+.nav-item > svg {
   width: 34px;
   height: 34px;
 }
 
-.nav-item span {
+.nav-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.nav-primary {
   font-family: var(--serif);
   font-size: 21px;
   letter-spacing: 0.035em;
 }
 
-.nav-item small {
-  grid-column: 2;
-  margin-top: -28px;
-  opacity: 0;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: opacity 160ms ease;
+.nav-assist {
+  color: var(--muted);
+  font-family: var(--sans-ja);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
 }
 
-.nav-item:hover small,
-.nav-item:focus-visible small {
-  opacity: 0.65;
+.nav-item.is-active .nav-assist {
+  color: var(--blue);
+}
+
+.dual-label {
+  min-width: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  line-height: 1;
+}
+
+.dual-label-primary {
+  min-width: 0;
+}
+
+.dual-label-assist {
+  color: var(--muted);
+  font-family: var(--sans-ja);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
+  text-transform: none;
+}
+
+.document-title .dual-label-assist {
+  margin-top: 3px;
+  color: var(--blue);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.section-caption .dual-label-assist,
+.profile-caption .dual-label-assist,
+.summary-caption .dual-label-assist,
+.mission-summary-meta .dual-label-assist {
+  font-size: 10px;
+}
+
+.action-copy {
+  min-width: 0;
+  display: inline-grid;
+  gap: 4px;
+  pointer-events: none;
+  line-height: 1.1;
+}
+
+.action-copy-ja {
+  font-family: var(--sans-ja);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+}
+
+.action-copy-primary {
+  color: inherit;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.07em;
 }
 
 .version {
@@ -333,6 +406,12 @@ textarea:focus-visible {
   font-size: clamp(96px, 10vw, 145px);
   font-weight: 500;
   line-height: 0.65;
+}
+
+.manca-term .dual-label-assist {
+  color: var(--blue-light);
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
 
 .gate-ledger {
@@ -486,6 +565,11 @@ textarea:focus-visible {
   color: white;
   font-family: var(--mono);
   font-size: 11px;
+}
+
+.hold-message .dual-label-assist,
+.firma-pending .dual-label-assist {
+  color: inherit;
 }
 
 .resume-confirmation {
@@ -829,6 +913,23 @@ textarea:focus-visible {
   font-size: 32px;
   font-weight: 500;
   letter-spacing: 0.1em;
+}
+
+.firma-rule > .firma-term {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rail-term {
+  align-items: center;
+}
+
+.rail-term .dual-label-assist,
+.firma-term .dual-label-assist {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.03em;
 }
 
 .firma-rule svg {
@@ -1362,6 +1463,10 @@ textarea:focus-visible {
   cursor: not-allowed;
 }
 
+.consegna .action-copy-ja {
+  font-size: 13px;
+}
+
 .evidence-view > header button {
   position: absolute;
   right: 0;
@@ -1373,6 +1478,24 @@ textarea:focus-visible {
   font-family: var(--mono);
   font-size: 10px;
   cursor: pointer;
+}
+
+.evidence-view > header button .action-copy-ja,
+.packet-copy .action-copy-ja,
+.dialog-cancel .action-copy-ja,
+.dialog-save .action-copy-ja,
+.stroke-command button .action-copy-ja,
+.external-cenacolo form > button .action-copy-ja {
+  font-size: 10px;
+}
+
+.evidence-view > header button .action-copy-primary,
+.packet-copy .action-copy-primary,
+.dialog-cancel .action-copy-primary,
+.dialog-save .action-copy-primary,
+.stroke-command button .action-copy-primary,
+.external-cenacolo form > button .action-copy-primary {
+  font-size: 8px;
 }
 
 .evidence-table article {
@@ -1694,14 +1817,14 @@ textarea:focus-visible {
 }
 
 .mission-view.is-profile-loaded {
-  padding: 24px 34px 28px;
+  padding: 16px 34px 24px;
 }
 
 .mission-view.is-profile-loaded > header {
   display: flex;
   align-items: baseline;
   gap: 20px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   padding-bottom: 10px;
 }
 
@@ -1712,6 +1835,24 @@ textarea:focus-visible {
 .mission-view.is-profile-loaded h1 {
   flex: 0 0 auto;
   font-size: 48px;
+}
+
+.mission-view.is-profile-loaded .document-title,
+.mission-form.is-summary .section-caption,
+.mission-form.is-summary .profile-caption,
+.mission-summary-meta .dual-label,
+.mission-summary-grid .summary-caption {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.mission-view.is-profile-loaded .document-title {
+  gap: 14px;
+}
+
+.mission-view.is-profile-loaded .document-title .dual-label-assist {
+  margin-top: 0;
 }
 
 .mission-view.is-profile-loaded > header p {
@@ -1766,7 +1907,7 @@ textarea:focus-visible {
 }
 
 .mission-form.is-summary .profile-switcher button {
-  min-height: 32px;
+  min-height: 42px;
 }
 
 .mission-summary-meta {
@@ -1793,6 +1934,20 @@ textarea:focus-visible {
   font-family: var(--mono);
   font-size: 8px;
   letter-spacing: 0.11em;
+}
+
+.mission-summary-meta dt .dual-label,
+.mission-summary-grid .summary-caption {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.11em;
+}
+
+.mission-summary-meta dt .dual-label-assist,
+.mission-summary-grid .summary-caption .dual-label-assist {
+  color: var(--muted);
+  letter-spacing: 0.02em;
 }
 
 .mission-summary-meta dd {
@@ -1998,8 +2153,22 @@ textarea:focus-visible {
   font-size: 13px;
 }
 
+.mission-submit .action-copy-ja {
+  font-size: 13px;
+}
+
 .mission-submit small {
   font-size: 9px;
+}
+
+.profile-switcher button .action-copy-ja {
+  color: var(--blue);
+  font-size: 11px;
+}
+
+.profile-switcher button .action-copy-primary {
+  color: var(--muted);
+  font-size: 8px;
 }
 
 .mission-submit:disabled {
@@ -2225,14 +2394,18 @@ textarea:focus-visible {
 }
 
 .stroke-command button {
-  min-height: 36px;
-  padding: 0 12px;
+  min-height: 44px;
+  padding: 5px 12px;
   border: 1px solid var(--blue);
   color: var(--blue);
   background: transparent;
   font-family: var(--mono);
   font-size: 9px;
   cursor: pointer;
+}
+
+.stroke-status .dual-label-assist {
+  font-size: 9px;
 }
 
 .stroke-command button:disabled {
@@ -2552,8 +2725,7 @@ textarea:focus-visible {
   }
 
   .axis-mark,
-  .version,
-  .nav-item small {
+  .version {
     display: none;
   }
 
@@ -2572,13 +2744,17 @@ textarea:focus-visible {
     border-bottom-color: var(--blue);
   }
 
-  .nav-item svg {
+  .nav-item > svg {
     width: 23px;
     height: 23px;
   }
 
-  .nav-item span {
+  .nav-primary {
     font-size: 14px;
+  }
+
+  .nav-assist {
+    font-size: 10px;
   }
 
   .workspace {
@@ -2896,6 +3072,16 @@ textarea:focus-visible {
   display: inline-flex;
   font-size: 9px;
   letter-spacing: 0.12em;
+}
+
+.webmcp-status .dual-label {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.webmcp-status .dual-label-assist {
+  font-size: 9px;
 }
 
 .topbar-status > .webmcp-status.is-unavailable,

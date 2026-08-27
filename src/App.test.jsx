@@ -14,7 +14,7 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
 
     expect(screen.getByText("VERROCCHIO")).toBeVisible();
-    expect(screen.getByRole("heading", { name: "CONTRATTO" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: /実行条件/ })).toBeVisible();
     expect(screen.getByText("MISSION INTAKE")).toBeVisible();
     expect(screen.getByText("CHATGPTにこう頼む")).toBeVisible();
     expect(screen.getByText(/FIRMA・証拠確認・提出は私に残して/)).toBeVisible();
@@ -27,7 +27,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "LOAD WEBMCP MISSION" }));
+    await user.click(screen.getByRole("button", { name: /ミッションを読み込む/ }));
 
     expect(screen.getByLabelText("読み込んだミッションの要約")).toBeVisible();
     expect(
@@ -38,8 +38,8 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "詳細を編集" }));
 
-    expect(screen.getByLabelText("Hackathon")).toHaveValue("OpenAI WebMCP Challenge");
-    expect(screen.getByLabelText("Constraints").value).toMatch(/夜間に一人で制作/);
+    expect(screen.getByLabelText(/対象イベント/)).toHaveValue("OpenAI WebMCP Challenge");
+    expect(screen.getByLabelText(/制約/).value).toMatch(/夜間に一人で制作/);
     expect(screen.getByRole("button", { name: "要約に戻る" })).toHaveAttribute(
       "aria-expanded",
       "true",
@@ -50,21 +50,21 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "BEGIN GIORNATA" }));
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
+    await user.click(screen.getByRole("button", { name: /作業を開始する/ }));
     expect(
       screen.getByRole("button", { name: /GIORNATA ACTIVE/ }),
     ).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "Working product 審査員が再ビルドせず利用できるライブデモまたはテスト経路" }));
-    const evidence = screen.getByLabelText("Evidence note or URL");
+    const evidence = screen.getByLabelText(/証拠メモまたはURL/);
     await user.type(evidence, "Private Sites deployment v1");
-    await user.click(screen.getByRole("button", { name: "ATTACH EVIDENCE" }));
+    await user.click(screen.getByRole("button", { name: /証拠を添付する/ }));
 
     await user.click(screen.getByRole("button", { name: "Mark Working product complete" }));
     expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "CENACOLO final poll" }));
+    await user.click(screen.getByRole("button", { name: /最終確認を開く/ }));
     expect(screen.getByText("証拠があと5件必要。")).toBeVisible();
   });
 
@@ -72,7 +72,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
     await user.click(screen.getByRole("button", { name: "Mark Working product complete" }));
 
     expect(screen.getByRole("heading", { name: "Working product" })).toBeVisible();
@@ -83,9 +83,9 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "CALL FERMO" }));
-    expect(screen.getByText("FERMO ACTIVE · 人間の判断待ち")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
+    await user.click(screen.getByRole("button", { name: /停止する/ }));
+    expect(screen.getAllByText("停止中")[0]).toBeVisible();
     const resume = screen.getByRole("button", { name: /RESUME GIORNATA/ });
     expect(resume).toBeVisible();
 
@@ -119,14 +119,14 @@ describe("VERROCCHIO core path", () => {
     );
 
     render(<App />);
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA MODEL-RECORDED" }));
-    await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
+    await user.click(screen.getByRole("button", { name: /計画役に相談する/ }));
+    await user.click(screen.getByRole("button", { name: /次の作業を分類する/ }));
 
     expect(await screen.findByText("This is safe local test work.")).toBeVisible();
     expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(3);
     expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
-    expect(screen.getByRole("button", { name: "VERIFY CLAIM" })).toBeVisible();
+    expect(screen.getByRole("button", { name: /証拠主張を確認する/ })).toBeVisible();
   });
 
   test("AFFRESCO blocks resume until the human gives FIRMA", async () => {
@@ -153,17 +153,17 @@ describe("VERROCCHIO core path", () => {
     );
 
     render(<App />);
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
-    await user.click(screen.getByRole("button", { name: "ASK CAPOBOTTEGA MODEL-RECORDED" }));
-    await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
+    await user.click(screen.getByRole("button", { name: /計画役に相談する/ }));
+    await user.click(screen.getByRole("button", { name: /次の作業を分類する/ }));
 
-    expect(await screen.findByRole("button", { name: "LOCKED BY FIRMA" })).toBeDisabled();
+    expect(await screen.findByRole("button", { name: /人間の承認待ち/ })).toBeDisabled();
     expect(screen.getAllByText("FIRMA REQUIRED")[0]).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "CAPOBOTTEGA HELD RESOLVE FIRMA FIRST" }),
+      screen.getByRole("button", { name: /計画役も停止中/ }),
     ).toBeDisabled();
 
-    await user.click(screen.getByRole("button", { name: "GIVE FIRMA AUTHORIZE THIS STROKE" }));
+    await user.click(screen.getByRole("button", { name: /人間が承認する/ }));
 
     expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeVisible();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
@@ -173,7 +173,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
+    await user.click(screen.getByRole("button", { name: /作業計画を開く/ }));
 
     expect(
       screen.getByRole("heading", { name: "境界の決まった、ひとつの作業票" }),
@@ -275,11 +275,11 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("Complete the operational Phase 1 execution loop.")).toBeVisible();
     expect(screen.getByText("MANCA 06")).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "GIVE FIRMA & ADOPT" }));
+    await user.click(screen.getByRole("button", { name: /署名して計画を採用/ }));
 
     expect(screen.getByText("REVISION 01")).toBeVisible();
     expect(screen.getByText("MANCA 04")).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
+    await user.click(screen.getByRole("button", { name: /作業計画を開く/ }));
     expect(screen.getByText("Adopt the mission")).toBeVisible();
     expect(screen.getByText("BACKWARD SCHEDULE")).toBeVisible();
   });
@@ -288,28 +288,28 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
-    await user.click(screen.getByRole("button", { name: "RETURN RESULT" }));
-    await user.type(screen.getByLabelText("What changed"), "Mission intake works.");
+    await user.click(screen.getByRole("button", { name: /作業計画を開く/ }));
+    await user.click(screen.getByRole("button", { name: /結果を返す/ }));
+    await user.type(screen.getByLabelText(/変更内容/), "Mission intake works.");
     await user.type(
-      screen.getByLabelText("Verification performed"),
+      screen.getByLabelText(/確認したこと/),
       "Browser interaction passed.",
     );
     await user.type(
-      screen.getByLabelText("Evidence path, URL, or response ID"),
+      screen.getByLabelText(/証拠の場所/),
       "resp_mission_return",
     );
-    await user.type(screen.getByLabelText("Remaining risk"), "Replan is still open.");
-    await user.click(screen.getByRole("button", { name: "ATTACH RESULT" }));
+    await user.type(screen.getByLabelText(/残るリスク/), "Replan is still open.");
+    await user.click(screen.getByRole("button", { name: /結果を記録する/ }));
 
     expect(screen.getByText("DONE")).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
+    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
     await user.click(
       screen.getByRole("button", {
         name: /Working product 審査員が再ビルドせず利用できるライブデモ/,
       }),
     );
-    expect(screen.getByLabelText("Evidence note or URL").value).toContain(
+    expect(screen.getByLabelText(/証拠メモまたはURL/).value).toContain(
       "resp_mission_return",
     );
   });
@@ -318,17 +318,17 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "CENACOLO final poll" }));
+    await user.click(screen.getByRole("button", { name: /最終確認を開く/ }));
     await user.type(
-      screen.getByLabelText("Finding"),
+      screen.getByLabelText(/重要な指摘/),
       "The demo does not yet prove the judging claim.",
     );
     await user.type(
-      screen.getByLabelText("Recommended next stroke"),
+      screen.getByLabelText(/次に行う作業/),
       "Record one judge-path walkthrough.",
     );
     await user.click(
-      screen.getByRole("button", { name: "RETURN REVIEW TO CENACOLO" }),
+      screen.getByRole("button", { name: /レビューを円卓へ返す/ }),
     );
 
     expect(screen.getByText("Claude Fable 5")).toBeVisible();

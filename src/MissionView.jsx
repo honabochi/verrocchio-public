@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { createHackathonProfile } from "./hackathonProfiles";
+import {
+  actionAria,
+  ActionLabel,
+  actions,
+  DualLabel,
+  fields,
+  sections,
+  terms,
+} from "./uiCopy";
 
-function MissionField({ label, name, value, onChange, rows = 3 }) {
+function MissionField({ copy, name, value, onChange, rows = 3 }) {
   return (
     <label>
-      {label}
+      <DualLabel className="field-caption" copy={copy} />
       <textarea
         name={name}
         onChange={(event) => onChange(name, event.target.value)}
@@ -28,10 +37,10 @@ function formatDeadline(deadline) {
   }).format(new Date(deadline));
 }
 
-function MissionSummaryItem({ label, value, featured = false }) {
+function MissionSummaryItem({ copy, value, featured = false }) {
   return (
     <article className={featured ? "is-featured" : ""} title={value}>
-      <span>{label}</span>
+      <DualLabel className="summary-caption" copy={copy} />
       <p>{value}</p>
     </article>
   );
@@ -84,12 +93,12 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
       <p className="plan-rationale">{plan.rationale}</p>
       <div className="plan-preview-grid">
         <div>
-          <h3>CONTRATTO</h3>
+          <DualLabel as="h3" copy={terms.contratto} />
           <strong>{plan.contract.objective}</strong>
           <small>{plan.contract.deadline}</small>
         </div>
         <div>
-          <h3>MANCA</h3>
+          <DualLabel as="h3" copy={terms.manca} />
           <ol>
             {plan.gates.map((gate) => (
               <li key={gate.id}>
@@ -100,7 +109,7 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
           </ol>
         </div>
         <div>
-          <h3>RISKS</h3>
+          <DualLabel as="h3" copy={sections.risks} />
           <ol>
             {plan.risks.map((risk) => (
               <li key={risk}>{risk}</li>
@@ -113,11 +122,21 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
           {plan.model} · {plan.responseId} · scope {plan.scopeEffect}
         </span>
         <div>
-          <button className="dialog-cancel" onClick={onDiscard} type="button">
-            DISCARD
+          <button
+            aria-label={actionAria(actions.discard)}
+            className="dialog-cancel"
+            onClick={onDiscard}
+            type="button"
+          >
+            <ActionLabel copy={actions.discard} />
           </button>
-          <button className="plan-adopt" onClick={onAdopt} type="button">
-            GIVE FIRMA &amp; ADOPT
+          <button
+            aria-label={actionAria(actions.adoptPlan)}
+            className="plan-adopt"
+            onClick={onAdopt}
+            type="button"
+          >
+            <ActionLabel copy={actions.adoptPlan} />
           </button>
         </div>
       </footer>
@@ -179,7 +198,7 @@ export default function MissionView({
     >
       <header>
         <span>01</span>
-        <h1>CONTRATTO</h1>
+        <DualLabel as="h1" className="document-title" copy={terms.contratto} />
         <p>
           ここにルールを入れ、署名済みの実行工房へ変える。
         </p>
@@ -193,7 +212,7 @@ export default function MissionView({
       >
         <div className="mission-form-heading">
           <div>
-            <span>MISSION INTAKE</span>
+            <DualLabel className="section-caption" copy={sections.missionIntake} />
             <h2>CONSEGNAまでに、何を届けるか？</h2>
           </div>
           <p>
@@ -204,14 +223,22 @@ export default function MissionView({
 
         <div className="profile-switcher" aria-label="Hackathon profile template">
           <div>
-            <strong>ONE ENGINE · MANY HACKATHONS</strong>
+            <DualLabel as="strong" className="profile-caption" copy={sections.oneEngine} />
             <span>空の入力票、またはWebMCP用ミッションを読み込む。最終的な正は公式ルール。</span>
           </div>
-          <button onClick={() => loadProfile("blank")} type="button">
-            START BLANK
+          <button
+            aria-label={actionAria(actions.startBlank)}
+            onClick={() => loadProfile("blank")}
+            type="button"
+          >
+            <ActionLabel copy={actions.startBlank} />
           </button>
-          <button onClick={() => loadProfile("openai-webmcp-challenge-2026")} type="button">
-            LOAD WEBMCP MISSION
+          <button
+            aria-label={actionAria(actions.loadMission)}
+            onClick={() => loadProfile("openai-webmcp-challenge-2026")}
+            type="button"
+          >
+            <ActionLabel copy={actions.loadMission} />
           </button>
         </div>
 
@@ -219,33 +246,33 @@ export default function MissionView({
           <section className="mission-summary" aria-label="読み込んだミッションの要約">
             <dl className="mission-summary-meta">
               <div>
-                <dt>HACKATHON</dt>
+                <dt><DualLabel copy={fields.hackathon} /></dt>
                 <dd title={mission.name}>{mission.name}</dd>
               </div>
               <div>
-                <dt>TRACK</dt>
+                <dt><DualLabel copy={fields.track} /></dt>
                 <dd title={mission.track}>{mission.track}</dd>
               </div>
               <div>
-                <dt>DEADLINE</dt>
+                <dt><DualLabel copy={fields.deadline} /></dt>
                 <dd title={mission.deadline}>{formatDeadline(mission.deadline)}</dd>
               </div>
             </dl>
             <div className="mission-summary-grid">
-              <MissionSummaryItem featured label="MISSION" value={mission.brief} />
-              <MissionSummaryItem label="REQUIRED PROOF" value={mission.rules} />
-              <MissionSummaryItem label="JUDGING" value={mission.judgingCriteria} />
-              <MissionSummaryItem label="CONSTRAINTS" value={mission.constraints} />
-              <MissionSummaryItem label="AVAILABLE HANDS" value={mission.availableAI} />
-              <MissionSummaryItem label="CANDIDATE" value={mission.candidateIdeas} />
-              <MissionSummaryItem label="DI SUA MANO · HUMAN BOUNDARY" value={mission.humanBoundary} />
+              <MissionSummaryItem copy={fields.mission} featured value={mission.brief} />
+              <MissionSummaryItem copy={fields.requiredProof} value={mission.rules} />
+              <MissionSummaryItem copy={fields.judging} value={mission.judgingCriteria} />
+              <MissionSummaryItem copy={fields.constraints} value={mission.constraints} />
+              <MissionSummaryItem copy={fields.availableHands} value={mission.availableAI} />
+              <MissionSummaryItem copy={fields.candidate} value={mission.candidateIdeas} />
+              <MissionSummaryItem copy={fields.humanBoundary} value={mission.humanBoundary} />
             </div>
           </section>
         ) : (
           <div className="mission-editor">
             <div className="mission-short-fields">
               <label>
-                Hackathon
+                <DualLabel className="field-caption" copy={fields.hackathon} />
                 <input
                   name="name"
                   onChange={(event) => updateMission("name", event.target.value)}
@@ -253,7 +280,7 @@ export default function MissionView({
                 />
               </label>
               <label>
-                Track
+                <DualLabel className="field-caption" copy={fields.track} />
                 <input
                   name="track"
                   onChange={(event) => updateMission("track", event.target.value)}
@@ -261,7 +288,7 @@ export default function MissionView({
                 />
               </label>
               <label>
-                Launch window
+                <DualLabel className="field-caption" copy={fields.launchWindow} />
                 <input
                   name="deadline"
                   onChange={(event) => updateMission("deadline", event.target.value)}
@@ -271,7 +298,7 @@ export default function MissionView({
             </div>
 
             <MissionField
-              label="Mission"
+              copy={fields.mission}
               name="brief"
               onChange={updateMission}
               rows={5}
@@ -279,37 +306,37 @@ export default function MissionView({
             />
             <div className="mission-two-column">
               <MissionField
-                label="Rules and required deliverables"
+                copy={fields.requiredProof}
                 name="rules"
                 onChange={updateMission}
                 value={mission.rules}
               />
               <MissionField
-                label="Judging criteria"
+                copy={fields.judging}
                 name="judgingCriteria"
                 onChange={updateMission}
                 value={mission.judgingCriteria}
               />
               <MissionField
-                label="Constraints"
+                copy={fields.constraints}
                 name="constraints"
                 onChange={updateMission}
                 value={mission.constraints}
               />
               <MissionField
-                label="Available hands"
+                copy={fields.availableHands}
                 name="availableAI"
                 onChange={updateMission}
                 value={mission.availableAI}
               />
               <MissionField
-                label="Candidate ideas or explicit deferral"
+                copy={fields.candidate}
                 name="candidateIdeas"
                 onChange={updateMission}
                 value={mission.candidateIdeas}
               />
               <MissionField
-                label="DI SUA MANO · human boundary"
+                copy={fields.humanBoundary}
                 name="humanBoundary"
                 onChange={updateMission}
                 value={mission.humanBoundary}
@@ -336,6 +363,11 @@ export default function MissionView({
             </button>
           )}
           <button
+            aria-label={actionAria(
+              mission.status === "adopted"
+                ? actions.replanWorkshop
+                : actions.forgeWorkshop,
+            )}
             className="mission-submit"
             disabled={
               mission.planningStatus === "loading" ||
@@ -343,15 +375,19 @@ export default function MissionView({
             }
             type="submit"
           >
-            <span>
-              {mission.status === "adopted" ? "REPLAN WORKSHOP" : "FORGE WORKSHOP"}
-            </span>
+            <ActionLabel
+              copy={
+                mission.status === "adopted"
+                  ? actions.replanWorkshop
+                  : actions.forgeWorkshop
+              }
+            />
             <small>
               {mission.planningStatus === "loading"
-                ? "CAPOBOTTEGA IS DRAWING…"
+                ? "計画役が作成中…"
                 : state.firmaPending
-                  ? "RESOLVE FIRMA FIRST"
-                  : "CAPOBOTTEGA · STRICT PLAN"}
+                  ? "人間の承認を先に完了"
+                  : "範囲を限定した計画"}
             </small>
           </button>
         </div>

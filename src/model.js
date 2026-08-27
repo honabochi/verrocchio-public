@@ -48,11 +48,11 @@ function localizeLegacyContent(value) {
 }
 
 export const navItems = [
-  { id: "contratto", label: "CONTRATTO", gloss: "contract" },
-  { id: "cartone", label: "CARTONE", gloss: "plan" },
-  { id: "giornate", label: "GIORNATE", gloss: "work" },
-  { id: "cenacolo", label: "CENACOLO", gloss: "final poll" },
-  { id: "evidence", label: "EVIDENCE", gloss: "proof" },
+  { id: "contratto", label: "CONTRATTO", gloss: "実行条件", lang: "it" },
+  { id: "cartone", label: "CARTONE", gloss: "作業計画", lang: "it" },
+  { id: "giornate", label: "GIORNATE", gloss: "実行工程", lang: "it" },
+  { id: "cenacolo", label: "CENACOLO", gloss: "最終確認", lang: "it" },
+  { id: "evidence", label: "EVIDENCE", gloss: "証拠台帳", lang: "en" },
 ];
 
 export const initialState = {

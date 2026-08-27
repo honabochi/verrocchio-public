@@ -13,6 +13,16 @@ import {
 } from "./model";
 import { NavIcon, SignatureIcon, WorkshopMark } from "./icons";
 import MissionView from "./MissionView";
+import {
+  actionAria,
+  ActionLabel,
+  actions,
+  DualLabel,
+  fields,
+  sections,
+  statuses,
+  terms,
+} from "./uiCopy";
 import useWebMcp from "./useWebMcp";
 import { claimWorkResult, holdWorkshop, verifyEvidenceClaim } from "./workshopCommands";
 
@@ -35,7 +45,7 @@ function Deadline({ deadline }) {
   const value = remainingTime(deadline, now);
   const deadlineLabel = Number.isNaN(Date.parse(deadline))
     ? deadline
-    : new Intl.DateTimeFormat("en", {
+    : new Intl.DateTimeFormat("ja-JP", {
         month: "short",
         day: "numeric",
         hour: "2-digit",
@@ -44,7 +54,7 @@ function Deadline({ deadline }) {
       }).format(new Date(deadline));
 
   return (
-    <div className="deadline" aria-label="Time remaining">
+    <div className="deadline" aria-label="締切までの残り時間">
       <span>
         T−{String(value.days).padStart(2, "0")}d {String(value.hours).padStart(2, "0")}h
       </span>
@@ -55,7 +65,7 @@ function Deadline({ deadline }) {
 
 function Sidebar({ active, onSelect }) {
   return (
-    <nav className="sidebar" aria-label="Workshop areas">
+    <nav className="sidebar" aria-label="工房の画面">
       <div className="axis-mark" aria-hidden="true" />
       {navItems.map((item) => (
         <button
@@ -64,10 +74,13 @@ function Sidebar({ active, onSelect }) {
           onClick={() => onSelect(item.id)}
           type="button"
           aria-current={active === item.id ? "page" : undefined}
+          aria-label={`${item.gloss}を開く · ${item.label}`}
         >
           <NavIcon type={item.id} />
-          <span>{item.label}</span>
-          <small>{item.gloss}</small>
+          <span aria-hidden="true" className="nav-copy">
+            <span className="nav-primary" lang={item.lang}>{item.label}</span>
+            <small className="nav-assist" lang="ja">{item.gloss}</small>
+          </span>
         </button>
       ))}
       <div className="version">V · I · MMXXVI</div>
@@ -84,7 +97,7 @@ function AttentionRail({ state }) {
   return (
     <aside className="attention-rail">
       <section className="attention">
-        <h2>OLTREMARE</h2>
+        <DualLabel as="h2" className="rail-term" copy={terms.oltremare} />
         <div className="attention-value">
           <strong>{state.attentionMinutes}</strong>
           <span>min</span>
@@ -107,9 +120,8 @@ function AttentionRail({ state }) {
         <p>人間が使える集中時間</p>
       </section>
       <section className="firma-rule">
-        <h2>AFFRESCO</h2>
-        <span>必要なもの</span>
-        <strong>FIRMA</strong>
+        <DualLabel as="h2" className="rail-term" copy={terms.affresco} />
+        <DualLabel as="strong" className="firma-term" copy={terms.firma} />
         <SignatureIcon />
         <p>取り消せない作業は、人間が署名するまでここで止まる。</p>
       </section>
@@ -192,6 +204,16 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
       .filter((claim) => claim.status === "CLAIMED")
       .map((claim) => ({ ...claim, gateTitle: gate.title })),
   );
+  const primaryActionCopy = state.firmaPending
+    ? actions.lockedByFirma
+    : state.isRunning
+      ? actions.workActive
+      : state.isHeld
+        ? actions.resumeWork
+        : actions.beginWork;
+  const capobottegaCopy = state.firmaPending
+    ? actions.capobottegaHeld
+    : actions.askCapobottega;
 
   const toggleGate = (id) => {
     const gate = state.gates.find((item) => item.id === id);
@@ -265,7 +287,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           <h1>何が不足している？</h1>
         </div>
         <div className="manca" aria-label={`${manca} submission gates missing`}>
-          <span>MANCA</span>
+          <DualLabel className="manca-term" copy={terms.manca} />
           <strong>{String(manca).padStart(2, "0")}</strong>
         </div>
       </header>
@@ -273,7 +295,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
       {pendingClaims.length > 0 && (
         <section className="evidence-claims" aria-label="Evidence awaiting human verification">
           <header>
-            <span>HUMAN CHECKPOINT</span>
+            <DualLabel className="section-caption" copy={sections.humanCheckpoint} />
             <h2>AIが返したのは主張であり、まだ証拠ではない。</h2>
           </header>
           {pendingClaims.map((claim) => (
@@ -284,10 +306,11 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
                 <small>{claim.evidenceRef} · risk: {claim.remainingRisk}</small>
               </div>
               <button
+                aria-label={actionAria(actions.verifyClaim)}
                 onClick={() => setState((current) => verifyEvidenceClaim(current, claim.id))}
                 type="button"
               >
-                VERIFY CLAIM
+                <ActionLabel copy={actions.verifyClaim} />
               </button>
             </article>
           ))}
@@ -308,7 +331,11 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               {state.capobottega.latest.responseId}
             </div>
           )}
-          {state.isHeld && <div className="hold-message">FERMO ACTIVE · 人間の判断待ち</div>}
+          {state.isHeld && (
+            <div className="hold-message">
+              <DualLabel copy={statuses.fermoActive} />
+            </div>
+          )}
           {resumeNotice && state.isRunning && !state.isHeld && (
             <div className="resume-confirmation" role="status">
               <strong>再開しました</strong>
@@ -317,13 +344,14 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           )}
           {state.firmaPending && (
             <div className="firma-pending" role="status">
-              <strong>FIRMA REQUIRED</strong>
+              <DualLabel as="strong" copy={statuses.firmaRequired} />
               <span>{state.firmaPending.title}</span>
               <small>{state.firmaPending.reason}</small>
             </div>
           )}
           <div className="work-actions">
             <button
+              aria-label={actionAria(primaryActionCopy)}
               aria-pressed={state.isRunning}
               className={`primary-action ${state.isRunning ? "is-active" : ""}`}
               disabled={Boolean(state.firmaPending) || state.isRunning}
@@ -331,15 +359,10 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               type="button"
             >
               <span className="action-mark" aria-hidden="true" />
-              {state.firmaPending
-                ? "LOCKED BY FIRMA"
-                : state.isRunning
-                  ? "✓ 再開済み · GIORNATA ACTIVE"
-                  : state.isHeld
-                    ? "▶ 再開する · RESUME GIORNATA"
-                    : "BEGIN GIORNATA"}
+              <ActionLabel copy={primaryActionCopy} />
             </button>
             <button
+              aria-label={actionAria(state.isHeld ? actions.fermoActive : actions.callFermo)}
               className="secondary-action"
               disabled={state.isHeld}
               onClick={callFermo}
@@ -348,21 +371,25 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               <span className="pause-mark" aria-hidden="true">
                 ||
               </span>
-              {state.isHeld ? "FERMO ACTIVE" : "CALL FERMO"}
+              <ActionLabel copy={state.isHeld ? actions.fermoActive : actions.callFermo} />
             </button>
             <button
+              aria-label={actionAria(capobottegaCopy)}
               className="capobottega-action"
               disabled={Boolean(state.firmaPending)}
               onClick={onCapobottega}
               type="button"
             >
-              {state.firmaPending ? "CAPOBOTTEGA HELD" : "ASK CAPOBOTTEGA"}
-              <small>{state.firmaPending ? "RESOLVE FIRMA FIRST" : "MODEL-RECORDED"}</small>
+              <ActionLabel copy={capobottegaCopy} />
             </button>
             {state.firmaPending && (
-              <button className="firma-action" onClick={onFirma} type="button">
-                GIVE FIRMA
-                <small>AUTHORIZE THIS STROKE</small>
+              <button
+                aria-label={actionAria(actions.giveFirma)}
+                className="firma-action"
+                onClick={onFirma}
+                type="button"
+              >
+                <ActionLabel copy={actions.giveFirma} />
               </button>
             )}
           </div>
@@ -408,7 +435,7 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
     <section className="document-view cartone-view">
       <header>
         <span>02</span>
-        <h1>CARTONE</h1>
+        <DualLabel as="h1" className="document-title" copy={terms.cartone} />
         <p>
           Revision {String(state.cartone.revision).padStart(2, "0")} · CONSEGNAへ
           つながる線だけを残す。
@@ -426,19 +453,28 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
             </small>
           </div>
           <div className="stroke-command">
-            <em>{stroke.status.toUpperCase()}</em>
+            <DualLabel
+              as="em"
+              className="stroke-status"
+              copy={statuses[stroke.status] || statuses.queued}
+            />
             {stroke.status === "queued" && (
               <button
+                aria-label={actionAria(actions.beginStroke)}
                 disabled={Boolean(activeStroke || state.firmaPending)}
                 onClick={() => onBeginStroke(stroke)}
                 type="button"
               >
-                BEGIN
+                <ActionLabel copy={actions.beginStroke} />
               </button>
             )}
             {stroke.status === "active" && (
-              <button onClick={() => onResult(stroke)} type="button">
-                RETURN RESULT
+              <button
+                aria-label={actionAria(actions.returnResult)}
+                onClick={() => onResult(stroke)}
+                type="button"
+              >
+                <ActionLabel copy={actions.returnResult} />
               </button>
             )}
           </div>
@@ -446,7 +482,7 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
       ))}
       {state.cartone.schedule.length > 0 && (
         <section className="cartone-schedule">
-          <h2>BACKWARD SCHEDULE</h2>
+          <DualLabel as="h2" className="section-caption" copy={sections.backwardSchedule} />
           {state.cartone.schedule.map((item) => (
             <div key={`${item.label}-${item.dueAt}`}>
               <time>{item.dueAt}</time>
@@ -458,7 +494,7 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
       )}
       <section className="packet-builder" aria-labelledby="packet-title">
         <header>
-          <span>HANDOFF</span>
+          <DualLabel className="section-caption" copy={sections.handoff} />
           <h2 id="packet-title">境界の決まった、ひとつの作業票</h2>
           <p>役割ごとに責務と停止条件は変わるが、目的は変えない。</p>
         </header>
@@ -476,8 +512,13 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
           ))}
         </div>
         <pre>{packet}</pre>
-        <button className="packet-copy" onClick={copyPacket} type="button">
-          {copyStatus}
+        <button
+          aria-label={actionAria(actions.copyPacket)}
+          className="packet-copy"
+          onClick={copyPacket}
+          type="button"
+        >
+          {copyStatus === "COPIED" ? "コピーしました" : <ActionLabel copy={actions.copyPacket} />}
         </button>
       </section>
       <footer>
@@ -532,17 +573,20 @@ function CenacoloView({ state, setState }) {
     <section className="document-view cenacolo-view">
       <header>
         <span>04</span>
-        <h1>CENACOLO</h1>
+        <DualLabel as="h1" className="document-title" copy={terms.cenacolo} />
         <p>最後の円卓。各持ち場は署名するか、停止を宣言する。</p>
       </header>
       <div className={`verdict ${ready ? "is-ready" : ""}`}>
-        <span>{ready ? "FIRMA" : "FERMO"}</span>
+        <DualLabel copy={ready ? terms.firma : terms.fermo} />
         <strong>{ready ? "工房から提出へ進める。" : `証拠があと${manca.length}件必要。`}</strong>
       </div>
       <div className="poll-list">
         {state.gates.map((gate) => (
           <div key={gate.id}>
-            <span className={gate.done ? "signed" : ""}>{gate.done ? "FIRMA" : "FERMO"}</span>
+            <DualLabel
+              className={gate.done ? "signed" : ""}
+              copy={gate.done ? terms.firma : terms.fermo}
+            />
             <strong>{gate.title}</strong>
             <small>{gate.evidence || "証拠はまだ添付されていない"}</small>
           </div>
@@ -550,7 +594,7 @@ function CenacoloView({ state, setState }) {
       </div>
       <section className="external-cenacolo" aria-labelledby="external-cenacolo-title">
         <header>
-          <span>EXTERNAL REVIEW</span>
+          <DualLabel className="section-caption" copy={sections.externalReview} />
           <h2 id="external-cenacolo-title">異なる目線を、ひとつの返却形式へ。</h2>
           <p>
             Claude、Gemini、その他のモデルも同じ形式で助言を返す。
@@ -560,7 +604,7 @@ function CenacoloView({ state, setState }) {
         <form onSubmit={addReview}>
           <div className="review-short-fields">
             <label>
-              Reviewer
+              <DualLabel className="field-caption" copy={fields.reviewer} />
               <input
                 onChange={(event) => updateReview("reviewer", event.target.value)}
                 required
@@ -568,7 +612,7 @@ function CenacoloView({ state, setState }) {
               />
             </label>
             <label>
-              Workshop role
+              <DualLabel className="field-caption" copy={fields.workshopRole} />
               <select
                 onChange={(event) => updateReview("role", event.target.value)}
                 value={review.role}
@@ -579,7 +623,7 @@ function CenacoloView({ state, setState }) {
               </select>
             </label>
             <label>
-              Verdict
+              <DualLabel className="field-caption" copy={fields.verdict} />
               <select
                 onChange={(event) => updateReview("verdict", event.target.value)}
                 value={review.verdict}
@@ -591,7 +635,7 @@ function CenacoloView({ state, setState }) {
             </label>
           </div>
           <label>
-            Finding
+            <DualLabel className="field-caption" copy={fields.finding} />
             <textarea
               onChange={(event) => updateReview("summary", event.target.value)}
               placeholder="レビューで最も重要な指摘を貼り付ける。"
@@ -601,14 +645,14 @@ function CenacoloView({ state, setState }) {
           </label>
           <div className="review-two-column">
             <label>
-              Risks
+              <DualLabel className="field-caption" copy={fields.risks} />
               <textarea
                 onChange={(event) => updateReview("risks", event.target.value)}
                 value={review.risks}
               />
             </label>
             <label>
-              Recommended next stroke
+              <DualLabel className="field-caption" copy={fields.nextStroke} />
               <textarea
                 onChange={(event) => updateReview("recommendation", event.target.value)}
                 required
@@ -617,13 +661,15 @@ function CenacoloView({ state, setState }) {
             </label>
           </div>
           <label>
-            Evidence or conversation URL
+            <DualLabel className="field-caption" copy={fields.evidenceReference} />
             <input
               onChange={(event) => updateReview("evidence", event.target.value)}
               value={review.evidence}
             />
           </label>
-          <button type="submit">RETURN REVIEW TO CENACOLO</button>
+          <button aria-label={actionAria(actions.returnReview)} type="submit">
+            <ActionLabel copy={actions.returnReview} />
+          </button>
         </form>
         {(state.reviews || []).length > 0 && (
           <div className="review-ledger">
@@ -642,6 +688,7 @@ function CenacoloView({ state, setState }) {
         )}
       </section>
       <button
+        aria-label={actionAria(ready ? actions.signConsegna : actions.consegnaLocked)}
         className="consegna"
         disabled={!ready}
         onClick={() =>
@@ -655,7 +702,7 @@ function CenacoloView({ state, setState }) {
         }
         type="button"
       >
-        {ready ? "SIGN CONSEGNA" : "CONSEGNA LOCKED"}
+        <ActionLabel copy={ready ? actions.signConsegna : actions.consegnaLocked} />
       </button>
     </section>
   );
@@ -675,10 +722,10 @@ function EvidenceView({ state }) {
     <section className="document-view evidence-view">
       <header>
         <span>05</span>
-        <h1>EVIDENCE</h1>
+        <DualLabel as="h1" className="document-title" copy={terms.evidence} />
         <p>台帳に残っていないものは、実行されたとは扱わない。</p>
-        <button onClick={download} type="button">
-          EXPORT JSON
+        <button aria-label={actionAria(actions.exportJson)} onClick={download} type="button">
+          <ActionLabel copy={actions.exportJson} />
         </button>
       </header>
       <div className="evidence-table">
@@ -709,11 +756,11 @@ function EvidenceDialog({ gate, onClose, onSave }) {
         }}
       >
         <div className="dialog-rule" />
-        <span>ATTACH PROOF</span>
+        <DualLabel className="section-caption" copy={sections.attachProof} />
         <h2>{gate.title}</h2>
         <p>{gate.detail}</p>
         <label>
-          Evidence note or URL
+          <DualLabel className="field-caption" copy={fields.evidenceNote} />
           <textarea
             autoFocus
             required
@@ -723,11 +770,20 @@ function EvidenceDialog({ gate, onClose, onSave }) {
           />
         </label>
         <div>
-          <button className="dialog-cancel" onClick={onClose} type="button">
-            CANCEL
+          <button
+            aria-label={actionAria(actions.cancel)}
+            className="dialog-cancel"
+            onClick={onClose}
+            type="button"
+          >
+            <ActionLabel copy={actions.cancel} />
           </button>
-          <button className="dialog-save" type="submit">
-            ATTACH EVIDENCE
+          <button
+            aria-label={actionAria(actions.attachEvidence)}
+            className="dialog-save"
+            type="submit"
+          >
+            <ActionLabel copy={actions.attachEvidence} />
           </button>
         </div>
       </form>
@@ -758,11 +814,11 @@ function ResultDialog({ stroke, onClose, onSave }) {
         }}
       >
         <div className="dialog-rule" />
-        <span>RETURN TO THE WORKSHOP</span>
+        <DualLabel className="section-caption" copy={sections.returnWorkshop} />
         <h2>{stroke.title}</h2>
         <p>{stroke.evidenceExpected}</p>
         <label>
-          What changed
+          <DualLabel className="field-caption" copy={fields.changed} />
           <textarea
             autoFocus
             onChange={(event) => update("summary", event.target.value)}
@@ -771,7 +827,7 @@ function ResultDialog({ stroke, onClose, onSave }) {
           />
         </label>
         <label>
-          Verification performed
+          <DualLabel className="field-caption" copy={fields.verification} />
           <textarea
             onChange={(event) => update("verification", event.target.value)}
             required
@@ -779,7 +835,7 @@ function ResultDialog({ stroke, onClose, onSave }) {
           />
         </label>
         <label>
-          Evidence path, URL, or response ID
+          <DualLabel className="field-caption" copy={fields.resultEvidence} />
           <textarea
             onChange={(event) => update("evidence", event.target.value)}
             required
@@ -787,7 +843,7 @@ function ResultDialog({ stroke, onClose, onSave }) {
           />
         </label>
         <label>
-          Remaining risk
+          <DualLabel className="field-caption" copy={fields.remainingRisk} />
           <textarea
             onChange={(event) => update("remainingRisk", event.target.value)}
             required
@@ -795,11 +851,20 @@ function ResultDialog({ stroke, onClose, onSave }) {
           />
         </label>
         <div>
-          <button className="dialog-cancel" onClick={onClose} type="button">
-            CANCEL
+          <button
+            aria-label={actionAria(actions.cancel)}
+            className="dialog-cancel"
+            onClick={onClose}
+            type="button"
+          >
+            <ActionLabel copy={actions.cancel} />
           </button>
-          <button className="dialog-save" type="submit">
-            ATTACH RESULT
+          <button
+            aria-label={actionAria(actions.attachResult)}
+            className="dialog-save"
+            type="submit"
+          >
+            <ActionLabel copy={actions.attachResult} />
           </button>
         </div>
       </form>
@@ -846,7 +911,7 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
           ×
         </button>
         <header>
-          <span>IL CAPOBOTTEGA</span>
+          <DualLabel className="section-caption" copy={terms.capobottega} />
           <h2 id="capobottega-title">ひとつのストロークに、ひとつの素材。</h2>
           <p>
             設定された計画モデルが、可逆性、範囲、提出価値から次の一手を分類する。
@@ -854,7 +919,7 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
         </header>
         <form onSubmit={submit}>
           <label>
-            Proposed work
+            <DualLabel className="field-caption" copy={fields.proposedWork} />
             <textarea
               autoFocus
               maxLength={2000}
@@ -863,8 +928,19 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
               value={work}
             />
           </label>
-          <button className="capobottega-submit" disabled={status === "loading"} type="submit">
-            {status === "loading" ? "CAPOBOTTEGA IS LOOKING…" : "CLASSIFY THE STROKE"}
+          <button
+            aria-label={
+              status === "loading"
+                ? "計画役が確認中"
+                : actionAria(actions.classifyStroke)
+            }
+            className="capobottega-submit"
+            disabled={status === "loading"}
+            type="submit"
+          >
+            {status === "loading"
+              ? "計画役が確認中…"
+              : <ActionLabel copy={actions.classifyStroke} />}
           </button>
         </form>
         {error && (
@@ -1321,9 +1397,17 @@ export default function App() {
         </div>
         <div className="topbar-status">
           <span className={`webmcp-status is-${webMcpStatus}`}>
-            WEBMCP {webMcpStatus === "ready" ? "READY" : webMcpStatus.toUpperCase()}
+            <DualLabel
+              copy={
+                webMcpStatus === "ready"
+                  ? statuses.webMcpReady
+                  : statuses.webMcpUnavailable
+              }
+            />
           </span>
-          <span>MANCA {String(manca).padStart(2, "0")}</span>
+          <span className="topbar-manca">
+            MANCA {String(manca).padStart(2, "0")} <small>未確認の証拠</small>
+          </span>
           <Deadline deadline={state.deadline} />
         </div>
       </header>
