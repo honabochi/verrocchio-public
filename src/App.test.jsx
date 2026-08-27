@@ -39,7 +39,9 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "BEGIN GIORNATA" }));
-    expect(screen.getByRole("button", { name: "GIORNATA ACTIVE" })).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /GIORNATA ACTIVE/ }),
+    ).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "Working product 審査員が再ビルドせず利用できるライブデモまたはテスト経路" }));
     const evidence = screen.getByLabelText("Evidence note or URL");
@@ -71,7 +73,13 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "CALL FERMO" }));
     expect(screen.getByText("FERMO ACTIVE · 人間の判断待ち")).toBeVisible();
-    expect(screen.getByRole("button", { name: "RESUME GIORNATA" })).toBeVisible();
+    const resume = screen.getByRole("button", { name: /RESUME GIORNATA/ });
+    expect(resume).toBeVisible();
+
+    await user.click(resume);
+
+    expect(screen.getByRole("status")).toHaveTextContent("再開しました");
+    expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeDisabled();
   });
 
   test("CAPOBOTTEGA records a model claim without closing its own evidence gate", async () => {
@@ -144,7 +152,7 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "GIVE FIRMA AUTHORIZE THIS STROKE" }));
 
-    expect(screen.getByRole("button", { name: "GIORNATA ACTIVE" })).toBeVisible();
+    expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeVisible();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 

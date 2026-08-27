@@ -186,6 +186,7 @@ function activateStroke(state, strokeId) {
 
 function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
+  const [resumeNotice, setResumeNotice] = useState(false);
   const pendingClaims = state.gates.flatMap((gate) =>
     (gate.claims || [])
       .filter((claim) => claim.status === "CLAIMED")
@@ -226,6 +227,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
 
   const begin = () => {
     if (state.firmaPending) return;
+    const resumedFromFermo = state.isHeld;
     setState((current) => ({
       ...current,
       isRunning: true,
@@ -239,9 +241,11 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
         ...current.events,
       ],
     }));
+    setResumeNotice(resumedFromFermo);
   };
 
   const callFermo = () => {
+    setResumeNotice(false);
     setState((current) => ({
       ...current,
       isRunning: false,
@@ -305,6 +309,12 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
             </div>
           )}
           {state.isHeld && <div className="hold-message">FERMO ACTIVE · 人間の判断待ち</div>}
+          {resumeNotice && state.isRunning && !state.isHeld && (
+            <div className="resume-confirmation" role="status">
+              <strong>再開しました</strong>
+              <span>GIORNATA ACTIVE · AIの作業を続けられます</span>
+            </div>
+          )}
           {state.firmaPending && (
             <div className="firma-pending" role="status">
               <strong>FIRMA REQUIRED</strong>
@@ -314,8 +324,9 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           )}
           <div className="work-actions">
             <button
-              className="primary-action"
-              disabled={Boolean(state.firmaPending)}
+              aria-pressed={state.isRunning}
+              className={`primary-action ${state.isRunning ? "is-active" : ""}`}
+              disabled={Boolean(state.firmaPending) || state.isRunning}
               onClick={begin}
               type="button"
             >
@@ -323,16 +334,21 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               {state.firmaPending
                 ? "LOCKED BY FIRMA"
                 : state.isRunning
-                  ? "GIORNATA ACTIVE"
+                  ? "✓ 再開済み · GIORNATA ACTIVE"
                   : state.isHeld
-                    ? "RESUME GIORNATA"
+                    ? "▶ 再開する · RESUME GIORNATA"
                     : "BEGIN GIORNATA"}
             </button>
-            <button className="secondary-action" onClick={callFermo} type="button">
+            <button
+              className="secondary-action"
+              disabled={state.isHeld}
+              onClick={callFermo}
+              type="button"
+            >
               <span className="pause-mark" aria-hidden="true">
                 ||
               </span>
-              CALL FERMO
+              {state.isHeld ? "FERMO ACTIVE" : "CALL FERMO"}
             </button>
             <button
               className="capobottega-action"

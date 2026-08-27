@@ -488,6 +488,33 @@ textarea:focus-visible {
   font-size: 11px;
 }
 
+.resume-confirmation {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 16px;
+  max-width: 620px;
+  margin-top: 16px;
+  padding: 13px 15px;
+  border: 1px solid #bfe2c4;
+  color: #effff1;
+  background: rgba(15, 92, 55, 0.46);
+  font-family: var(--mono);
+}
+
+.resume-confirmation strong {
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.resume-confirmation span {
+  align-self: center;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
 .firma-pending {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -560,6 +587,26 @@ textarea:focus-visible {
 .primary-action:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+  transform: none;
+}
+
+.primary-action.is-active:disabled {
+  opacity: 1;
+  border-color: #bfe2c4;
+  color: #effff1;
+  background: rgba(15, 92, 55, 0.52);
+}
+
+.primary-action.is-active .action-mark {
+  border-right-color: #bfe2c4;
+  background:
+    radial-gradient(circle, #bfe2c4 0 13%, transparent 14%),
+    linear-gradient(45deg, transparent 47%, #bfe2c4 48% 52%, transparent 53%);
+}
+
+.secondary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
   transform: none;
 }
 
