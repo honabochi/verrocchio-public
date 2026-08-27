@@ -133,15 +133,23 @@ function AttentionRail({ state }) {
   );
 }
 
-function GateLedger({ gates, onToggle, onEvidence }) {
+function GateLedger({ activeGateId, gates, onToggle, onEvidence }) {
   return (
-    <ol className="gate-ledger">
+    <ol aria-label="提出に必要な証拠ゲート" className="gate-ledger">
       {gates.map((gate, index) => (
-        <li className={gate.done ? "is-done" : ""} key={gate.id}>
+        <li
+          className={`${gate.done ? "is-done" : ""} ${gate.id === activeGateId ? "is-active" : ""}`.trim()}
+          key={gate.id}
+        >
           <span className="gate-index">{String(index + 1).padStart(2, "0")}</span>
-          <button className="gate-copy" onClick={() => onEvidence(gate)} type="button">
+          <button
+            aria-label={`${gate.title} ${gate.detail}`}
+            className="gate-copy"
+            onClick={() => onEvidence(gate)}
+            type="button"
+          >
             <strong>{gate.title}</strong>
-            <small>{gate.detail}</small>
+            <small aria-hidden="true" className="gate-detail">{gate.detail}</small>
           </button>
           <button
             className="gate-check"
@@ -199,6 +207,9 @@ function activateStroke(state, strokeId) {
 function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
   const [resumeNotice, setResumeNotice] = useState(false);
+  const activeStroke = state.cartone.strokes.find((stroke) => stroke.status === "active");
+  const activeGateId =
+    activeStroke?.gateId || state.gates.find((gate) => !gate.done)?.id || null;
   const pendingClaims = state.gates.flatMap((gate) =>
     (gate.claims || [])
       .filter((claim) => claim.status === "CLAIMED")
@@ -291,9 +302,12 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           <strong>{String(manca).padStart(2, "0")}</strong>
         </div>
       </header>
-      <GateLedger gates={state.gates} onToggle={toggleGate} onEvidence={onEvidence} />
       {pendingClaims.length > 0 && (
-        <section className="evidence-claims" aria-label="Evidence awaiting human verification">
+        <section
+          aria-label="人間による証拠確認待ち"
+          aria-live="polite"
+          className="evidence-claims"
+        >
           <header>
             <DualLabel className="section-caption" copy={sections.humanCheckpoint} />
             <h2>AIが返したのは主張であり、まだ証拠ではない。</h2>
@@ -319,12 +333,17 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
       <section className={`work-strip ${state.isHeld ? "is-held" : ""}`}>
         <div className="work-copy">
           <div className="work-meta">
-            GIORNATA {state.giornata.id} · wet until {state.giornata.wetUntil}
+            <span>NEXT · 次の一手</span>
+            <span>GIORNATA {state.giornata.id}</span>
           </div>
           <h2>{state.giornata.title}</h2>
           <p>
             {state.giornata.classification} · {state.giornata.classificationNote}
           </p>
+          <div className="human-boundary-note">
+            <strong lang="en">HUMAN ONLY</strong>
+            <span>FIRMA・証拠確定・提出</span>
+          </div>
           {state.capobottega.latest && (
             <div className="capobottega-proof">
               CAPOBOTTEGA · {state.capobottega.latest.model} ·{" "}
@@ -402,6 +421,12 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           <span>00:00</span>
         </div>
       </section>
+      <GateLedger
+        activeGateId={activeGateId}
+        gates={state.gates}
+        onToggle={toggleGate}
+        onEvidence={onEvidence}
+      />
     </div>
   );
 }

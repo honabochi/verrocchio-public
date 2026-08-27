@@ -350,8 +350,8 @@ textarea:focus-visible {
 
 .giornate-view {
   min-height: 100%;
-  display: grid;
-  grid-template-rows: auto auto minmax(330px, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 .view-heading {
@@ -409,7 +409,7 @@ textarea:focus-visible {
 }
 
 .manca-term .dual-label-assist {
-  color: var(--blue-light);
+  color: var(--blue);
   font-size: 11px;
   letter-spacing: 0.02em;
 }
@@ -428,6 +428,10 @@ textarea:focus-visible {
   align-items: center;
   border-bottom: 1px solid var(--rule);
   transition: color 160ms ease, background 160ms ease;
+}
+
+.gate-ledger li.is-active {
+  background: rgba(22, 63, 184, 0.045);
 }
 
 .gate-ledger li:hover {
@@ -541,6 +545,9 @@ textarea:focus-visible {
 
 .work-meta {
   font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
 }
 
 .work-copy h2 {
@@ -555,6 +562,24 @@ textarea:focus-visible {
 .work-copy > p {
   margin: 0;
   font-size: 13px;
+}
+
+.human-boundary-note {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 17px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  font-family: var(--sans-ja);
+  font-size: 11px;
+}
+
+.human-boundary-note strong {
+  color: #fff4c7;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
 }
 
 .hold-message {
@@ -2774,33 +2799,46 @@ textarea:focus-visible {
   }
 
   .view-heading {
-    padding: 27px 22px 15px;
+    min-height: 103px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 22px 20px;
   }
 
   .view-heading h1 {
-    font-size: 28px;
+    max-width: 230px;
+    font-size: 24px;
+    line-height: 1.08;
   }
 
   .manca {
-    gap: 12px;
-    margin-top: 11px;
+    flex: 0 0 auto;
+    gap: 8px;
+    margin-top: 0;
   }
 
   .manca span {
-    font-size: 45px;
+    font-size: 36px;
   }
 
   .manca strong {
-    font-size: 72px;
+    font-size: 52px;
   }
 
   .gate-ledger {
-    margin: 0 22px 25px;
+    margin: 8px 22px 34px;
   }
 
   .gate-ledger li {
-    min-height: 57px;
+    min-height: 52px;
     grid-template-columns: 36px 1fr 31px;
+  }
+
+  .gate-ledger li.is-active {
+    min-height: 72px;
+    box-shadow: inset 3px 0 0 var(--blue);
   }
 
   .gate-index,
@@ -2812,9 +2850,14 @@ textarea:focus-visible {
     max-width: 66vw;
   }
 
+  .gate-ledger li:not(.is-active) .gate-detail {
+    display: none;
+  }
+
   .work-strip {
-    min-height: 330px;
+    min-height: 0;
     display: block;
+    margin: 0 22px 24px;
     background: var(--blue);
   }
 
@@ -2824,22 +2867,45 @@ textarea:focus-visible {
   }
 
   .work-copy {
-    padding: 30px 22px;
+    padding: 20px;
   }
 
   .work-meta {
-    font-size: 11px;
+    font-size: 9px;
   }
 
   .work-copy h2 {
-    font-size: 36px;
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 14px 0 8px;
+    font-size: 28px;
+    line-height: 1.04;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .work-copy > p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .human-boundary-note {
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 11px;
+    font-size: 10px;
   }
 
   .work-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: stretch;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 28px;
+    gap: 10px;
+    margin-top: 18px;
   }
 
   .primary-action,
@@ -2851,6 +2917,27 @@ textarea:focus-visible {
     justify-content: flex-start;
   }
 
+  .primary-action {
+    grid-column: 1 / -1;
+    min-height: 52px;
+  }
+
+  .secondary-action,
+  .capobottega-action,
+  .firma-action {
+    min-height: 46px;
+    padding: 0 12px;
+  }
+
+  .firma-action {
+    grid-column: 1 / -1;
+  }
+
+  .action-mark {
+    width: 52px;
+    margin-right: 17px;
+  }
+
   .capobottega-action {
     min-height: 56px;
     border: 1px solid rgba(255, 255, 255, 0.55);
@@ -2858,6 +2945,22 @@ textarea:focus-visible {
 
   .firma-action {
     min-height: 56px;
+  }
+
+  .evidence-claims {
+    margin: 0 22px 24px;
+    padding: 18px;
+  }
+
+  .evidence-claims article {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .evidence-claims button {
+    width: 100%;
+    min-height: 48px;
   }
 
   .capobottega-dialog {
@@ -3053,6 +3156,20 @@ textarea:focus-visible {
 
   .evidence-dialog {
     padding: 34px 25px 28px 31px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar {
+    padding-inline: 12px;
+  }
+
+  .brand strong {
+    font-size: 25px;
+  }
+
+  .topbar-status > .webmcp-status {
+    display: none;
   }
 }
 

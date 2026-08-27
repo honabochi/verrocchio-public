@@ -51,6 +51,12 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
+    const workStrip = screen.getByText("VERROCCHIO自身の制作を統治する").closest("section");
+    const gateLedger = screen.getByLabelText("提出に必要な証拠ゲート");
+    expect(
+      workStrip.compareDocumentPosition(gateLedger) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(screen.getByText("FIRMA・証拠確定・提出")).toBeVisible();
     await user.click(screen.getByRole("button", { name: /作業を開始する/ }));
     expect(
       screen.getByRole("button", { name: /GIORNATA ACTIVE/ }),
@@ -124,6 +130,10 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: /次の作業を分類する/ }));
 
     expect(await screen.findByText("This is safe local test work.")).toBeVisible();
+    expect(screen.getByLabelText("人間による証拠確認待ち")).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
     expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(3);
     expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
     expect(screen.getByRole("button", { name: /証拠主張を確認する/ })).toBeVisible();
