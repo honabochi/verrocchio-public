@@ -8,11 +8,40 @@ import {
   registerWorkshopTools,
 } from "./webmcp";
 import { requestEvidenceChanges } from "./workshopCommands";
+import {
+  getEvalCaseRecord,
+  getWebMcpEvalContext,
+} from "./evalReceipt";
 
 describe("VERROCCHIO WebMCP read path", () => {
   test("supports an explicit DOM-only baseline without changing normal mode", () => {
     expect(isWebMcpDisabled("?evalRun=run-01&webmcp=off")).toBe(true);
     expect(isWebMcpDisabled("?evalRun=run-01")).toBe(false);
+  });
+
+  test("instruments a hosted eval tool without storing its arguments", async () => {
+    const registered = [];
+    const modelContext = {
+      registerTool: vi.fn(async (tool) => registered.push(tool)),
+    };
+    const evalContext = getWebMcpEvalContext(
+      "?evalRun=instrumented-run&case=manca-read",
+    );
+    const registration = registerWorkshopTools({
+      getState: () => initialState,
+      modelContext,
+      evalContext,
+    });
+    await registration.registration;
+
+    await registered
+      .find((tool) => tool.name === "inspect_workshop")
+      .execute({ view: "manca", privateInput: "never store" });
+
+    const record = getEvalCaseRecord(evalContext);
+    expect(record.toolCalls).toEqual([{ name: "inspect_workshop" }]);
+    expect(record.before).toMatchObject({ phase: "ACTIVE_STROKE", manca: 6 });
+    expect(JSON.stringify(record)).not.toContain("never store");
   });
 
   test("reports the current mission and missing proof without exposing approvals", () => {

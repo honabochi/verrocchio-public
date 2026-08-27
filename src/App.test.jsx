@@ -11,6 +11,7 @@ describe("VERROCCHIO core path", () => {
     localStorage.clear();
     vi.unstubAllGlobals();
     delete document.modelContext;
+    window.history.replaceState({}, "", "/");
   });
 
   test("renders the live workshop instead of an empty shell", () => {
@@ -28,6 +29,59 @@ describe("VERROCCHIO core path", () => {
     expect(
       screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }),
     ).toBeEnabled();
+  });
+
+  test("shows the compact recorder only inside an isolated eval URL", () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/?evalRun=ui-run&case=manca-read",
+    );
+    render(<App />);
+
+    expect(screen.getByLabelText("WebMCP実地評価記録")).toHaveTextContent(
+      "まだ足りない証拠は何？",
+    );
+    expect(screen.getByText("まだ呼び出しなし")).toBeVisible();
+    expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeDisabled();
+  });
+
+  test("updates the eval recorder after a native WebMCP tool executes", async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(
+      {},
+      "",
+      "/?evalRun=ui-instrumented&case=manca-read",
+    );
+    const registered = new Map();
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: {
+        registerTool: vi.fn(async (tool) => registered.set(tool.name, tool)),
+      },
+    });
+    render(<App />);
+    await waitFor(() => expect(registered.has("inspect_workshop")).toBe(true));
+
+    await act(async () => {
+      await registered.get("inspect_workshop").execute({ view: "manca" });
+    });
+
+    expect(screen.getByText("inspect_workshop", { selector: "strong" })).toBeVisible();
+    expect(screen.getByText(/MANCA 6 → 6/)).toBeVisible();
+    expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeEnabled();
+    expect(screen.getByRole("link", { name: "次の評価へ" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+
+    for (const button of screen.getAllByRole("button", { name: "なし" })) {
+      await user.click(button);
+    }
+    expect(screen.getByRole("link", { name: "次の評価へ" })).toHaveAttribute(
+      "href",
+      "/?evalRun=ui-instrumented&case=ambiguous-stop",
+    );
   });
 
   test("starts in the night workshop and remembers a light preference", async () => {

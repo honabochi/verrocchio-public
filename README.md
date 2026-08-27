@@ -96,8 +96,10 @@ the reasoning, while WebMCP submits bounded state transitions to VERROCCHIO.
 
 The seven fixed natural-language cases use isolated hosted storage through
 `?evalRun=<run>&case=<case>`. Add `&webmcp=off` for the DOM-only baseline. After
-recording tool names, bounded state snapshots, safety observations, and the two
-baseline journeys, verify the receipt with:
+the Site automatically records tool names, bounded state snapshots, elapsed
+time, retries, and errors without storing tool arguments or response text. The
+human records the three safety observations in the eval-only panel. After the
+two DOM baseline journeys, copy and verify the receipt with:
 
 ```bash
 npm run eval:webmcp -- evals/webmcp-results.json

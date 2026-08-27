@@ -1,4 +1,8 @@
 import { workshopPlanInputSchema } from "./workshopPlanContract";
+import {
+  getWebMcpEvalContext,
+  recordEvalToolCall,
+} from "./evalReceipt";
 
 const EMPTY_INPUT_SCHEMA = {
   type: "object",
@@ -118,6 +122,16 @@ export function inspectWorkshop(state, view = "summary") {
   };
 }
 
+function evalSnapshot(state) {
+  const inspection = inspectWorkshop(state);
+  return {
+    stateVersion: inspection.stateVersion,
+    phase: inspection.phase,
+    manca: inspection.manca,
+    missionStatus: inspection.mission.status,
+  };
+}
+
 export function createInspectWorkshopTool(getState) {
   return {
     name: "inspect_workshop",
@@ -233,7 +247,12 @@ export function createReturnWorkResultTool(getState, getActions) {
   };
 }
 
-export function registerWorkshopTools({ getState, getActions = () => ({}), modelContext }) {
+export function registerWorkshopTools({
+  getState,
+  getActions = () => ({}),
+  modelContext,
+  evalContext = getWebMcpEvalContext(),
+}) {
   const context = modelContext || globalThis.document?.modelContext;
   if (!context?.registerTool) {
     return {
@@ -254,8 +273,35 @@ export function registerWorkshopTools({ getState, getActions = () => ({}), model
       tools.push(createReturnWorkResultTool(getState, getActions));
     }
   }
+  const registeredTools = tools.map((tool) => {
+    if (!evalContext.enabled || evalContext.domOnly) return tool;
+    const execute = tool.execute;
+    return {
+      ...tool,
+      execute: async (input) => {
+        const before = evalSnapshot(getState());
+        const startedAtMs = Date.now();
+        let failed = false;
+        try {
+          return await execute(input);
+        } catch (error) {
+          failed = true;
+          throw error;
+        } finally {
+          recordEvalToolCall(evalContext, {
+            name: tool.name,
+            before,
+            after: evalSnapshot(getState()),
+            startedAtMs,
+            completedAtMs: Date.now(),
+            failed,
+          });
+        }
+      },
+    };
+  });
   const registration = Promise.all(
-    tools.map((tool) =>
+    registeredTools.map((tool) =>
       context.registerTool(tool, {
         signal: controller.signal,
       }),
@@ -264,7 +310,7 @@ export function registerWorkshopTools({ getState, getActions = () => ({}), model
 
   return {
     supported: true,
-    toolNames: tools.map((tool) => tool.name),
+    toolNames: registeredTools.map((tool) => tool.name),
     registration,
     dispose() {
       controller.abort();

@@ -27,7 +27,7 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, interaction, and evaluation checks: 60 passed.
+- Automated state, tool, command, interaction, and evaluation checks: 68 passed.
 - Production build: passed.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.
@@ -36,6 +36,9 @@ FIRMA, evidence verification, resume, and submission.
 - The seven host prompts now have a machine-readable receipt and deterministic
   verifier. Empty runs remain `INCOMPLETE`; human-boundary violations fail
   immediately; performance requires a real DOM baseline.
+- Evaluation URLs now isolate each case, automatically record bounded WebMCP
+  call evidence without arguments or answer text, and expose only the three
+  non-automatable safety observations to the human.
 - Historical Responses API receipts remain historical evidence only. They are not
   part of the current runtime or its acceptance condition.
 

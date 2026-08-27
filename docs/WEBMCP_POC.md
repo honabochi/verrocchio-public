@@ -52,7 +52,7 @@ resume a held workshop, or submit the result.
 - Seven-stage one-step guide derivation: passed
 - Browser page errors: 0
 - Mobile document overflow at 390 px: none
-- Automated tests: 53 passed
+- Automated tests: 68 passed
 - Production build: passed
 
 ## Not yet proven
