@@ -1,55 +1,53 @@
 # Phase 1 completion audit
 
-Audit date: 2026-07-18
+Audit date: 2026-08-28
 
-This audit treats the original handoff, `CONTRATTO.md`, and `CARTONE.md` as the
-requirements and current source, tests, runtime behavior, and deployment state
-as evidence. “Complete locally” does not mean “published.”
+This audit distinguishes the current keyless product path from historical API
+experiments. The active site does not call an OpenAI model API. ChatGPT or Codex
+does the reasoning in the host and uses WebMCP to inspect the workshop, submit an
+unsigned plan, return a bounded result, or call FERMO. Human-only controls retain
+FIRMA, evidence verification, resume, and submission.
 
-| Requirement | Status | Authoritative evidence |
+| Requirement | Status | Current evidence |
 | --- | --- | --- |
-| Mission input is a closed operational world | Complete locally | `MissionView.jsx` captures rules, criteria, deadline, constraints, available hands, deferrals, and human boundary; live browser plan generated |
-| One backward-planned path from deadline to submission | Complete locally | `/api/workshop-plan` returns a strict contract, dynamic gates, strokes, risks, and ISO schedule bounded between request time and deadline |
-| Planning is not silently self-authorizing | Complete locally | Live generated plans remained drafts until `GIVE FIRMA & ADOPT`; revisions 01–03 recorded |
-| Human is a system component, not a generic approver | Complete locally | Editable DI SUA MANO and AFFRESCO rules; OLTREMARE meter; explicit FIRMA action |
-| Immediate, deferred, and autonomous decision classes | Complete locally | CAPOBOTTEGA strict schema returns AFFRESCO, SECCO, or GESSO plus human action |
-| Irreversible work stops synchronously | Complete locally | AFFRESCO creates `firmaPending`, disables resume and further CAPOBOTTEGA decisions, and requires `GIVE FIRMA`; interaction and migration tests |
-| Anyone can stop work | Complete locally | CALL FERMO changes the state and writes evidence |
-| Scope cannot silently expand | Complete locally | CONTRATTO scope ratchet plus CAPOBOTTEGA `scopeEffect`; work-packet stop rules |
-| Proof, not claimed progress, closes a gate | Complete locally | A gate without evidence opens ATTACH PROOF and MANCA remains unchanged |
-| GPT-5.6 is meaningful and observable | Complete locally | Server-only `gpt-5.6-sol` Responses API, strict output, stored response ID, verified live response in `docs/CAPOBOTTEGA.md` |
-| Codex is the primary implementation hand | Complete locally | Primary task ID in README, initial state, and build log; LA PRIMA MANO packet role |
-| Self-reference is product behavior | Complete locally | CAPOBOTTEGA classified VERROCCHIO's own publication, stopped it, changed state, and wrote its response evidence |
-| AI work can be handed off without losing boundaries | Complete locally | CARTONE compiles role-specific duty and stop rules into a copyable packet |
-| Results return to the target proof gate | Complete locally | Live CARTONE result required change, verification, evidence, and remaining risk; target evidence dialog retained the return |
-| Replanning preserves completed proof | Complete locally | Live revision 02 retained the revision 01 response evidence; unit tests preserve both evidence and done state |
-| Quiet, small-screen workshop UX | Complete locally | Five workshop views; responsive desktop and 390×844 browser checks |
-| Exportable build evidence | Complete locally | EVIDENCE JSON export includes contract, decisions, events, gates, and derived MANCA |
-| Hosted rollout includes the GPT runtime | Pending AFFRESCO | Local runtime is proven; Sites secret and production deployment still require authenticated human action |
-| Separate workpiece selected | Out of Phase 1 by design | Selection is explicitly deferred until the operational exit path passes |
-| Judge-accessible repository, video, and final receipt | Phase 2 | These are later execution targets, not evidence that Phase 1 itself works |
+| Mission input forms a closed operational world | Implemented | Mission intake captures rules, criteria, deadline, constraints, available hands, deferrals, and human boundary |
+| Planning is useful without an app-owned API key | Implemented | `propose_workshop_draft` accepts a strict host-authored plan; no active model API route or key is required |
+| Planning cannot silently authorize itself | Implemented | A proposed plan stays unsigned and mutation tools stop until visible human FIRMA or discard |
+| Human-only boundaries are enforceable | Implemented | No WebMCP tool exists for FIRMA, evidence verification, resume, or CONSEGNA |
+| Irreversible or uncertain work stops | Implemented | AFFRESCO and `call_fermo` hold the workshop; only a human-visible control can resume it |
+| Proof, not claimed progress, closes a gate | Implemented | Returned work becomes `CLAIMED`; MANCA is unchanged until human verification |
+| Incorrect evidence can be corrected without erasing history | Implemented | Human return changes `CLAIMED` to `CHANGES_REQUESTED`, records the reason, and restores the work stroke |
+| AI handoff stays bounded | Implemented | CARTONE produces role, scope, forbidden actions, done evidence, and stop conditions for one work packet |
+| Replanning preserves accepted proof | Implemented | State transitions and tests retain completed gates and their evidence |
+| The next action is understandable without learning the whole system | Implemented locally | One-step guide shows current actor, action, pass condition, target view, and host prompt from existing state |
+| Host chooses the correct tool from natural language | Not yet proven | Seven adversarial prompt evals remain to be run and recorded |
+| A fresh user understands the path quickly | Not yet proven | 30-second comprehension and 60-second first useful loop remain user tests |
+| WebMCP is materially better than DOM actuation | Not yet proven | Two productive journeys still need an action-count and elapsed-time baseline |
+| Judge-accessible repository, video, and submission receipt | Phase 2 | These are submission deliverables, not evidence of the Phase 1 operating loop |
 
-## Verification snapshot
+## Current verification snapshot
 
-- Automated contracts and interactions: 22 passed.
+- Automated state, tool, command, and interaction checks: 53 passed.
 - Production build: passed.
-- Real GPT-5.6 plan and replan responses:
-  `[public-response-id-removed]`,
-  `[public-response-id-removed]`,
-  and the schedule-bounded
-  `[public-response-id-removed]`.
-- Browser exit path passed: MISSION, DRAFT, FIRMA, CARTONE, RESULT, EVIDENCE,
-  REPLAN, preserved proof, and MANCA 06 → 05.
-- Browser console warnings and errors: zero.
-- Visual proof: `docs/phase1-browser-proof.png` and
-  `docs/phase1-final-viewport.png`.
+- Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
+  verification, return for changes, and re-registration after the human decision.
+- The one-step guide has seven direct state-derivation checks plus UI integration
+  coverage.
+- Historical Responses API receipts remain historical evidence only. They are not
+  part of the current runtime or its acceptance condition.
 
-## Phase 1 exit condition
+## Operational Phase 1 exit condition
 
-The real browser path passed:
+The engineering walking skeleton is green, but operational Phase 1 remains open
+until the current hosted path records all of the following:
 
-`MISSION → DRAFT → FIRMA → CARTONE → RESULT → EVIDENCE → REPLAN`
+1. A real rules mission enters the workshop.
+2. The host follows `MISSION → DRAFT → FIRMA → CARTONE → RESULT → EVIDENCE → REPLAN`.
+3. At least 6 of 7 adversarial natural-language prompts choose the safe tool path,
+   with zero human-boundary bypasses.
+4. A fresh participant can identify the next action and complete the first useful
+   loop without coaching outside the product.
+5. Evidence survives one return-for-changes and one replan.
 
-The production build and automated contracts are green. Phase 1 is therefore
-complete locally. Publishing remains an AFFRESCO action and is intentionally
-outside this local exit condition.
+This prevents a successful local build from being mistaken for proof that the
+hackathon operating system works for its intended solo participant.

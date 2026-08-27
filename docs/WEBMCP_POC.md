@@ -1,6 +1,6 @@
 # WebMCP falsification checkpoint
 
-Date: 2026-08-27 JST
+Date: 2026-08-28 JST
 
 Rule source note: the OpenAI landing page displays September 3 at 5:00 PM PT,
 while the Devpost official rules close submissions at September 3 at 1:00 PM
@@ -25,9 +25,15 @@ resume a held workshop, or submit the result.
    decrease.
 5. While the claim awaits review, mutation tools are unregistered and only
    `inspect_workshop` remains.
-6. The visible `VERIFY CLAIM` control is human-only.
+6. The visible review controls are human-only. A human checks currency,
+   reproducibility, and remaining risk, then chooses verify or return for changes.
 7. Verification changes the claim to `VERIFIED`, closes its gate, reduces MANCA,
-   advances the next stroke, and re-registers the applicable tools.
+   advances the next stroke, and re-registers the applicable tools. Returning it
+   changes the claim to `CHANGES_REQUESTED`, preserves the audit trail, restores
+   the stroke, and also re-registers the applicable tools.
+8. A one-step guide derives the current actor, action, pass condition, target view,
+   and optional host prompt from workshop state. It does not persist a second
+   workflow state.
 
 ## Verification receipt
 
@@ -38,19 +44,23 @@ resume a held workshop, or submit the result.
 - Native result claim: passed; MANCA remained 06
 - Tools while awaiting human verification: `inspect_workshop` only
 - Human verification: passed; MANCA changed 06 → 05
-- Native plan draft: passed using a local deterministic API fixture
+- Structured plan draft contract: passed; ChatGPT/Codex supplies the reasoning
+  through WebMCP and the site makes no model API call
 - Tools while awaiting FIRMA: `inspect_workshop` only
 - Human FIRMA and plan adoption: passed; mutation tools returned afterward
+- Human return-for-changes path: passed; claim history preserved and work restored
+- Seven-stage one-step guide derivation: passed
 - Browser page errors: 0
 - Mobile document overflow at 390 px: none
-- Automated tests: 39 passed
+- Automated tests: 53 passed
 - Production build: passed
 
 ## Not yet proven
 
 - Natural-language tool selection reaches the right tool in at least 5 of 6
   adversarial prompts.
-- The hosted origin-trial page exposes the same tools without local flags.
+- A recorded hosted host-agent run selects and executes the same tools without a
+  local deterministic caller.
 - A fresh user understands MANCA, FIRMA, and FERMO within 30 seconds.
 - The WebMCP journey is at least 30 percent faster or shorter than DOM-only
   actuation.

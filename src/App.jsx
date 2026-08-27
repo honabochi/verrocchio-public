@@ -24,6 +24,7 @@ import {
   terms,
 } from "./uiCopy";
 import useWebMcp from "./useWebMcp";
+import { deriveWorkshopGuide } from "./workshopGuide";
 import {
   claimWorkResult,
   holdWorkshop,
@@ -39,6 +40,68 @@ const views = {
   cenacolo: "CENACOLO",
   evidence: "EVIDENCE",
 };
+
+const guideViews = {
+  contratto: "実行条件を見る",
+  cartone: "作業計画を見る",
+  giornate: "実行工程を見る",
+  cenacolo: "最終確認を見る",
+};
+
+function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
+  const [copied, setCopied] = useState(false);
+  const current = deriveWorkshopGuide(state, webMcpStatus);
+
+  useEffect(() => setCopied(false), [current.step, current.prompt]);
+
+  const copyPrompt = async () => {
+    if (!current.prompt || !navigator.clipboard?.writeText) return;
+    await navigator.clipboard.writeText(current.prompt);
+    setCopied(true);
+  };
+
+  return (
+    <aside className="workshop-guide" aria-labelledby="workshop-guide-title">
+      <div className="guide-index">
+        <span>LIVE GUIDE</span>
+        <strong>
+          {String(current.step).padStart(2, "0")}
+          <small> / {String(current.total).padStart(2, "0")}</small>
+        </strong>
+        <em className={`is-${current.actor.toLowerCase()}`}>{current.actor}</em>
+      </div>
+      <div className="guide-copy">
+        <small>いま確認すること</small>
+        <h2 id="workshop-guide-title">{current.title}</h2>
+        <p>{current.detail}</p>
+        <div className="guide-success">
+          <span>合格</span>
+          <strong>{current.success}</strong>
+        </div>
+      </div>
+      <div className="guide-actions">
+        {current.prompt && (
+          <div className="guide-prompt">
+            <small>ChatGPT / Codex に頼む文</small>
+            <p>{current.prompt}</p>
+            <button type="button" onClick={copyPrompt} disabled={!navigator.clipboard?.writeText}>
+              {copied ? "コピーしました" : "頼む文をコピー"}
+            </button>
+          </div>
+        )}
+        {activeView !== current.view && (
+          <button
+            className="guide-navigate"
+            type="button"
+            onClick={() => onNavigate(current.view)}
+          >
+            {guideViews[current.view] || "該当画面を見る"}
+          </button>
+        )}
+      </div>
+    </aside>
+  );
+}
 
 function Deadline({ deadline }) {
   const [now, setNow] = useState(() => new Date());
@@ -1321,37 +1384,47 @@ export default function App() {
         onSelect={(activeView) => setState((current) => ({ ...current, activeView }))}
       />
       <section className="workspace" aria-label={views[state.activeView]}>
-        {state.activeView === "giornate" && (
-          <GiornateView
-            state={state}
-            setState={setState}
-            onEvidence={setEvidenceGate}
-            onCapobottega={() => setCapobottegaOpen(true)}
-            onFirma={grantFirma}
-          />
-        )}
-        {state.activeView === "contratto" && (
-          <MissionView
-            onAdopt={adoptPlan}
-            onDiscard={discardPlan}
-            onRequestPlan={requestHostPlan}
-            setState={setState}
-            state={state}
-            webMcpStatus={webMcpStatus}
-          />
-        )}
-        {state.activeView === "cartone" && (
-          <CartoneView
-            onBeginStroke={beginStroke}
-            onResult={setResultStroke}
-            state={state}
-            setState={setState}
-          />
-        )}
-        {state.activeView === "cenacolo" && (
-          <CenacoloView state={state} setState={setState} />
-        )}
-        {state.activeView === "evidence" && <EvidenceView state={state} />}
+        <WorkshopGuide
+          activeView={state.activeView}
+          onNavigate={(activeView) =>
+            setState((current) => ({ ...current, activeView }))
+          }
+          state={state}
+          webMcpStatus={webMcpStatus}
+        />
+        <div className="workspace-content">
+          {state.activeView === "giornate" && (
+            <GiornateView
+              state={state}
+              setState={setState}
+              onEvidence={setEvidenceGate}
+              onCapobottega={() => setCapobottegaOpen(true)}
+              onFirma={grantFirma}
+            />
+          )}
+          {state.activeView === "contratto" && (
+            <MissionView
+              onAdopt={adoptPlan}
+              onDiscard={discardPlan}
+              onRequestPlan={requestHostPlan}
+              setState={setState}
+              state={state}
+              webMcpStatus={webMcpStatus}
+            />
+          )}
+          {state.activeView === "cartone" && (
+            <CartoneView
+              onBeginStroke={beginStroke}
+              onResult={setResultStroke}
+              state={state}
+              setState={setState}
+            />
+          )}
+          {state.activeView === "cenacolo" && (
+            <CenacoloView state={state} setState={setState} />
+          )}
+          {state.activeView === "evidence" && <EvidenceView state={state} />}
+        </div>
       </section>
       <AttentionRail state={state} />
       <EvidenceDialog

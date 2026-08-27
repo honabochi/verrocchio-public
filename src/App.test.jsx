@@ -21,6 +21,10 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("MISSION INTAKE")).toBeVisible();
     expect(screen.getByText("CHATGPTにこう頼む")).toBeVisible();
     expect(screen.getByText(/FIRMA・証拠確認・提出は私に残して/)).toBeVisible();
+    const guide = screen.getByText("LIVE GUIDE").closest("aside");
+    expect(guide).toHaveTextContent("01 / 07");
+    expect(guide).toHaveTextContent("まず、対象ハッカソンを工房へ入れる");
+    expect(guide).toHaveTextContent("HUMAN");
     expect(
       screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }),
     ).toBeEnabled();
@@ -57,6 +61,9 @@ describe("VERROCCHIO core path", () => {
     ).toBeVisible();
     expect(screen.getByText(/規律あるチームのように動ける/)).toBeVisible();
     expect(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ })).toBeVisible();
+    expect(screen.getByText("LIVE GUIDE").closest("aside")).toHaveTextContent(
+      "WebMCPが使える場所で工房を開く",
+    );
 
     await user.click(screen.getByRole("button", { name: "詳細を編集" }));
 
