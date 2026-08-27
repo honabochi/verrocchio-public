@@ -147,7 +147,7 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
 export default function MissionView({
   state,
   setState,
-  onGenerate,
+  onRequestPlan,
   onAdopt,
   onDiscard,
   webMcpStatus,
@@ -189,7 +189,7 @@ export default function MissionView({
 
   const submit = (event) => {
     event.preventDefault();
-    onGenerate();
+    onRequestPlan();
   };
 
   return (
@@ -383,11 +383,11 @@ export default function MissionView({
               }
             />
             <small>
-              {mission.planningStatus === "loading"
-                ? "計画役が作成中…"
+              {mission.planningStatus === "awaiting_host"
+                ? "このチャットで計画案を依頼してください"
                 : state.firmaPending
                   ? "人間の承認を先に完了"
-                  : "範囲を限定した計画"}
+                  : "APIキー不要・計画は未署名で受領"}
             </small>
           </button>
         </div>

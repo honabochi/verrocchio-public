@@ -1,4 +1,4 @@
-import { cp, mkdir } from "node:fs/promises";
+import { cp, mkdir, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,15 +6,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const serverDirectory = resolve(root, "dist/server");
 const hostingDirectory = resolve(root, "dist/.openai");
 
+await rm(serverDirectory, { recursive: true, force: true });
 await mkdir(serverDirectory, { recursive: true });
 await mkdir(hostingDirectory, { recursive: true });
 await cp(resolve(root, "worker/index.js"), resolve(serverDirectory, "index.js"));
-await cp(
-  resolve(root, "worker/capobottega.js"),
-  resolve(serverDirectory, "capobottega.js"),
-);
-await cp(
-  resolve(root, "worker/workshop-plan.js"),
-  resolve(serverDirectory, "workshop-plan.js"),
-);
 await cp(resolve(root, ".openai/hosting.json"), resolve(hostingDirectory, "hosting.json"));

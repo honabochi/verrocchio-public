@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { initialState } from "./model";
-import { claimWorkResult, holdWorkshop, verifyEvidenceClaim } from "./workshopCommands";
+import {
+  claimWorkResult,
+  holdWorkshop,
+  proposeWorkshopDraft,
+  verifyEvidenceClaim,
+} from "./workshopCommands";
 
 const resultInput = {
   expectedStateVersion: 0,
@@ -11,7 +16,74 @@ const resultInput = {
   remainingRisk: "Real browser discovery is not yet verified.",
 };
 
+const hostPlanInput = {
+  expectedStateVersion: 0,
+  idempotencyKey: "host-plan-1",
+  plan: {
+    contract: {
+      objective: "APIキーなしで一人チームの実行ループを完成させる。",
+      track: "WebMCP",
+      deadline: "2026-09-04T05:00:00+09:00",
+      humanRule: "FIRMAと証拠確定は人間だけが行う。",
+      irreversibleRule: "公開と提出にはFIRMAが必要。",
+    },
+    gates: ["mission", "plan", "execution", "submission"].map((id) => ({
+      id: `${id}-proof`,
+      title: `${id}の証拠`,
+      detail: `${id}が実行可能である。`,
+      proofRequired: `${id}の検証記録`,
+    })),
+    strokes: [
+      { id: "inspect-mission", title: "ミッション点検", outcome: "制約を確認する。", gateId: "mission-proof", role: "vasari", classification: "GESSO", evidenceExpected: "点検記録" },
+      { id: "run-loop", title: "一巡を実行", outcome: "結果を返す。", gateId: "execution-proof", role: "prima-mano", classification: "SECCO", evidenceExpected: "結果控え" },
+      { id: "prepare-proof", title: "提出証拠を整える", outcome: "審査可能にする。", gateId: "submission-proof", role: "colorista", classification: "SECCO", evidenceExpected: "提出チェック" },
+    ],
+    schedule: [
+      { label: "点検", dueAt: "2026-08-28T12:00:00+09:00", deliverable: "点検記録" },
+      { label: "一巡", dueAt: "2026-09-01T12:00:00+09:00", deliverable: "結果控え" },
+      { label: "提出", dueAt: "2026-09-03T12:00:00+09:00", deliverable: "提出チェック" },
+    ],
+    risks: ["証拠不足", "範囲拡大", "人間承認の取り違え"],
+    rationale: "最小の一巡を先に証明する。",
+    scopeEffect: "SHRINKS",
+    humanAction: "FIRMA_REQUIRED",
+  },
+};
+
 describe("agent claims and human verification", () => {
+  test("a host model can submit a plan but cannot approve it", () => {
+    const result = proposeWorkshopDraft(initialState, hostPlanInput);
+
+    expect(result.state.mission.draftPlan).toMatchObject({
+      source: "host-webmcp",
+      model: "ChatGPT/Codex host",
+      humanAction: "FIRMA_REQUIRED",
+    });
+    expect(result.state.mission.status).toBe("seed");
+    expect(result.receipt.next).toEqual({ actor: "human", action: "GIVE_FIRMA_IN_UI" });
+  });
+
+  test("a host plan is retry-safe and rejects broken gate references", () => {
+    const first = proposeWorkshopDraft(initialState, hostPlanInput);
+    const committed = { ...first.state, stateVersion: first.receipt.stateVersion };
+    const replay = proposeWorkshopDraft(committed, {
+      ...hostPlanInput,
+      expectedStateVersion: 999,
+    });
+    expect(replay.receipt).toMatchObject({ receiptId: first.receipt.receiptId, replayed: true });
+
+    expect(() => proposeWorkshopDraft(initialState, {
+      ...hostPlanInput,
+      idempotencyKey: "broken-plan",
+      plan: {
+        ...hostPlanInput.plan,
+        strokes: hostPlanInput.plan.strokes.map((stroke, index) =>
+          index === 0 ? { ...stroke, gateId: "missing-gate" } : stroke,
+        ),
+      },
+    })).toThrow("unknown gate");
+  });
+
   test("an agent result remains claimed and does not close its gate", () => {
     const result = claimWorkResult(initialState, resultInput);
     const gate = result.state.gates.find((item) => item.id === "working-product");

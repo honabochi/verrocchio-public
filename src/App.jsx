@@ -24,7 +24,12 @@ import {
   terms,
 } from "./uiCopy";
 import useWebMcp from "./useWebMcp";
-import { claimWorkResult, holdWorkshop, verifyEvidenceClaim } from "./workshopCommands";
+import {
+  claimWorkResult,
+  holdWorkshop,
+  proposeWorkshopDraft,
+  verifyEvidenceClaim,
+} from "./workshopCommands";
 
 const views = {
   contratto: "CONTRATTO",
@@ -897,28 +902,8 @@ function ResultDialog({ stroke, onClose, onSave }) {
   );
 }
 
-function CapobottegaDialog({ state, onClose, onClassify }) {
-  const [work, setWork] = useState(
-    state.capobottega.lastInput || state.giornata.title,
-  );
-  const [decision, setDecision] = useState(state.capobottega.latest);
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState("");
-
-  const submit = async (event) => {
-    event.preventDefault();
-    setStatus("loading");
-    setError("");
-    try {
-      const nextDecision = await onClassify(work);
-      setDecision(nextDecision);
-      setStatus("complete");
-    } catch (requestError) {
-      setError(requestError.message || "CAPOBOTTEGA could not answer.");
-      setStatus("error");
-    }
-  };
-
+function CapobottegaDialog({ state, onClose }) {
+  const decision = state.capobottega.latest;
   return (
     <div className="dialog-backdrop capobottega-backdrop" role="presentation">
       <section
@@ -939,40 +924,20 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
           <DualLabel className="section-caption" copy={terms.capobottega} />
           <h2 id="capobottega-title">ひとつのストロークに、ひとつの素材。</h2>
           <p>
-            設定された計画モデルが、可逆性、範囲、提出価値から次の一手を分類する。
+            判断はサイトのAPIではなく、いま会話しているChatGPT/Codexに頼む。
+            サイトは結果と人間の承認境界だけを保持する。
           </p>
         </header>
-        <form onSubmit={submit}>
-          <label>
-            <DualLabel className="field-caption" copy={fields.proposedWork} />
-            <textarea
-              autoFocus
-              maxLength={2000}
-              minLength={6}
-              onChange={(event) => setWork(event.target.value)}
-              value={work}
-            />
-          </label>
-          <button
-            aria-label={
-              status === "loading"
-                ? "計画役が確認中"
-                : actionAria(actions.classifyStroke)
-            }
-            className="capobottega-submit"
-            disabled={status === "loading"}
-            type="submit"
-          >
-            {status === "loading"
-              ? "計画役が確認中…"
-              : <ActionLabel copy={actions.classifyStroke} />}
-          </button>
-        </form>
-        {error && (
-          <div className="capobottega-error" role="alert">
-            FERMO · {error}
+        <div className="capobottega-decision" aria-live="polite">
+          <div className="decision-copy">
+            <small>CHATGPT / CODEX にこう頼む</small>
+            <p>
+              「工房を点検し、次の最小計画を日本語で作って、未署名案として提出して。
+              FIRMAは私に残して」
+            </p>
+            <small>APIキー不要 · WebMCP経由 · 自動承認なし</small>
           </div>
-        )}
+        </div>
         {decision && (
           <article className="capobottega-decision" aria-live="polite">
             <div className={`decision-material is-${decision.classification.toLowerCase()}`}>
@@ -1075,119 +1040,27 @@ export default function App() {
     setEvidenceGate(null);
   };
 
-  const generateWorkshop = async ({
-    signal,
-    actor = "human",
-    expectedStateVersion,
-    idempotencyKey,
-  } = {}) => {
-    const requestState = stateRef.current;
-    const isAgentRequest = actor === "webmcp-agent";
-    const normalizedKey = String(idempotencyKey || "").trim();
-
-    if (isAgentRequest) {
-      if (!normalizedKey || normalizedKey.length > 64) {
-        throw new Error("INVALID_IDEMPOTENCY_KEY: use 1 to 64 characters.");
-      }
-      const existing = (requestState.toolReceipts || []).find(
-        (item) => item.idempotencyKey === normalizedKey,
-      );
-      if (existing) {
-        if (existing.transition !== "PLAN_DRAFTED") {
-          throw new Error("IDEMPOTENCY_CONFLICT: the key was used for another transition.");
-        }
-        return { ...existing, replayed: true };
-      }
-      if (expectedStateVersion !== requestState.stateVersion) {
-        throw new Error(
-          `STALE_STATE: expected ${expectedStateVersion}, current ${requestState.stateVersion}. Inspect again.`,
-        );
-      }
-      if (requestState.inFlightToolKeys.includes(normalizedKey)) {
-        throw new Error("REQUEST_IN_PROGRESS: wait for the first request to finish.");
-      }
-    }
-
+  const requestHostPlan = () =>
     setState((current) => ({
       ...current,
-      inFlightToolKeys: isAgentRequest
-        ? [normalizedKey, ...current.inFlightToolKeys]
-        : current.inFlightToolKeys,
       mission: {
         ...current.mission,
-        planningStatus: "loading",
+        planningStatus: "awaiting_host",
         planningError: "",
       },
+      events: [
+        createEvent(
+          "CAPOBOTTEGA",
+          "Host plan requested; ask ChatGPT/Codex to inspect and propose an unsigned draft.",
+        ),
+        ...current.events,
+      ],
     }));
-    try {
-      const response = await fetch("/api/workshop-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal,
-        body: JSON.stringify({
-          mode: requestState.mission.status === "adopted" ? "replan" : "plan",
-          mission: requestState.mission,
-          current: {
-            gates: requestState.gates,
-            strokes: requestState.cartone.strokes,
-            evidence: requestState.events.map((event) => event.message),
-          },
-        }),
-      });
-      const plan = await response.json();
-      if (!response.ok) {
-        throw new Error(plan.error || "CAPOBOTTEGA could not forge the workshop.");
-      }
-      const receipt = {
-        ok: true,
-        receiptId: `receipt-${crypto.randomUUID()}`,
-        idempotencyKey: isAgentRequest ? normalizedKey : undefined,
-        transition: "PLAN_DRAFTED",
-        stateVersion: (stateRef.current.stateVersion || 0) + 1,
-        planRevision: (requestState.cartone?.revision || 0) + 1,
-        model: plan.model,
-        responseId: plan.responseId,
-        next: { actor: "human", action: "GIVE_FIRMA_IN_UI" },
-        requestedBy: actor,
-      };
-      setState((current) => ({
-        ...current,
-        inFlightToolKeys: current.inFlightToolKeys.filter(
-          (key) => key !== normalizedKey,
-        ),
-        toolReceipts: isAgentRequest
-          ? [receipt, ...current.toolReceipts].slice(0, 20)
-          : current.toolReceipts,
-        mission: {
-          ...current.mission,
-          planningStatus: "draft",
-          planningError: "",
-          draftPlan: plan,
-        },
-        events: [
-          createEvent(
-            "CAPOBOTTEGA",
-            `Workshop revision drafted by ${plan.model} · ${plan.responseId}; awaiting FIRMA.`,
-          ),
-          ...current.events,
-        ],
-      }));
-      return receipt;
-    } catch (error) {
-      setState((current) => ({
-        ...current,
-        inFlightToolKeys: current.inFlightToolKeys.filter(
-          (key) => key !== normalizedKey,
-        ),
-        mission: {
-          ...current.mission,
-          planningStatus: "error",
-          planningError: error.message,
-        },
-      }));
-      if (actor === "webmcp-agent") throw error;
-      return { ok: false, error: error.message };
-    }
+
+  const proposeWebMcpDraft = (input) => {
+    const result = proposeWorkshopDraft(stateRef.current, input);
+    setState(result.state);
+    return result.receipt;
   };
 
   const returnWebMcpResult = (input) => {
@@ -1290,114 +1163,6 @@ export default function App() {
     setResultStroke(null);
   };
 
-  const classifyWithCapobottega = async (work) => {
-    const missingGates = state.gates
-      .filter((gate) => !gate.done)
-      .map((gate) => `${gate.id}: ${gate.title}`);
-    const response = await fetch("/api/capobottega", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        work,
-        objective: state.contract.objective,
-        irreversibleRule: state.contract.irreversibleRule,
-        manca,
-        missingGates,
-      }),
-    });
-    const payload = await response.json();
-    if (!response.ok) {
-      throw new Error(payload.error || "CAPOBOTTEGA is unavailable.");
-    }
-
-    setState((current) => {
-      const modelGate = current.gates.find(
-        (gate) =>
-          gate.id === "model-evidence" ||
-          gate.id.includes("model") ||
-          gate.id.includes("ai-") ||
-          gate.id.includes("gpt") ||
-          gate.title.toLowerCase().includes("model evidence") ||
-          gate.title.toLowerCase().includes("ai evidence") ||
-          gate.title.toLowerCase().includes("gpt"),
-      );
-      const attentionCost =
-        payload.humanAction === "FIRMA_REQUIRED"
-          ? 4
-          : payload.humanAction === "REVIEW_LATER"
-            ? 1
-            : 0;
-      const proof = `${payload.model} · ${payload.responseId} · ${payload.createdAt}`;
-      const modelClaim = {
-        id: `claim-${crypto.randomUUID()}`,
-        submittedBy: "capobottega-model",
-        submittedAt: payload.createdAt,
-        status: "CLAIMED",
-        summary: payload.evidenceNote,
-        verification: "Model runtime response recorded; human review pending.",
-        evidenceRef: proof,
-        remainingRisk: payload.reason,
-      };
-      return {
-        ...current,
-        attentionMinutes: Math.min(
-          current.attentionCeiling,
-          current.attentionMinutes + attentionCost,
-        ),
-        isHeld: payload.humanAction === "FIRMA_REQUIRED" ? true : current.isHeld,
-        isRunning: payload.humanAction === "FIRMA_REQUIRED" ? false : current.isRunning,
-        firmaPending:
-          payload.humanAction === "FIRMA_REQUIRED"
-            ? {
-                responseId: payload.responseId,
-                title: payload.nextStroke,
-                reason: payload.reason,
-              }
-            : current.firmaPending,
-        giornata: {
-          ...current.giornata,
-          title: payload.nextStroke,
-          classification: payload.classification,
-          classificationNote: payload.reason,
-        },
-        capobottega: {
-          lastInput: work,
-          latest: payload,
-        },
-        gates: current.gates.map((gate) =>
-          gate.id === modelGate?.id
-            ? { ...gate, claims: [modelClaim, ...(gate.claims || [])] }
-            : gate,
-        ),
-        decisions: [
-          {
-            id: `decision-${crypto.randomUUID()}`,
-            time: payload.createdAt,
-            type: payload.classification,
-            title: payload.nextStroke,
-            actor: `CAPOBOTTEGA · ${payload.model}`,
-            rationale: payload.reason,
-            responseId: payload.responseId,
-          },
-          ...current.decisions,
-        ],
-        events: [
-          createEvent(
-            "CAPOBOTTEGA",
-            `${payload.classification} · ${payload.evidenceNote} · ${payload.responseId}`,
-          ),
-          createEvent(
-            "CLAIM",
-            `Planning-model runtime claim attached: ${payload.model} · ${payload.responseId}; human verification required.`,
-          ),
-          ...current.events,
-        ],
-      };
-    });
-
-    return payload;
-  };
-
   const grantFirma = () => {
     setState((current) => {
       if (!current.firmaPending) return current;
@@ -1422,7 +1187,7 @@ export default function App() {
   };
 
   const webMcpStatus = useWebMcp(state, {
-    forgeDraft: generateWorkshop,
+    proposeDraft: proposeWebMcpDraft,
     returnResult: returnWebMcpResult,
     callFermo: callFermoFromWebMcp,
   });
@@ -1492,7 +1257,7 @@ export default function App() {
           <MissionView
             onAdopt={adoptPlan}
             onDiscard={discardPlan}
-            onGenerate={generateWorkshop}
+            onRequestPlan={requestHostPlan}
             setState={setState}
             state={state}
             webMcpStatus={webMcpStatus}
@@ -1527,7 +1292,6 @@ export default function App() {
         <CapobottegaDialog
           state={state}
           onClose={() => setCapobottegaOpen(false)}
-          onClassify={classifyWithCapobottega}
         />
       )}
     </main>

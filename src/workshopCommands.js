@@ -1,4 +1,5 @@
 import { createEvent } from "./model";
+import { normalizeWorkshopPlan } from "./workshopPlanContract";
 
 function receipt(transition, state, idempotencyKey, extra = {}) {
   return {
@@ -35,6 +36,58 @@ function validateMutationMeta(state, input, transition) {
   }
 
   return { existing: null, idempotencyKey };
+}
+
+export function proposeWorkshopDraft(state, input, actor = "webmcp-agent") {
+  const meta = validateMutationMeta(state, input, "PLAN_DRAFTED");
+  if (meta.existing) return { state, receipt: meta.existing };
+  if (state.firmaPending) {
+    throw new Error("FIRMA_REQUIRED: a human must resolve the pending signature in the UI.");
+  }
+  if (state.isHeld) {
+    throw new Error("FERMO_ACTIVE: only a human can resume the workshop.");
+  }
+  if (state.mission?.draftPlan) {
+    throw new Error("PLAN_DRAFT_ACTIVE: the human must adopt or discard the current draft.");
+  }
+
+  const now = new Date().toISOString();
+  const planId = `host-plan-${crypto.randomUUID()}`;
+  const plan = {
+    ...normalizeWorkshopPlan(input.plan),
+    source: "host-webmcp",
+    model: "ChatGPT/Codex host",
+    responseId: planId,
+    createdAt: now,
+    usage: null,
+  };
+  const planReceipt = receipt("PLAN_DRAFTED", state, meta.idempotencyKey, {
+    planRevision: (state.cartone?.revision || 0) + 1,
+    planId,
+    phase: "PLAN_DRAFT",
+    requestedBy: actor,
+    next: { actor: "human", action: "GIVE_FIRMA_IN_UI" },
+  });
+  const nextState = {
+    ...state,
+    activeView: "contratto",
+    mission: {
+      ...state.mission,
+      planningStatus: "draft",
+      planningError: "",
+      draftPlan: plan,
+    },
+    toolReceipts: [planReceipt, ...(state.toolReceipts || [])].slice(0, 20),
+    events: [
+      createEvent(
+        "CAPOBOTTEGA",
+        `${actor} proposed ${planId}; the plan remains unsigned until human FIRMA.`,
+      ),
+      ...state.events,
+    ],
+  };
+
+  return { state: nextState, receipt: planReceipt };
 }
 
 export function claimWorkResult(state, input, actor = "webmcp-agent") {

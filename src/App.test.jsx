@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
@@ -8,6 +8,7 @@ describe("VERROCCHIO core path", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.unstubAllGlobals();
+    delete document.modelContext;
   });
 
   test("renders the live workshop instead of an empty shell", () => {
@@ -19,7 +20,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("CHATGPTにこう頼む")).toBeVisible();
     expect(screen.getByText(/FIRMA・証拠確認・提出は私に残して/)).toBeVisible();
     expect(
-      screen.getByRole("button", { name: /FORGE WORKSHOP/ }),
+      screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }),
     ).toBeEnabled();
   });
 
@@ -53,7 +54,7 @@ describe("VERROCCHIO core path", () => {
       screen.getAllByText("OpenAI WebMCP Challenge", { selector: "dd" })[0],
     ).toBeVisible();
     expect(screen.getByText(/規律あるチームのように動ける/)).toBeVisible();
-    expect(screen.getByRole("button", { name: /FORGE WORKSHOP/ })).toBeVisible();
+    expect(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ })).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "詳細を編集" }));
 
@@ -120,82 +121,28 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeDisabled();
   });
 
-  test("CAPOBOTTEGA records a model claim without closing its own evidence gate", async () => {
+  test("CAPOBOTTEGA truthfully routes thinking to the ChatGPT or Codex host", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          classification: "GESSO",
-          reason: "This is safe local test work.",
-          nextStroke: "Add the endpoint contract test.",
-          humanAction: "NONE",
-          scopeEffect: "PRESERVES",
-          submissionGate: "working-product",
-          evidenceNote: "The runtime classifier directed its own verification.",
-          source: "openai",
-          model: "gpt-5.6-sol",
-          responseId: "resp_test_capobottega",
-          createdAt: "2026-07-18T12:00:00.000Z",
-          usage: { inputTokens: 120, outputTokens: 80, totalTokens: 200 },
-        }),
-      }),
-    );
-
     render(<App />);
+
     await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
     await user.click(screen.getByRole("button", { name: /計画役に相談する/ }));
-    await user.click(screen.getByRole("button", { name: /次の作業を分類する/ }));
 
-    expect(await screen.findByText("This is safe local test work.")).toBeVisible();
-    expect(screen.getByLabelText("人間による証拠確認待ち")).toHaveAttribute(
-      "aria-live",
-      "polite",
-    );
-    expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(3);
-    expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
-    expect(screen.getByRole("button", { name: /証拠主張を確認する/ })).toBeVisible();
+    expect(screen.getByText(/判断はサイトのAPIではなく/)).toBeVisible();
+    expect(screen.getByText(/APIキー不要 · WebMCP経由/)).toBeVisible();
+    expect(screen.queryByRole("button", { name: /次の作業を分類する/ })).not.toBeInTheDocument();
   });
 
-  test("AFFRESCO blocks resume until the human gives FIRMA", async () => {
+  test("requesting a plan waits for the host without making a network call", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          classification: "AFFRESCO",
-          reason: "Publishing changes external state and requires the human signature.",
-          nextStroke: "Publish the verified build.",
-          humanAction: "FIRMA_REQUIRED",
-          scopeEffect: "PRESERVES",
-          submissionGate: "working-product",
-          evidenceNote: "The publication boundary stopped for a human signature.",
-          source: "openai",
-          model: "gpt-5.6-sol",
-          responseId: "resp_test_firma",
-          createdAt: "2026-07-18T12:00:00.000Z",
-          usage: { inputTokens: 120, outputTokens: 80, totalTokens: 200 },
-        }),
-      }),
-    );
-
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
-    await user.click(screen.getByRole("button", { name: /計画役に相談する/ }));
-    await user.click(screen.getByRole("button", { name: /次の作業を分類する/ }));
 
-    expect(await screen.findByRole("button", { name: /人間の承認待ち/ })).toBeDisabled();
-    expect(screen.getAllByText("FIRMA REQUIRED")[0]).toBeVisible();
-    expect(
-      screen.getByRole("button", { name: /計画役も停止中/ }),
-    ).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }));
 
-    await user.click(screen.getByRole("button", { name: /人間が承認する/ }));
-
-    expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeVisible();
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByText("このチャットで計画案を依頼してください")).toBeVisible();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   test("CARTONE emits a bounded work packet for the next actor", async () => {
@@ -213,15 +160,20 @@ describe("VERROCCHIO core path", () => {
 
   test("forges a dynamic workshop draft and requires FIRMA before adoption", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    const registered = new Map();
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: {
+        registerTool: vi.fn(async (tool) => registered.set(tool.name, tool)),
+      },
+    });
+    const plan = {
           contract: {
             objective: "Complete the operational Phase 1 execution loop.",
             track: "Developer Tools",
-            deadline: "2026-07-22T09:00:00+09:00",
+            deadline: "2026-09-04T05:00:00+09:00",
             humanRule: "The human owns WHY, NO, and FIRMA.",
             irreversibleRule: "Publishing requires FIRMA.",
           },
@@ -281,24 +233,25 @@ describe("VERROCCHIO core path", () => {
             },
           ],
           schedule: [
-            { label: "Mission", dueAt: "T-4h", deliverable: "Contract" },
-            { label: "Return", dueAt: "T-2h", deliverable: "Evidence" },
-            { label: "Replan", dueAt: "T-1h", deliverable: "Revision" },
+            { label: "Mission", dueAt: "2026-08-28T12:00:00+09:00", deliverable: "Contract" },
+            { label: "Return", dueAt: "2026-09-01T12:00:00+09:00", deliverable: "Evidence" },
+            { label: "Replan", dueAt: "2026-09-03T12:00:00+09:00", deliverable: "Revision" },
           ],
           risks: ["Dashboard only", "No proof", "Scope drift"],
           rationale: "Close the operational loop before any workpiece.",
           scopeEffect: "SHRINKS",
           humanAction: "FIRMA_REQUIRED",
-          source: "openai",
-          model: "gpt-5.6-sol",
-          responseId: "resp_plan_ui",
-          createdAt: "2026-07-18T12:00:00.000Z",
-        }),
-      }),
-    );
+    };
 
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /FORGE WORKSHOP/ }));
+    await waitFor(() => expect(registered.has("propose_workshop_draft")).toBe(true));
+    await act(async () => {
+      await registered.get("propose_workshop_draft").execute({
+        expectedStateVersion: 0,
+        idempotencyKey: "host-plan-ui-test",
+        plan,
+      });
+    });
 
     expect(await screen.findByText("計画はまだ乾いていない。")).toBeVisible();
     expect(screen.getByText("Complete the operational Phase 1 execution loop.")).toBeVisible();
@@ -311,6 +264,7 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: /作業計画を開く/ }));
     expect(screen.getByText("Adopt the mission")).toBeVisible();
     expect(screen.getByText("BACKWARD SCHEDULE")).toBeVisible();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   test("returns a bounded work result into its target evidence gate", async () => {

@@ -16,7 +16,7 @@ resume a held workshop, or submit the result.
 ## Implemented vertical slice
 
 1. Chrome discovers `inspect_workshop`, `call_fermo`,
-   `forge_workshop_draft`, and `return_work_result` through
+   `propose_workshop_draft`, and `return_work_result` through
    `document.modelContext`.
 2. Every mutation requires a current `stateVersion` and a bounded idempotency
    key. Stale requests fail and retries replay their stored receipt.

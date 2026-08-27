@@ -72,7 +72,7 @@ describe("VERROCCHIO WebMCP read path", () => {
     expect(registration.toolNames).toEqual([
       "inspect_workshop",
       "call_fermo",
-      "forge_workshop_draft",
+      "propose_workshop_draft",
       "return_work_result",
     ]);
     const [tool, options] = registerTool.mock.calls[0];

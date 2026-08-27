@@ -51,7 +51,7 @@ VERROCCHIO currently registers four imperative WebMCP tools:
 
 - `inspect_workshop` reads MISSION, MANCA, active work, and human boundaries;
 - `call_fermo` stops the workshop on uncertainty and leaves resume to the human;
-- `forge_workshop_draft` generates an unsigned draft that stops for human FIRMA;
+- `propose_workshop_draft` accepts a structured plan from the ChatGPT/Codex host and stops for human FIRMA;
 - `return_work_result` records a structured `CLAIMED` result without closing a gate.
 
 Every mutation requires the `stateVersion` returned by the latest inspection
@@ -87,20 +87,18 @@ and CONSEGNA to the human. A productive follow-up can forge an unsigned plan or
 return a work claim. Attempts to self-approve, verify their own evidence, or
 submit must stop at the human boundary.
 
-State is saved in browser `localStorage`. `OPENAI_API_KEY` is required only by
-the server-side planning and decision routes.
+State is saved in browser `localStorage`. The active product path has no model
+API route and requires no developer API key: the ChatGPT/Codex host performs
+the reasoning, while WebMCP submits bounded state transitions to VERROCCHIO.
 
 ## MISSION and replanning
 
-`/api/workshop-plan` uses the server-configured OpenAI model with a strict schema to compile the
-mission into a contract, evidence gates, bounded strokes, a backward schedule,
-and risks. A plan is always an unsigned draft until FIRMA. Replanning receives
-the current gates, strokes, and evidence; the client preserves completed proof
-when adopting a revision.
-
-`OPENAI_MODEL` can change the runtime model without changing the mission
-profile. The hackathon's required model or platform belongs in the mission
-rules, never in the engine's seed gates.
+After `inspect_workshop`, the host model compiles the mission into a contract,
+evidence gates, bounded strokes, a backward schedule, and risks, then calls
+`propose_workshop_draft`. VERROCCHIO validates identifiers, gate references,
+deadlines, limits, stale state, and retries before saving the plan. A plan is
+always unsigned until human FIRMA, and completed proof survives adoption of a
+revision.
 
 ## CARTONE work packets
 
@@ -118,20 +116,10 @@ risk before the next stroke begins.
 
 ## CAPOBOTTEGA
 
-Select `ASK CAPOBOTTEGA` from the active GIORNATA and describe one proposed
-stroke. The server-side `/api/capobottega` route uses `gpt-5.6-sol` through the
-Responses API to return a strict decision contract:
-
-- `AFFRESCO`, `SECCO`, or `GESSO`;
-- one evidence-based reason;
-- the smallest next stroke;
-- the human action, scope effect, and submission gate.
-
-A successful decision is written to the evidence ledger with its model
-response ID as an unverified claim. It cannot close its own evidence gate. An `AFFRESCO` decision with
-`FIRMA_REQUIRED` hard-locks the GIORNATA; resume is unavailable until the human
-explicitly gives FIRMA. `OPENAI_API_KEY` is required in the local or hosted
-server environment and is never sent to the browser.
+Select `ASK CAPOBOTTEGA` to see the host prompt. Ask the current ChatGPT/Codex
+conversation to inspect the workshop and propose the smallest plan. The site
+does not pretend to have called a model: host-originated plans are marked
+`host-webmcp`, remain unsigned, and cannot close their own evidence gate.
 
 ## Supported platform
 
@@ -160,25 +148,24 @@ it is evidence about the engine, not a permanent contest configuration.
 
 ## Current phase
 
-Phase 1 implements the visual workshop, replaceable MISSION profiles, dynamic
+Phase 1 implements the visual workshop, replaceable MISSION profiles, host-driven
 strict planning, human adoption boundary, bounded execution packets, structured
-result return, external review normalization, evidence ledger, replanning,
-deadline-bounded schedules, and CAPOBOTTEGA classification.
+result return, external review normalization, evidence ledger, replanning, and
+deadline-bounded schedules.
 
 The current challenge extension adds native, state-dependent WebMCP tools and
 the `CLAIMED → VERIFIED` human checkpoint. Natural-language tool-selection
 evals and hosted origin-trial verification remain open.
 
-## Vercel
-
-The repository includes Vercel Functions for both API routes.
+## Build
 
 ```bash
-cp .env.example .env.local
 npm run build
 ```
 
-Set `OPENAI_API_KEY` as a Vercel secret and optionally set `OPENAI_MODEL`.
+No model secret or server environment variable is required for the active
+WebMCP path. The old server planner modules remain only as historical Phase 1
+test evidence and are not wired into the dev server or packaged Sites worker.
 
 See [the CAPOBOTTEGA evidence note](docs/CAPOBOTTEGA.md) for the runtime
 contract and [the Phase 1 audit](docs/PHASE1_AUDIT.md) for the current evidence.

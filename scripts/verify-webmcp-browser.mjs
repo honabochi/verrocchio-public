@@ -75,7 +75,7 @@ try {
   await waitForTools(page, [
     "inspect_workshop",
     "call_fermo",
-    "forge_workshop_draft",
+    "propose_workshop_draft",
     "return_work_result",
   ]);
 

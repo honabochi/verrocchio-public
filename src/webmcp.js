@@ -1,3 +1,5 @@
+import { workshopPlanInputSchema } from "./workshopPlanContract";
+
 const EMPTY_INPUT_SCHEMA = {
   type: "object",
   properties: {
@@ -127,46 +129,21 @@ export function createInspectWorkshopTool(getState) {
   };
 }
 
-export function createForgeWorkshopTool(getState, getActions) {
+export function createProposeWorkshopDraftTool(getActions) {
   return {
-    name: "forge_workshop_draft",
-    title: "Forge unsigned workshop draft",
+    name: "propose_workshop_draft",
+    title: "Propose an unsigned workshop plan",
     description:
-      "Generate a bounded workshop plan from the saved mission. The result remains unsigned and requires human FIRMA in the page before adoption.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        expectedStateVersion: {
-          type: "integer",
-          minimum: 0,
-          description: "State version returned by the latest inspection.",
-        },
-        idempotencyKey: {
-          type: "string",
-          minLength: 1,
-          maxLength: 64,
-          description: "Stable key for retrying this exact plan request.",
-        },
-      },
-      required: ["expectedStateVersion", "idempotencyKey"],
-      additionalProperties: false,
-    },
+      "Use this after inspect_workshop to submit the smallest structured Japanese plan that can close the mission's evidence gates. The plan stays unsigned; only the human can give FIRMA in the page.",
+    inputSchema: workshopPlanInputSchema,
     annotations: {
       readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
       untrustedContentHint: true,
     },
-    execute: async (input, { signal } = {}) => {
-      const state = getState();
-      if (state.firmaPending || state.isHeld) {
-        throw new Error("HUMAN_ACTION_REQUIRED: the workshop is held.");
-      }
-      return getActions().forgeDraft({
-        signal,
-        actor: "webmcp-agent",
-        expectedStateVersion: input.expectedStateVersion,
-        idempotencyKey: input.idempotencyKey,
-      });
-    },
+    execute: async (input) => getActions().proposeDraft(input),
   };
 }
 
@@ -268,7 +245,7 @@ export function registerWorkshopTools({ getState, getActions = () => ({}), model
   const tools = [createInspectWorkshopTool(getState)];
   if (!["AWAITING_HUMAN_FIRMA", "FERMO", "PLAN_DRAFT", "EVIDENCE_REVIEW"].includes(phase)) {
     tools.push(createCallFermoTool(getActions));
-    tools.push(createForgeWorkshopTool(getState, getActions));
+    tools.push(createProposeWorkshopDraftTool(getActions));
     if (state.cartone?.strokes?.some((stroke) => stroke.status === "active")) {
       tools.push(createReturnWorkResultTool(getState, getActions));
     }
