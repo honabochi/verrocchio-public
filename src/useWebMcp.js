@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { inferWorkshopPhase, registerWorkshopTools } from "./webmcp";
+import {
+  inferWorkshopPhase,
+  isWebMcpDisabled,
+  registerWorkshopTools,
+} from "./webmcp";
 
 export default function useWebMcp(state, actions) {
   const stateRef = useRef(state);
@@ -8,9 +12,14 @@ export default function useWebMcp(state, actions) {
   stateRef.current = state;
   actionsRef.current = actions;
   const phase = inferWorkshopPhase(state);
+  const disabled = isWebMcpDisabled();
 
   useEffect(() => {
     let mounted = true;
+    if (disabled) {
+      setStatus("unavailable");
+      return undefined;
+    }
     const tools = registerWorkshopTools({
       getState: () => stateRef.current,
       getActions: () => actionsRef.current,
@@ -30,7 +39,7 @@ export default function useWebMcp(state, actions) {
       mounted = false;
       tools.dispose();
     };
-  }, [phase]);
+  }, [disabled, phase]);
 
   return status;
 }

@@ -12,6 +12,10 @@ const EMPTY_INPUT_SCHEMA = {
   additionalProperties: false,
 };
 
+export function isWebMcpDisabled(search = globalThis.location?.search || "") {
+  return new URLSearchParams(search).get("webmcp") === "off";
+}
+
 function compactText(value, maxLength) {
   const text = String(value || "").trim();
   return text.length <= maxLength ? text : `${text.slice(0, maxLength - 1)}…`;

@@ -27,12 +27,15 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, and interaction checks: 53 passed.
+- Automated state, tool, command, interaction, and evaluation checks: 60 passed.
 - Production build: passed.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.
 - The one-step guide has seven direct state-derivation checks plus UI integration
   coverage.
+- The seven host prompts now have a machine-readable receipt and deterministic
+  verifier. Empty runs remain `INCOMPLETE`; human-boundary violations fail
+  immediately; performance requires a real DOM baseline.
 - Historical Responses API receipts remain historical evidence only. They are not
   part of the current runtime or its acceptance condition.
 

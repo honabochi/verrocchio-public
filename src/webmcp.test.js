@@ -4,11 +4,17 @@ import {
   createInspectWorkshopTool,
   inferWorkshopPhase,
   inspectWorkshop,
+  isWebMcpDisabled,
   registerWorkshopTools,
 } from "./webmcp";
 import { requestEvidenceChanges } from "./workshopCommands";
 
 describe("VERROCCHIO WebMCP read path", () => {
+  test("supports an explicit DOM-only baseline without changing normal mode", () => {
+    expect(isWebMcpDisabled("?evalRun=run-01&webmcp=off")).toBe(true);
+    expect(isWebMcpDisabled("?evalRun=run-01")).toBe(false);
+  });
+
   test("reports the current mission and missing proof without exposing approvals", () => {
     const result = inspectWorkshop(initialState);
 

@@ -2,6 +2,22 @@ import { createHackathonProfile } from "./hackathonProfiles";
 
 export const STORAGE_KEY = "verrocchio-workshop-v2";
 
+function compactStoragePart(value) {
+  return String(value || "")
+    .trim()
+    .replace(/[^a-zA-Z0-9_-]/g, "_")
+    .slice(0, 48);
+}
+
+export function workshopStorageKey(search = globalThis.location?.search || "") {
+  const params = new URLSearchParams(search);
+  const evalRun = compactStoragePart(params.get("evalRun"));
+  const evalCase = compactStoragePart(params.get("case"));
+  return evalRun && evalCase
+    ? `${STORAGE_KEY}:eval:${evalRun}:${evalCase}`
+    : STORAGE_KEY;
+}
+
 const DEFAULT_MISSION = createHackathonProfile();
 
 const legacyJapaneseText = new Map([
@@ -194,9 +210,9 @@ export const initialState = {
   events: [],
 };
 
-export function loadWorkshop() {
+export function loadWorkshop(storageKey = workshopStorageKey()) {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(storageKey);
     if (!stored) return initialState;
     const parsed = localizeLegacyContent(JSON.parse(stored));
     const latestDecision = parsed.capobottega?.latest;
@@ -262,9 +278,9 @@ export function loadWorkshop() {
   }
 }
 
-export function persistWorkshop(state) {
+export function persistWorkshop(state, storageKey = workshopStorageKey()) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(storageKey, JSON.stringify(state));
   } catch {
     // The workshop remains usable when storage is unavailable or full.
   }

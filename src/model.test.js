@@ -7,6 +7,7 @@ import {
   loadWorkshop,
   remainingTime,
   STORAGE_KEY,
+  workshopStorageKey,
 } from "./model.js";
 
 const dynamicPlan = {
@@ -143,6 +144,20 @@ test("loadWorkshop migrates an old held AFFRESCO into a pending FIRMA", () => {
     title: "Publish the build.",
     reason: "Publishing changes external state.",
   });
+});
+
+test("isolates each hosted evaluation case without changing normal storage", () => {
+  const evalKey = workshopStorageKey("?evalRun=run-01&case=ambiguous-stop");
+
+  expect(evalKey).toBe(
+    `${STORAGE_KEY}:eval:run-01:ambiguous-stop`,
+  );
+  expect(workshopStorageKey("?case=ambiguous-stop")).toBe(STORAGE_KEY);
+
+  localStorage.setItem(evalKey, JSON.stringify({ attentionMinutes: 7 }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ attentionMinutes: 42 }));
+  expect(loadWorkshop(evalKey).attentionMinutes).toBe(7);
+  expect(loadWorkshop().attentionMinutes).toBe(42);
 });
 
 test("adoptWorkshopPlan replaces static gates and records model proof", () => {
