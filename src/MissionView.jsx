@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { createHackathonProfile } from "./hackathonProfiles";
+
 function MissionField({ label, name, value, onChange, rows = 3 }) {
   return (
     <label>
@@ -9,6 +12,28 @@ function MissionField({ label, name, value, onChange, rows = 3 }) {
         value={value}
       />
     </label>
+  );
+}
+
+function formatDeadline(deadline) {
+  if (Number.isNaN(Date.parse(deadline))) return deadline;
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Tokyo",
+    timeZoneName: "short",
+  }).format(new Date(deadline));
+}
+
+function MissionSummaryItem({ label, value, featured = false }) {
+  return (
+    <article className={featured ? "is-featured" : ""} title={value}>
+      <span>{label}</span>
+      <p>{value}</p>
+    </article>
   );
 }
 
@@ -108,14 +133,18 @@ export default function MissionView({
   onDiscard,
   webMcpStatus,
 }) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const { mission } = state;
+  const hasLoadedProfile =
+    mission.profileId && mission.profileId !== "blank";
   const updateMission = (field, value) =>
     setState((current) => ({
       ...current,
       mission: { ...current.mission, [field]: value },
     }));
 
-  const loadProfile = (profileId) =>
+  const loadProfile = (profileId) => {
+    setDetailsOpen(false);
     setState((current) => ({
       ...current,
       deadline: createHackathonProfile(profileId).deadline,
@@ -137,6 +166,7 @@ export default function MissionView({
         ...current.events,
       ],
     }));
+  };
 
   const submit = (event) => {
     event.preventDefault();
@@ -144,7 +174,9 @@ export default function MissionView({
   };
 
   return (
-    <section className="document-view mission-view">
+    <section
+      className={`document-view mission-view ${hasLoadedProfile ? "is-profile-loaded" : ""}`}
+    >
       <header>
         <span>01</span>
         <h1>CONTRATTO</h1>
@@ -155,7 +187,10 @@ export default function MissionView({
 
       <WebMcpOnramp status={webMcpStatus} />
 
-      <form className="mission-form" onSubmit={submit}>
+      <form
+        className={`mission-form ${hasLoadedProfile ? "is-summary" : ""}`}
+        onSubmit={submit}
+      >
         <div className="mission-form-heading">
           <div>
             <span>MISSION INTAKE</span>
@@ -180,78 +215,108 @@ export default function MissionView({
           </button>
         </div>
 
-        <div className="mission-short-fields">
-          <label>
-            Hackathon
-            <input
-              name="name"
-              onChange={(event) => updateMission("name", event.target.value)}
-              value={mission.name}
-            />
-          </label>
-          <label>
-            Track
-            <input
-              name="track"
-              onChange={(event) => updateMission("track", event.target.value)}
-              value={mission.track}
-            />
-          </label>
-          <label>
-            Launch window
-            <input
-              name="deadline"
-              onChange={(event) => updateMission("deadline", event.target.value)}
-              value={mission.deadline}
-            />
-          </label>
-        </div>
+        {hasLoadedProfile && !detailsOpen ? (
+          <section className="mission-summary" aria-label="読み込んだミッションの要約">
+            <dl className="mission-summary-meta">
+              <div>
+                <dt>HACKATHON</dt>
+                <dd title={mission.name}>{mission.name}</dd>
+              </div>
+              <div>
+                <dt>TRACK</dt>
+                <dd title={mission.track}>{mission.track}</dd>
+              </div>
+              <div>
+                <dt>DEADLINE</dt>
+                <dd title={mission.deadline}>{formatDeadline(mission.deadline)}</dd>
+              </div>
+            </dl>
+            <div className="mission-summary-grid">
+              <MissionSummaryItem featured label="MISSION" value={mission.brief} />
+              <MissionSummaryItem label="REQUIRED PROOF" value={mission.rules} />
+              <MissionSummaryItem label="JUDGING" value={mission.judgingCriteria} />
+              <MissionSummaryItem label="CONSTRAINTS" value={mission.constraints} />
+              <MissionSummaryItem label="AVAILABLE HANDS" value={mission.availableAI} />
+              <MissionSummaryItem label="CANDIDATE" value={mission.candidateIdeas} />
+              <MissionSummaryItem label="DI SUA MANO · HUMAN BOUNDARY" value={mission.humanBoundary} />
+            </div>
+          </section>
+        ) : (
+          <div className="mission-editor">
+            <div className="mission-short-fields">
+              <label>
+                Hackathon
+                <input
+                  name="name"
+                  onChange={(event) => updateMission("name", event.target.value)}
+                  value={mission.name}
+                />
+              </label>
+              <label>
+                Track
+                <input
+                  name="track"
+                  onChange={(event) => updateMission("track", event.target.value)}
+                  value={mission.track}
+                />
+              </label>
+              <label>
+                Launch window
+                <input
+                  name="deadline"
+                  onChange={(event) => updateMission("deadline", event.target.value)}
+                  value={mission.deadline}
+                />
+              </label>
+            </div>
 
-        <MissionField
-          label="Mission"
-          name="brief"
-          onChange={updateMission}
-          rows={5}
-          value={mission.brief}
-        />
-        <div className="mission-two-column">
-          <MissionField
-            label="Rules and required deliverables"
-            name="rules"
-            onChange={updateMission}
-            value={mission.rules}
-          />
-          <MissionField
-            label="Judging criteria"
-            name="judgingCriteria"
-            onChange={updateMission}
-            value={mission.judgingCriteria}
-          />
-          <MissionField
-            label="Constraints"
-            name="constraints"
-            onChange={updateMission}
-            value={mission.constraints}
-          />
-          <MissionField
-            label="Available hands"
-            name="availableAI"
-            onChange={updateMission}
-            value={mission.availableAI}
-          />
-          <MissionField
-            label="Candidate ideas or explicit deferral"
-            name="candidateIdeas"
-            onChange={updateMission}
-            value={mission.candidateIdeas}
-          />
-          <MissionField
-            label="DI SUA MANO · human boundary"
-            name="humanBoundary"
-            onChange={updateMission}
-            value={mission.humanBoundary}
-          />
-        </div>
+            <MissionField
+              label="Mission"
+              name="brief"
+              onChange={updateMission}
+              rows={5}
+              value={mission.brief}
+            />
+            <div className="mission-two-column">
+              <MissionField
+                label="Rules and required deliverables"
+                name="rules"
+                onChange={updateMission}
+                value={mission.rules}
+              />
+              <MissionField
+                label="Judging criteria"
+                name="judgingCriteria"
+                onChange={updateMission}
+                value={mission.judgingCriteria}
+              />
+              <MissionField
+                label="Constraints"
+                name="constraints"
+                onChange={updateMission}
+                value={mission.constraints}
+              />
+              <MissionField
+                label="Available hands"
+                name="availableAI"
+                onChange={updateMission}
+                value={mission.availableAI}
+              />
+              <MissionField
+                label="Candidate ideas or explicit deferral"
+                name="candidateIdeas"
+                onChange={updateMission}
+                value={mission.candidateIdeas}
+              />
+              <MissionField
+                label="DI SUA MANO · human boundary"
+                name="humanBoundary"
+                onChange={updateMission}
+                value={mission.humanBoundary}
+              />
+            </div>
+          </div>
+        )}
 
         {mission.planningStatus === "error" && (
           <div className="mission-error" role="alert">
@@ -259,25 +324,37 @@ export default function MissionView({
           </div>
         )}
 
-        <button
-          className="mission-submit"
-          disabled={
-            mission.planningStatus === "loading" ||
-            state.firmaPending !== null
-          }
-          type="submit"
-        >
-          <span>
-            {mission.status === "adopted" ? "REPLAN WORKSHOP" : "FORGE WORKSHOP"}
-          </span>
-          <small>
-            {mission.planningStatus === "loading"
-              ? "CAPOBOTTEGA IS DRAWING…"
-              : state.firmaPending
-                ? "RESOLVE FIRMA FIRST"
-                : "CAPOBOTTEGA · STRICT PLAN"}
-          </small>
-        </button>
+        <div className="mission-actions">
+          {hasLoadedProfile && (
+            <button
+              aria-expanded={detailsOpen}
+              className="mission-detail-toggle"
+              onClick={() => setDetailsOpen((open) => !open)}
+              type="button"
+            >
+              {detailsOpen ? "要約に戻る" : "詳細を編集"}
+            </button>
+          )}
+          <button
+            className="mission-submit"
+            disabled={
+              mission.planningStatus === "loading" ||
+              state.firmaPending !== null
+            }
+            type="submit"
+          >
+            <span>
+              {mission.status === "adopted" ? "REPLAN WORKSHOP" : "FORGE WORKSHOP"}
+            </span>
+            <small>
+              {mission.planningStatus === "loading"
+                ? "CAPOBOTTEGA IS DRAWING…"
+                : state.firmaPending
+                  ? "RESOLVE FIRMA FIRST"
+                  : "CAPOBOTTEGA · STRICT PLAN"}
+            </small>
+          </button>
+        </div>
       </form>
 
       {mission.draftPlan && (
@@ -311,4 +388,3 @@ export default function MissionView({
     </section>
   );
 }
-import { createHackathonProfile } from "./hackathonProfiles";

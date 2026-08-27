@@ -29,8 +29,21 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "LOAD WEBMCP MISSION" }));
 
+    expect(screen.getByLabelText("読み込んだミッションの要約")).toBeVisible();
+    expect(
+      screen.getAllByText("OpenAI WebMCP Challenge", { selector: "dd" })[0],
+    ).toBeVisible();
+    expect(screen.getByText(/規律あるチームのように動ける/)).toBeVisible();
+    expect(screen.getByRole("button", { name: /FORGE WORKSHOP/ })).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "詳細を編集" }));
+
     expect(screen.getByLabelText("Hackathon")).toHaveValue("OpenAI WebMCP Challenge");
     expect(screen.getByLabelText("Constraints").value).toMatch(/夜間に一人で制作/);
+    expect(screen.getByRole("button", { name: "要約に戻る" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
   });
 
   test("begins a giornata, attaches proof, and reduces MANCA", async () => {
