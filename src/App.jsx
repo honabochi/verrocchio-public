@@ -1011,6 +1011,15 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
 }
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    try {
+      return window.localStorage.getItem("verrocchio-theme") === "light"
+        ? "light"
+        : "dark";
+    } catch {
+      return "dark";
+    }
+  });
   const stateRef = useRef(null);
   const [state, rawSetState] = useState(() => {
     const loaded = loadWorkshop();
@@ -1034,6 +1043,16 @@ export default function App() {
   const [resultStroke, setResultStroke] = useState(null);
 
   useEffect(() => persistWorkshop(state), [state]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    try {
+      window.localStorage.setItem("verrocchio-theme", theme);
+    } catch {
+      // A blocked preference store should never block the workshop.
+    }
+  }, [theme]);
 
   const manca = useMemo(
     () => state.gates.filter((gate) => !gate.done).length,
@@ -1421,6 +1440,25 @@ export default function App() {
           </div>
         </div>
         <div className="topbar-status">
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label={
+              theme === "dark"
+                ? "明るいテーマに切り替える"
+                : "暗いテーマに切り替える"
+            }
+            aria-pressed={theme === "dark"}
+            onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")}
+          >
+            <span aria-hidden="true" className="theme-toggle-mark">
+              {theme === "dark" ? "●" : "○"}
+            </span>
+            <span className="theme-toggle-copy">
+              <strong>{theme === "dark" ? "夜" : "昼"}</strong>
+              <small>{theme === "dark" ? "DARK" : "LIGHT"}</small>
+            </span>
+          </button>
           <span className={`webmcp-status is-${webMcpStatus}`}>
             <DualLabel
               copy={

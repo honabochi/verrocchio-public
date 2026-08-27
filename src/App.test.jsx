@@ -23,6 +23,25 @@ describe("VERROCCHIO core path", () => {
     ).toBeEnabled();
   });
 
+  test("starts in the night workshop and remembers a light preference", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<App />);
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    const themeToggle = screen.getByRole("button", {
+      name: "明るいテーマに切り替える",
+    });
+    expect(themeToggle).toHaveAttribute("aria-pressed", "true");
+
+    await user.click(themeToggle);
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(localStorage.getItem("verrocchio-theme")).toBe("light");
+
+    unmount();
+    render(<App />);
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+  });
+
   test("loads the solo-builder WebMCP mission profile", async () => {
     const user = userEvent.setup();
     render(<App />);
