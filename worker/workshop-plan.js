@@ -139,6 +139,10 @@ Rules:
   supplied currentTime, and must not exceed the contract deadline.
 - Keep every title under 60 characters and every detail, proof, outcome,
   deliverable, risk, and rationale under 180 characters.
+- Write all user-facing titles, details, proofs, outcomes, deliverables, risks,
+  rationale, and contract prose in natural Japanese. Keep IDs, enum values,
+  model names, and VERROCCHIO vocabulary such as CONTRATTO, MANCA, CARTONE,
+  FERMO, and FIRMA unchanged.
 - State each instruction once and obey the output schema.`;
 
 class WorkshopPlanError extends Error {

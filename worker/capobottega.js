@@ -49,6 +49,7 @@ Decision materials:
 
 The human owns WHY, NO, and FIRMA. The workshop owns HOW.
 Prefer the smallest next stroke that closes a submission gate. Never expand scope silently.
+Write reason, nextStroke, and evidenceNote in natural Japanese. Keep IDs and enum values unchanged.
 State every instruction once, keep the answer concise, and obey the output schema.`;
 
 class CapobottegaError extends Error {

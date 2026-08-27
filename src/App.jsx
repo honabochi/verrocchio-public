@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   adoptWorkshopPlan,
   buildWorkPacket,
@@ -13,6 +13,8 @@ import {
 } from "./model";
 import { NavIcon, SignatureIcon, WorkshopMark } from "./icons";
 import MissionView from "./MissionView";
+import useWebMcp from "./useWebMcp";
+import { claimWorkResult, holdWorkshop, verifyEvidenceClaim } from "./workshopCommands";
 
 const views = {
   contratto: "CONTRATTO",
@@ -102,18 +104,18 @@ function AttentionRail({ state }) {
             {state.attentionMinutes}
           </div>
         </div>
-        <p>HUMAN ATTENTION BUDGET</p>
+        <p>人間が使える集中時間</p>
       </section>
       <section className="firma-rule">
         <h2>AFFRESCO</h2>
-        <span>requires</span>
+        <span>必要なもの</span>
         <strong>FIRMA</strong>
         <SignatureIcon />
-        <p>Irreversible work stops here until the human signs.</p>
+        <p>取り消せない作業は、人間が署名するまでここで止まる。</p>
       </section>
       <div className="autosave">
         <span className="autosave-mark" />
-        autosaved locally
+        ローカルへ自動保存
       </div>
     </aside>
   );
@@ -184,6 +186,11 @@ function activateStroke(state, strokeId) {
 
 function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
   const manca = state.gates.filter((gate) => !gate.done).length;
+  const pendingClaims = state.gates.flatMap((gate) =>
+    (gate.claims || [])
+      .filter((claim) => claim.status === "CLAIMED")
+      .map((claim) => ({ ...claim, gateTitle: gate.title })),
+  );
 
   const toggleGate = (id) => {
     const gate = state.gates.find((item) => item.id === id);
@@ -251,7 +258,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
       <header className="view-heading">
         <div>
           <span className="construction-cross" aria-hidden="true" />
-          <h1>What is missing?</h1>
+          <h1>何が不足している？</h1>
         </div>
         <div className="manca" aria-label={`${manca} submission gates missing`}>
           <span>MANCA</span>
@@ -259,6 +266,29 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
         </div>
       </header>
       <GateLedger gates={state.gates} onToggle={toggleGate} onEvidence={onEvidence} />
+      {pendingClaims.length > 0 && (
+        <section className="evidence-claims" aria-label="Evidence awaiting human verification">
+          <header>
+            <span>HUMAN CHECKPOINT</span>
+            <h2>AIが返したのは主張であり、まだ証拠ではない。</h2>
+          </header>
+          {pendingClaims.map((claim) => (
+            <article key={claim.id}>
+              <div>
+                <strong>{claim.gateTitle}</strong>
+                <p>{claim.summary}</p>
+                <small>{claim.evidenceRef} · risk: {claim.remainingRisk}</small>
+              </div>
+              <button
+                onClick={() => setState((current) => verifyEvidenceClaim(current, claim.id))}
+                type="button"
+              >
+                VERIFY CLAIM
+              </button>
+            </article>
+          ))}
+        </section>
+      )}
       <section className={`work-strip ${state.isHeld ? "is-held" : ""}`}>
         <div className="work-copy">
           <div className="work-meta">
@@ -274,7 +304,7 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
               {state.capobottega.latest.responseId}
             </div>
           )}
-          {state.isHeld && <div className="hold-message">FERMO ACTIVE · waiting for direction</div>}
+          {state.isHeld && <div className="hold-message">FERMO ACTIVE · 人間の判断待ち</div>}
           {state.firmaPending && (
             <div className="firma-pending" role="status">
               <strong>FIRMA REQUIRED</strong>
@@ -364,8 +394,8 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
         <span>02</span>
         <h1>CARTONE</h1>
         <p>
-          Revision {String(state.cartone.revision).padStart(2, "0")} · only
-          lines that lead to CONSEGNA survive.
+          Revision {String(state.cartone.revision).padStart(2, "0")} · CONSEGNAへ
+          つながる線だけを残す。
         </p>
       </header>
       <p className="cartone-rationale">{state.cartone.rationale}</p>
@@ -413,8 +443,8 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
       <section className="packet-builder" aria-labelledby="packet-title">
         <header>
           <span>HANDOFF</span>
-          <h2 id="packet-title">One bounded work packet</h2>
-          <p>The role changes the duty and stop rule—not the commission.</p>
+          <h2 id="packet-title">境界の決まった、ひとつの作業票</h2>
+          <p>役割ごとに責務と停止条件は変わるが、目的は変えない。</p>
         </header>
         <div className="packet-roles" aria-label="Work packet role">
           {roles.map((role) => (
@@ -435,9 +465,9 @@ function CartoneView({ state, setState, onBeginStroke, onResult }) {
         </button>
       </section>
       <footer>
-        {state.gates.filter((gate) => gate.done).length} of {state.gates.length} gates
-        are closed with proof · {state.cartone.strokes.filter((stroke) => stroke.status === "done").length} of{" "}
-        {state.cartone.strokes.length} strokes returned.
+        {state.gates.length}件中{state.gates.filter((gate) => gate.done).length}件のゲートを
+        証拠つきで完了 · {state.cartone.strokes.length}件中
+        {state.cartone.strokes.filter((stroke) => stroke.status === "done").length}件のストロークが返却済み。
       </footer>
     </section>
   );
@@ -487,28 +517,28 @@ function CenacoloView({ state, setState }) {
       <header>
         <span>04</span>
         <h1>CENACOLO</h1>
-        <p>The final table. Every station must sign or stop.</p>
+        <p>最後の円卓。各持ち場は署名するか、停止を宣言する。</p>
       </header>
       <div className={`verdict ${ready ? "is-ready" : ""}`}>
         <span>{ready ? "FIRMA" : "FERMO"}</span>
-        <strong>{ready ? "The work may leave the workshop." : `${manca.length} proofs are missing.`}</strong>
+        <strong>{ready ? "工房から提出へ進める。" : `証拠があと${manca.length}件必要。`}</strong>
       </div>
       <div className="poll-list">
         {state.gates.map((gate) => (
           <div key={gate.id}>
             <span className={gate.done ? "signed" : ""}>{gate.done ? "FIRMA" : "FERMO"}</span>
             <strong>{gate.title}</strong>
-            <small>{gate.evidence || "No evidence attached"}</small>
+            <small>{gate.evidence || "証拠はまだ添付されていない"}</small>
           </div>
         ))}
       </div>
       <section className="external-cenacolo" aria-labelledby="external-cenacolo-title">
         <header>
           <span>EXTERNAL REVIEW</span>
-          <h2 id="external-cenacolo-title">Different eyes. One return contract.</h2>
+          <h2 id="external-cenacolo-title">異なる目線を、ひとつの返却形式へ。</h2>
           <p>
-            Claude, Gemini, and other models return advice in the same format.
-            Reviews never close a gate or authorize CONSEGNA by themselves.
+            Claude、Gemini、その他のモデルも同じ形式で助言を返す。
+            レビューだけでゲートを閉じたり、CONSEGNAを許可したりはできない。
           </p>
         </header>
         <form onSubmit={addReview}>
@@ -548,7 +578,7 @@ function CenacoloView({ state, setState }) {
             Finding
             <textarea
               onChange={(event) => updateReview("summary", event.target.value)}
-              placeholder="Paste the reviewer's strongest finding."
+              placeholder="レビューで最も重要な指摘を貼り付ける。"
               required
               value={review.summary}
             />
@@ -630,7 +660,7 @@ function EvidenceView({ state }) {
       <header>
         <span>05</span>
         <h1>EVIDENCE</h1>
-        <p>If it is not in the ledger, it did not happen.</p>
+        <p>台帳に残っていないものは、実行されたとは扱わない。</p>
         <button onClick={download} type="button">
           EXPORT JSON
         </button>
@@ -673,7 +703,7 @@ function EvidenceDialog({ gate, onClose, onSave }) {
             required
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            placeholder="Describe the proof, paste a URL, or record the session ID."
+            placeholder="証拠を説明するか、URLまたはセッションIDを記録する。"
           />
         </label>
         <div>
@@ -801,10 +831,9 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
         </button>
         <header>
           <span>IL CAPOBOTTEGA</span>
-          <h2 id="capobottega-title">One stroke. One material.</h2>
+          <h2 id="capobottega-title">ひとつのストロークに、ひとつの素材。</h2>
           <p>
-            The configured planning model classifies the next move by
-            reversibility, scope, and submission value.
+            設定された計画モデルが、可逆性、範囲、提出価値から次の一手を分類する。
           </p>
         </header>
         <form onSubmit={submit}>
@@ -865,7 +894,24 @@ function CapobottegaDialog({ state, onClose, onClassify }) {
 }
 
 export default function App() {
-  const [state, setState] = useState(loadWorkshop);
+  const stateRef = useRef(null);
+  const [state, rawSetState] = useState(() => {
+    const loaded = loadWorkshop();
+    stateRef.current = loaded;
+    return loaded;
+  });
+  const setState = useCallback((update) => {
+    const current = stateRef.current;
+    const proposed = typeof update === "function" ? update(current) : update;
+    if (!proposed || proposed === current) return current;
+    const next = {
+      ...proposed,
+      stateVersion: (current.stateVersion || 0) + 1,
+    };
+    stateRef.current = next;
+    rawSetState(next);
+    return next;
+  }, []);
   const [evidenceGate, setEvidenceGate] = useState(null);
   const [capobottegaOpen, setCapobottegaOpen] = useState(false);
   const [resultStroke, setResultStroke] = useState(null);
@@ -893,9 +939,44 @@ export default function App() {
     setEvidenceGate(null);
   };
 
-  const generateWorkshop = async () => {
+  const generateWorkshop = async ({
+    signal,
+    actor = "human",
+    expectedStateVersion,
+    idempotencyKey,
+  } = {}) => {
+    const requestState = stateRef.current;
+    const isAgentRequest = actor === "webmcp-agent";
+    const normalizedKey = String(idempotencyKey || "").trim();
+
+    if (isAgentRequest) {
+      if (!normalizedKey || normalizedKey.length > 64) {
+        throw new Error("INVALID_IDEMPOTENCY_KEY: use 1 to 64 characters.");
+      }
+      const existing = (requestState.toolReceipts || []).find(
+        (item) => item.idempotencyKey === normalizedKey,
+      );
+      if (existing) {
+        if (existing.transition !== "PLAN_DRAFTED") {
+          throw new Error("IDEMPOTENCY_CONFLICT: the key was used for another transition.");
+        }
+        return { ...existing, replayed: true };
+      }
+      if (expectedStateVersion !== requestState.stateVersion) {
+        throw new Error(
+          `STALE_STATE: expected ${expectedStateVersion}, current ${requestState.stateVersion}. Inspect again.`,
+        );
+      }
+      if (requestState.inFlightToolKeys.includes(normalizedKey)) {
+        throw new Error("REQUEST_IN_PROGRESS: wait for the first request to finish.");
+      }
+    }
+
     setState((current) => ({
       ...current,
+      inFlightToolKeys: isAgentRequest
+        ? [normalizedKey, ...current.inFlightToolKeys]
+        : current.inFlightToolKeys,
       mission: {
         ...current.mission,
         planningStatus: "loading",
@@ -906,13 +987,14 @@ export default function App() {
       const response = await fetch("/api/workshop-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal,
         body: JSON.stringify({
-          mode: state.mission.status === "adopted" ? "replan" : "plan",
-          mission: state.mission,
+          mode: requestState.mission.status === "adopted" ? "replan" : "plan",
+          mission: requestState.mission,
           current: {
-            gates: state.gates,
-            strokes: state.cartone.strokes,
-            evidence: state.events.map((event) => event.message),
+            gates: requestState.gates,
+            strokes: requestState.cartone.strokes,
+            evidence: requestState.events.map((event) => event.message),
           },
         }),
       });
@@ -920,8 +1002,26 @@ export default function App() {
       if (!response.ok) {
         throw new Error(plan.error || "CAPOBOTTEGA could not forge the workshop.");
       }
+      const receipt = {
+        ok: true,
+        receiptId: `receipt-${crypto.randomUUID()}`,
+        idempotencyKey: isAgentRequest ? normalizedKey : undefined,
+        transition: "PLAN_DRAFTED",
+        stateVersion: (stateRef.current.stateVersion || 0) + 1,
+        planRevision: (requestState.cartone?.revision || 0) + 1,
+        model: plan.model,
+        responseId: plan.responseId,
+        next: { actor: "human", action: "GIVE_FIRMA_IN_UI" },
+        requestedBy: actor,
+      };
       setState((current) => ({
         ...current,
+        inFlightToolKeys: current.inFlightToolKeys.filter(
+          (key) => key !== normalizedKey,
+        ),
+        toolReceipts: isAgentRequest
+          ? [receipt, ...current.toolReceipts].slice(0, 20)
+          : current.toolReceipts,
         mission: {
           ...current.mission,
           planningStatus: "draft",
@@ -936,16 +1036,34 @@ export default function App() {
           ...current.events,
         ],
       }));
+      return receipt;
     } catch (error) {
       setState((current) => ({
         ...current,
+        inFlightToolKeys: current.inFlightToolKeys.filter(
+          (key) => key !== normalizedKey,
+        ),
         mission: {
           ...current.mission,
           planningStatus: "error",
           planningError: error.message,
         },
       }));
+      if (actor === "webmcp-agent") throw error;
+      return { ok: false, error: error.message };
     }
+  };
+
+  const returnWebMcpResult = (input) => {
+    const result = claimWorkResult(stateRef.current, input);
+    setState(result.state);
+    return result.receipt;
+  };
+
+  const callFermoFromWebMcp = (input) => {
+    const result = holdWorkshop(stateRef.current, input);
+    setState(result.state);
+    return result.receipt;
   };
 
   const adoptPlan = () =>
@@ -1074,6 +1192,16 @@ export default function App() {
             ? 1
             : 0;
       const proof = `${payload.model} · ${payload.responseId} · ${payload.createdAt}`;
+      const modelClaim = {
+        id: `claim-${crypto.randomUUID()}`,
+        submittedBy: "capobottega-model",
+        submittedAt: payload.createdAt,
+        status: "CLAIMED",
+        summary: payload.evidenceNote,
+        verification: "Model runtime response recorded; human review pending.",
+        evidenceRef: proof,
+        remainingRisk: payload.reason,
+      };
       return {
         ...current,
         attentionMinutes: Math.min(
@@ -1102,7 +1230,7 @@ export default function App() {
         },
         gates: current.gates.map((gate) =>
           gate.id === modelGate?.id
-            ? { ...gate, done: true, evidence: proof }
+            ? { ...gate, claims: [modelClaim, ...(gate.claims || [])] }
             : gate,
         ),
         decisions: [
@@ -1123,8 +1251,8 @@ export default function App() {
             `${payload.classification} · ${payload.evidenceNote} · ${payload.responseId}`,
           ),
           createEvent(
-            "EVIDENCE",
-            `Planning-model runtime proof attached: ${payload.model} · ${payload.responseId}.`,
+            "CLAIM",
+            `Planning-model runtime claim attached: ${payload.model} · ${payload.responseId}; human verification required.`,
           ),
           ...current.events,
         ],
@@ -1157,6 +1285,12 @@ export default function App() {
     });
   };
 
+  const webMcpStatus = useWebMcp(state, {
+    forgeDraft: generateWorkshop,
+    returnResult: returnWebMcpResult,
+    callFermo: callFermoFromWebMcp,
+  });
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -1166,10 +1300,13 @@ export default function App() {
           </span>
           <div>
             <strong>VERROCCHIO</strong>
-            <small>The workshop that paints itself</small>
+            <small>一人で、規律あるチームになる</small>
           </div>
         </div>
         <div className="topbar-status">
+          <span className={`webmcp-status is-${webMcpStatus}`}>
+            WEBMCP {webMcpStatus === "ready" ? "READY" : webMcpStatus.toUpperCase()}
+          </span>
           <span>MANCA {String(manca).padStart(2, "0")}</span>
           <Deadline deadline={state.deadline} />
         </div>
@@ -1195,6 +1332,7 @@ export default function App() {
             onGenerate={generateWorkshop}
             setState={setState}
             state={state}
+            webMcpStatus={webMcpStatus}
           />
         )}
         {state.activeView === "cartone" && (

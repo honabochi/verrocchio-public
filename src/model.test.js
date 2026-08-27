@@ -118,8 +118,8 @@ test("buildWorkPacket compiles the contract, next gate, duty, and stop rule", ()
 
   expect(packet).toContain("CARTONE PACKET · LA PRIMA MANO");
   expect(packet).toContain("Working product");
-  expect(packet).toContain("Implement the smallest verified change");
-  expect(packet).toContain("Stop before publishing");
+  expect(packet).toContain("検証可能な最小変更を実装");
+  expect(packet).toContain("公開、支払い、個人データ");
 });
 
 test("loadWorkshop migrates an old held AFFRESCO into a pending FIRMA", () => {

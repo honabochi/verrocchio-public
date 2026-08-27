@@ -16,9 +16,21 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("VERROCCHIO")).toBeVisible();
     expect(screen.getByRole("heading", { name: "CONTRATTO" })).toBeVisible();
     expect(screen.getByText("MISSION INTAKE")).toBeVisible();
+    expect(screen.getByText("CHATGPTにこう頼む")).toBeVisible();
+    expect(screen.getByText(/FIRMA・証拠確認・提出は私に残して/)).toBeVisible();
     expect(
       screen.getByRole("button", { name: /FORGE WORKSHOP/ }),
     ).toBeEnabled();
+  });
+
+  test("loads the solo-builder WebMCP mission profile", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "LOAD WEBMCP MISSION" }));
+
+    expect(screen.getByLabelText("Hackathon")).toHaveValue("OpenAI WebMCP Challenge");
+    expect(screen.getByLabelText("Constraints").value).toMatch(/夜間に一人で制作/);
   });
 
   test("begins a giornata, attaches proof, and reduces MANCA", async () => {
@@ -29,7 +41,7 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: "BEGIN GIORNATA" }));
     expect(screen.getByRole("button", { name: "GIORNATA ACTIVE" })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "Working product Live demo or test path that judges can use without rebuilding" }));
+    await user.click(screen.getByRole("button", { name: "Working product 審査員が再ビルドせず利用できるライブデモまたはテスト経路" }));
     const evidence = screen.getByLabelText("Evidence note or URL");
     await user.type(evidence, "Private Sites deployment v1");
     await user.click(screen.getByRole("button", { name: "ATTACH EVIDENCE" }));
@@ -38,7 +50,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "CENACOLO final poll" }));
-    expect(screen.getByText("5 proofs are missing.")).toBeVisible();
+    expect(screen.getByText("証拠があと5件必要。")).toBeVisible();
   });
 
   test("refuses to close a MANCA gate until proof is attached", async () => {
@@ -58,11 +70,11 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(screen.getByRole("button", { name: "CALL FERMO" }));
-    expect(screen.getByText("FERMO ACTIVE · waiting for direction")).toBeVisible();
+    expect(screen.getByText("FERMO ACTIVE · 人間の判断待ち")).toBeVisible();
     expect(screen.getByRole("button", { name: "RESUME GIORNATA" })).toBeVisible();
   });
 
-  test("CAPOBOTTEGA records a model decision and closes its evidence gate", async () => {
+  test("CAPOBOTTEGA records a model claim without closing its own evidence gate", async () => {
     const user = userEvent.setup();
     vi.stubGlobal(
       "fetch",
@@ -91,8 +103,9 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: "CLASSIFY THE STROKE" }));
 
     expect(await screen.findByText("This is safe local test work.")).toBeVisible();
-    expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(2);
-    expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
+    expect(screen.getAllByText(/resp_test_capobottega/)).toHaveLength(3);
+    expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
+    expect(screen.getByRole("button", { name: "VERIFY CLAIM" })).toBeVisible();
   });
 
   test("AFFRESCO blocks resume until the human gives FIRMA", async () => {
@@ -141,9 +154,11 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "CARTONE plan" }));
 
-    expect(screen.getByRole("heading", { name: "One bounded work packet" })).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: "境界の決まった、ひとつの作業票" }),
+    ).toBeVisible();
     expect(screen.getByText(/CARTONE PACKET · LA PRIMA MANO/)).toBeVisible();
-    expect(screen.getByText(/Stop before publishing/)).toBeVisible();
+    expect(screen.getByText(/公開、支払い、個人データ/)).toBeVisible();
   });
 
   test("forges a dynamic workshop draft and requires FIRMA before adoption", async () => {
@@ -235,7 +250,7 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
     await user.click(screen.getByRole("button", { name: /FORGE WORKSHOP/ }));
 
-    expect(await screen.findByText("The plan is still wet.")).toBeVisible();
+    expect(await screen.findByText("計画はまだ乾いていない。")).toBeVisible();
     expect(screen.getByText("Complete the operational Phase 1 execution loop.")).toBeVisible();
     expect(screen.getByText("MANCA 06")).toBeVisible();
 
@@ -270,7 +285,7 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: "GIORNATE work" }));
     await user.click(
       screen.getByRole("button", {
-        name: /Working product Live demo or test path/,
+        name: /Working product 審査員が再ビルドせず利用できるライブデモ/,
       }),
     );
     expect(screen.getByLabelText("Evidence note or URL").value).toContain(
@@ -297,6 +312,6 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByText("Claude Fable 5")).toBeVisible();
     expect(screen.getByText("The demo does not yet prove the judging claim.")).toBeVisible();
-    expect(screen.getByText("6 proofs are missing.")).toBeVisible();
+    expect(screen.getByText("証拠があと6件必要。")).toBeVisible();
   });
 });

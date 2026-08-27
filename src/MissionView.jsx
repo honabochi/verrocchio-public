@@ -12,19 +12,48 @@ function MissionField({ label, name, value, onChange, rows = 3 }) {
   );
 }
 
+const webMcpStatusCopy = {
+  detecting: "AI向けの道具を確認中",
+  ready: "AIが使える4つの道具を公開中",
+  unavailable: "通常表示中。ChatGPT内ブラウザかWebMCP対応ChromeでAI操作できます",
+  error: "AI向けの道具を登録できませんでした",
+};
+
+function WebMcpOnramp({ status }) {
+  return (
+    <aside className={`webmcp-onramp is-${status}`} aria-label="WebMCPの使い方">
+      <div className="webmcp-onramp-heading">
+        <span>WEBMCP · HUMAN + AGENT</span>
+        <strong>{webMcpStatusCopy[status] || webMcpStatusCopy.detecting}</strong>
+      </div>
+      <div className="webmcp-prompt">
+        <small>CHATGPTにこう頼む</small>
+        <p>
+          工房を調べて、まだ不足している証拠と最小の次の一手を教えて。
+          FIRMA・証拠確認・提出は私に残して。
+        </p>
+      </div>
+      <div className="webmcp-boundary">
+        <span><b>AI</b> 調査・下書き・作業結果の返却</span>
+        <span><b>人間</b> FIRMA・証拠確認・CONSEGNA</span>
+      </div>
+    </aside>
+  );
+}
+
 function PlanDraft({ plan, onAdopt, onDiscard }) {
   return (
     <section className="plan-draft" aria-labelledby="plan-draft-title">
       <header>
         <div>
           <span>AFFRESCO · {plan.humanAction.replaceAll("_", " ")}</span>
-          <h2 id="plan-draft-title">The plan is still wet.</h2>
+          <h2 id="plan-draft-title">計画はまだ乾いていない。</h2>
         </div>
         <div className="plan-counts">
           <strong>{String(plan.gates.length).padStart(2, "0")}</strong>
-          <span>MANCA gates</span>
+          <span>不足している証拠</span>
           <strong>{String(plan.strokes.length).padStart(2, "0")}</strong>
-          <span>work strokes</span>
+          <span>作業ストローク</span>
         </div>
       </header>
       <p className="plan-rationale">{plan.rationale}</p>
@@ -77,6 +106,7 @@ export default function MissionView({
   onGenerate,
   onAdopt,
   onDiscard,
+  webMcpStatus,
 }) {
   const { mission } = state;
   const updateMission = (field, value) =>
@@ -102,7 +132,7 @@ export default function MissionView({
           id: `profile-${crypto.randomUUID()}`,
           time: new Date().toISOString(),
           kind: "CONTRATTO",
-          message: `${profileId} mission profile loaded; official rules still require human verification.`,
+          message: `${profileId} のミッションを読み込みました。公式ルールは引き続き人間が確認します。`,
         },
         ...current.events,
       ],
@@ -119,32 +149,34 @@ export default function MissionView({
         <span>01</span>
         <h1>CONTRATTO</h1>
         <p>
-          Rules enter here. A signed execution workshop leaves here.
+          ここにルールを入れ、署名済みの実行工房へ変える。
         </p>
       </header>
+
+      <WebMcpOnramp status={webMcpStatus} />
 
       <form className="mission-form" onSubmit={submit}>
         <div className="mission-form-heading">
           <div>
             <span>MISSION INTAKE</span>
-            <h2>What must reach CONSEGNA?</h2>
+            <h2>CONSEGNAまでに、何を届けるか？</h2>
           </div>
           <p>
-            Capture the closed world: deadline, proof, constraints, available
-            hands, and the decisions that remain human.
+            締切、必要な証拠、制約、使える手、そして人間に残す判断を、
+            閉じた実行条件として記録する。
           </p>
         </div>
 
         <div className="profile-switcher" aria-label="Hackathon profile template">
           <div>
             <strong>ONE ENGINE · MANY HACKATHONS</strong>
-            <span>Load a clean intake or an editable example. Official rules remain the source of truth.</span>
+            <span>空の入力票、またはWebMCP用ミッションを読み込む。最終的な正は公式ルール。</span>
           </div>
           <button onClick={() => loadProfile("blank")} type="button">
             START BLANK
           </button>
-          <button onClick={() => loadProfile("openai-build-week-example")} type="button">
-            LOAD EXAMPLE
+          <button onClick={() => loadProfile("openai-webmcp-challenge-2026")} type="button">
+            LOAD WEBMCP MISSION
           </button>
         </div>
 
