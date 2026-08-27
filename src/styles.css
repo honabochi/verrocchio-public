@@ -2777,6 +2777,45 @@ textarea:focus-visible {
     gap: 7px;
   }
 
+  .mission-view.is-profile-loaded {
+    padding: 14px 18px 18px;
+  }
+
+  .mission-view.is-profile-loaded > header,
+  .mission-view.is-profile-loaded .webmcp-onramp {
+    display: none;
+  }
+
+  .mission-form.is-summary .mission-form-heading {
+    margin-bottom: 7px;
+  }
+
+  .mission-form.is-summary .mission-form-heading h2 {
+    font-size: 24px;
+  }
+
+  .mission-form.is-summary .profile-switcher {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .mission-form.is-summary .profile-switcher div {
+    display: none;
+  }
+
+  .mission-summary-meta dd {
+    font-size: 14px;
+  }
+
+  .mission-summary-grid article {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .mission-detail-toggle {
+    flex-basis: 140px;
+  }
+
   .plan-draft > header,
   .plan-draft > footer {
     align-items: flex-start;
