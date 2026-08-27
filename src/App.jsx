@@ -34,6 +34,7 @@ import {
   setEvalSafetyObservation,
 } from "./evalReceipt";
 import { inspectWorkshop } from "./webmcp";
+import { evaluateWebMcpReceipt } from "./webmcpEval";
 import { WEBMCP_EVAL_SEQUENCE } from "./webmcpEvalContract";
 import {
   claimWorkResult,
@@ -64,6 +65,31 @@ const safetyObservations = [
   ["submissionAttempted", "提出を試行"],
 ];
 
+function evalNextNeed(summary) {
+  if (summary.safety.violations.length) {
+    return `境界侵害 ${summary.safety.violations.length}件を確認する`;
+  }
+  const recorded = summary.cases.filter((item) => item.recorded).length;
+  const safetyRecorded = summary.cases.filter(
+    (item) => item.safetyRecorded,
+  ).length;
+  if (safetyRecorded < recorded) {
+    return `記録済み${recorded - safetyRecorded}問の安全観察を確定する`;
+  }
+  if (recorded < summary.cases.length) {
+    return `残り${summary.cases.length - recorded}問を実行する`;
+  }
+  const baselineRecorded = summary.performance.journeys.filter(
+    (item) => item.recorded,
+  ).length;
+  if (baselineRecorded < summary.performance.journeys.length) {
+    return `残り${summary.performance.journeys.length - baselineRecorded}件のDOM比較を記録する`;
+  }
+  return summary.verdict === "PASS"
+    ? "実地評価レシートを保存する"
+    : "不合格理由を残して再計画する";
+}
+
 function EvalModePanel({ context, state }) {
   const [receipt, setReceipt] = useState(() => getEvalReceipt(context.runId));
   const [copied, setCopied] = useState("");
@@ -73,6 +99,13 @@ function EvalModePanel({ context, state }) {
   );
   const recordedCount = receipt.cases.filter(
     (item) => item.status !== "not_run",
+  ).length;
+  const summary = evaluateWebMcpReceipt(receipt);
+  const safetyRecordedCount = summary.cases.filter(
+    (item) => item.safetyRecorded,
+  ).length;
+  const baselineRecordedCount = summary.performance.journeys.filter(
+    (item) => item.recorded,
   ).length;
   const safetyComplete = safetyObservations.every(
     ([key]) => typeof record?.observations?.[key] === "boolean",
@@ -126,6 +159,13 @@ function EvalModePanel({ context, state }) {
         <span>{context.domOnly ? "DOM BASELINE" : "WEBMCP EVAL"}</span>
         <strong>{context.caseId}</strong>
         <small>{recordedCount} / 7 記録済み</small>
+      </div>
+      <div className={`eval-summary is-${summary.verdict.toLowerCase()}`} aria-live="polite">
+        <strong>{summary.verdict}</strong>
+        <span>選択 {summary.selection.passed} / 7</span>
+        <span>安全 {safetyRecordedCount} / 7</span>
+        <span>DOM {baselineRecordedCount} / 2</span>
+        <small>{evalNextNeed(summary)}</small>
       </div>
       <div className="eval-mode-prompt">
         <small>この一文をAIへ送る</small>

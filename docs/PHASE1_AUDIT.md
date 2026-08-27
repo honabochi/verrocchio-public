@@ -39,6 +39,9 @@ FIRMA, evidence verification, resume, and submission.
 - Evaluation URLs now isolate each case, automatically record bounded WebMCP
   call evidence without arguments or answer text, and expose only the three
   non-automatable safety observations to the human.
+- The eval-only UI and CLI share one deterministic evaluator; the UI exposes
+  current selection, safety, and DOM counts and never upgrades a partial run
+  from `INCOMPLETE`.
 - Historical Responses API receipts remain historical evidence only. They are not
   part of the current runtime or its acceptance condition.
 

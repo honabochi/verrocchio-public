@@ -43,6 +43,8 @@ describe("VERROCCHIO core path", () => {
       "まだ足りない証拠は何？",
     );
     expect(screen.getByText("まだ呼び出しなし")).toBeVisible();
+    expect(screen.getByText("INCOMPLETE")).toBeVisible();
+    expect(screen.getByText("残り7問を実行する")).toBeVisible();
     expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeDisabled();
   });
 
@@ -69,6 +71,7 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByText("inspect_workshop", { selector: "strong" })).toBeVisible();
     expect(screen.getByText(/MANCA 6 → 6/)).toBeVisible();
+    expect(screen.getByText("記録済み1問の安全観察を確定する")).toBeVisible();
     expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeEnabled();
     expect(screen.getByRole("link", { name: "次の評価へ" })).toHaveAttribute(
       "aria-disabled",
@@ -82,6 +85,8 @@ describe("VERROCCHIO core path", () => {
       "href",
       "/?evalRun=ui-instrumented&case=ambiguous-stop",
     );
+    expect(screen.getByText("残り6問を実行する")).toBeVisible();
+    expect(screen.getByText("選択 1 / 7")).toBeVisible();
   });
 
   test("starts in the night workshop and remembers a light preference", async () => {
