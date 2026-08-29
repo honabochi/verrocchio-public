@@ -255,6 +255,7 @@ export function arePostCandidateChangesMetadataOnly(files = []) {
     "devpost-submission.md",
     "docs/CHALLENGE_EXTENSION.md",
     "docs/DEMO_SCRIPT_EN.md",
+    "docs/OWNER_RELEASE_GATE.md",
     "docs/RELEASE_ROUNDTABLE.md",
   ]);
   return files.every((file) => allowed.has(file));

@@ -11,19 +11,21 @@ credentials, private fixtures, or protected data were included.
 
 | Seat | Status | Independent finding |
 | --- | --- | --- |
-| Gemini | participated | The concept is differentiated, but the current artifact is not judge-accessible while the live URL returns 401, the repository returns 404, and no video or tag exists |
-| Claude | participated | The WebMCP-specific structural claim is strong; the current candidate must not be submitted before public access, clean frozen-revision verification, and video |
+| Gemini | attempted-unavailable | A Gemini runtime was later found, but file-read permission and the host sharing gate prevented a review from being returned; no finding or agreement is attributed to Gemini |
+| Claude | participated | A fresh read-only re-audit found direction GO, current submission NO-GO, and challenged the workflow boundary plus two false-pass routes |
 | Architecture audit | participated | Local code, MIT license, build definition, and README are viable; the branch upstream was unsafe and external freeze/publication evidence is missing |
 | Evidence audit | participated | Public URLs, official fields, final tag, clean judge smoke, and video are hard gates; numeric performance claims remain prohibited without a fresh verified receipt |
 | Product/UX audit | participated | The demo should use desktop capture and show the real host call, MANCA, unsigned FIRMA stop, and the visible CLAIMED human-review state |
 
 ## Dissent
 
-- Gemini prioritized repository, video, registration, live access, then tag.
-- Claude prioritized repository, live access, frozen clean verification, video,
-  then Devpost completion.
-- Internal evidence review treated registration as an independent early gate
+- Claude's strongest objection is that the human-only boundary is a WebMCP
+  workflow boundary, not actor authentication against separate DOM automation.
+- Internal evidence review treats registration as an independent early gate
   because registration may close separately from the artifact deadline.
+- An earlier draft attributed a prioritization and agreement to Gemini without a
+  durable review receipt in this repository. That attribution is withdrawn. The
+  prioritization was Mission Control synthesis, not a verified Gemini statement.
 
 ## Mission Control decision
 
@@ -56,13 +58,11 @@ URLs, login redirects, unannotated or wrong-revision tags, implementation drift
 after the candidate, stale build copies, test-count regression below the frozen
 floor, and unevidenced numeric performance claims.
 
-Claude participated again after those changes. It kept the direction at GO and
-the current submission at NO-GO, and identified residual URL-login, non-percent
+Claude participated after those changes. It kept the direction at GO and the
+current submission at NO-GO, and identified residual URL-login, non-percent
 numeric-claim, and test-count regression routes; those checks were tightened in
-the next candidate. A fresh Gemini follow-up was attempted but unavailable in
-the current execution boundary, so no new Gemini finding or agreement is
-claimed here. The earlier Gemini finding in the table above remains the last
-actual Gemini contribution.
+the next candidate. A Gemini follow-up returned no review through the current
+permission boundary, so no Gemini finding or agreement is claimed.
 
 ## Official MCP refresh
 
@@ -129,9 +129,11 @@ final acceptance.
 Claude was actually re-invited after the hardened candidate was committed. It
 performed a new read-only review of the named public packet and source files and
 returned **direction GO / current submission NO-GO**. Gemini was also requested
-as a required roundtable seat, but no callable Gemini runtime was present in the
-current environment. Gemini is therefore `attempted-unavailable`, not a
-participant, and no Gemini agreement is claimed for this round.
+as a required roundtable seat. A callable Gemini runtime was discovered later,
+but its first attempt returned no review because file reading was denied; the
+subsequent public-packet attempt was stopped by the host sharing gate before
+execution. Gemini is therefore `attempted-unavailable`, not a participant, and
+no Gemini agreement is claimed for this round.
 
 Claude's strongest dissent was that the human boundary is a WebMCP workflow
 boundary, not actor authentication: separate DOM automation could still click a

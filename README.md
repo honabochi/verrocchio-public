@@ -2,9 +2,9 @@
 
 > A disciplined team of one.
 
-VERROCCHIO is a browser-native workshop for time-constrained solo builders. It gives one person the coordination layer that normally requires a team: bounded AI roles, interruption-safe context, evidence-gated progress, and human ownership of irreversible decisions.
+VERROCCHIO is a browser-native workshop for time-constrained solo builders. It is designed to give one person a coordination layer that normally requires a team: bounded AI roles, interruption-resilient context, evidence-gated progress, and human ownership of irreversible decisions.
 
-Hackathons are the first concrete mission, not the limit of the product. This WebMCP Challenge extension uses VERROCCHIO to finish VERROCCHIO itself: agents can inspect the workshop, prepare an unsigned plan, and return work claims. Approval and evidence verification are not exposed through the WebMCP tool surface; the workflow reserves `FIRMA` and `CONSEGNA` for the human UI.
+Hackathons are the first concrete mission; broader use remains unproven. This WebMCP Challenge extension uses VERROCCHIO to finish VERROCCHIO itself: agents can inspect the workshop, prepare an unsigned plan, and return work claims. Approval and evidence verification are not exposed through the WebMCP tool surface; the workflow reserves `FIRMA` and `CONSEGNA` for the human UI.
 
 Generic progress is replaced with `MANCA`: the number of required proofs that are still missing. AI output is a `CLAIMED` result until a human marks it `VERIFIED`.
 
@@ -229,4 +229,6 @@ test evidence and are not wired into the dev server or packaged Sites worker.
 
 See [the CAPOBOTTEGA evidence note](docs/CAPOBOTTEGA.md) for the runtime
 contract, [the WebMCP eval protocol](docs/WEBMCP_EVALS.md) for the fixed host
-run, and [the Phase 1 audit](docs/PHASE1_AUDIT.md) for the current evidence.
+run, and [the historical Phase 1 audit](docs/PHASE1_AUDIT.md) for the August 29
+snapshot. Current release evidence is reported separately by the submission
+preflight.

@@ -14,37 +14,44 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 ## Storyboard and narration
 
-### 0:00–0:12 — Cold open: the app works
+### 0:00–0:15 — Cold open: user, WebMCP, and human boundary
 
 **Shot**
 
-- Open on the deployed VERROCCHIO workshop, already in dark mode and showing a real mission.
-- In the host conversation, send: `What evidence is still missing?`
-- Show `inspect_workshop` execute and the app remain unchanged.
-- Cut immediately to the visible `MANCA` count and current next action.
+- Open on the deployed VERROCCHIO workshop with the caption:
+  `For solo builders working in interrupted sessions`.
+- By 0:02, send `What evidence is still missing?` in the host conversation.
+- Show the real `inspect_workshop` call by 0:05, with a restrained caption:
+  `Structured live state — not DOM guessing`.
+- Cut to readable `MANCA` and `NEXT` by 0:08.
+- End the cold open with two brief shots captured from the same hosted build:
+  `FIRMA REQUIRED / HUMAN ONLY`, then `CLAIMED / 人間の確認待ち` with MANCA
+  still open. Do not imply that these later states came from the read-only call.
 - **HOSTED EVIDENCE REQUIRED**
 
 **Narration**
 
-> This is VERROCCHIO. I can ask what is still missing, and the browser exposes the workshop as structured tools—not as a page the agent has to guess its way through.
+> For solo builders working in interrupted sessions, VERROCCHIO exposes missing proof as structured WebMCP state. AI can inspect, stop, propose, and return claims; only the human-facing workflow can approve or verify them.
 
 **Production note / 制作メモ**
 
-- 最初の10秒以内に、静止画ではなく実際の送信、tool call、画面状態を見せる。
+- 最初の8秒以内に、静止画ではなく実際の送信、tool call、MANCA/NEXTを見せる。
 - Keep the cursor visible and avoid a title card before the functioning product.
+- FIRMAとCLAIMEDの短い先出しは同じ凍結buildの実録だけを使い、
+  `inspect_workshop` が状態を変えたように編集しない。
 
-### 0:12–0:28 — The user and the problem
+### 0:15–0:29 — The problem, in one sentence
 
 **Shot**
 
-- Hold on the mission summary and deadline, then move to the one-step guide.
-- Caption: `For solo builders working in short, interrupted sessions`.
+- Hold on the mission summary and the one-step guide. Do not read every rule or
+  dashboard field.
 
 **Narration**
 
-> Hackathons are difficult when one person has a full-time job, limited attention, and no team to remember every rule, handoff, and unfinished proof. Ordinary AI can produce work, but a confident answer is not the same as verified progress.
+> A solo builder has to remember every rule, handoff, and unfinished proof. AI can produce work, but a confident answer is not the same as verified progress.
 
-### 0:28–0:49 — MANCA and the bounded next action
+### 0:29–0:49 — MANCA and the bounded next action
 
 **Shot**
 
@@ -139,7 +146,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 **Narration**
 
-> A DOM agent has to rediscover controls and infer their meaning on every screen. WebMCP gives the host a small, state-aware contract: inspect, stop, propose, and return a claim. VERROCCHIO uses that leverage to reduce fragile coordination while keeping approval, evidence verification, and final submission human. It is a disciplined workshop for a team of one.
+> A DOM agent may need to rediscover controls and infer their meaning on every screen. WebMCP gives the host a small, state-aware contract: inspect, stop, propose, and return a claim. VERROCCHIO uses that leverage to reduce fragile coordination while keeping approval, evidence verification, and final submission in the human-facing workflow. It is a disciplined workshop for a team of one.
 
 **Production note / 制作メモ**
 

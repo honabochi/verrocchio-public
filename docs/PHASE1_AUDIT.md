@@ -25,9 +25,11 @@ FIRMA, evidence verification, resume, and submission.
 | WebMCP is materially better than DOM actuation | Not yet proven | Two productive journeys still need an action-count and elapsed-time baseline |
 | Judge-accessible repository, video, and submission receipt | Phase 2 | These are submission deliverables, not evidence of the Phase 1 operating loop |
 
-## Current verification snapshot
+## Historical verification snapshot — 2026-08-29
 
-- Automated state, tool, command, interaction, evaluation, and submission-preflight checks: 80 passed.
+- At this audit point, automated state, tool, command, interaction, evaluation,
+  and submission-preflight checks: 80 passed. This is not the current release
+  count; use the latest test run and submission preflight for current evidence.
 - Production build: passed after the August 29 fixes.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.
