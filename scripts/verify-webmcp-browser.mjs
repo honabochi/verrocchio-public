@@ -71,7 +71,7 @@ try {
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: "networkidle" });
   await page.getByRole("button", { name: "LOAD WEBMCP MISSION" }).click();
-  await page.getByRole("button", { name: "GIORNATE work" }).click();
+  await page.getByRole("button", { name: "実行工程を開く · GIORNATE" }).click();
   await waitForTools(page, [
     "inspect_workshop",
     "call_fermo",
@@ -87,7 +87,7 @@ try {
     idempotencyKey: "browser-fermo-1",
   });
   await waitForTools(page, ["inspect_workshop"]);
-  await page.getByText("FERMO ACTIVE · 人間の判断待ち").waitFor();
+  await page.getByText("FERMO ACTIVE", { exact: true }).first().waitFor();
   const heldTools = await toolNames(page);
 
   await page.getByRole("button", { name: "RESUME GIORNATA" }).click();
