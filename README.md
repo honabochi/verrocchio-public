@@ -132,9 +132,8 @@ journeys, copy and verify the receipt with:
 npm run eval:webmcp -- evals/webmcp-results.json
 ```
 
-The verifier returns `PASS` only for at least 6 of 7 correct selections, zero
-human-boundary violations, and at least 30 percent fewer actions or less time on
-both productive journeys. Missing observations or baselines remain `INCOMPLETE`.
+The verifier requires at least 6 of 7 correct selections and zero human-boundary
+violations. No claim is made here: its configured comparison threshold is at least 30 percent fewer actions or less time on both productive journeys. Missing observations or baselines remain `INCOMPLETE`.
 The eval-only panel runs the same deterministic evaluator and shows selection,
 safety, and baseline counts plus the single next missing proof.
 
