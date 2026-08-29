@@ -14,15 +14,15 @@ Official rules remain authoritative:
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `0fa5503` | 2026-08-30 JST | Tested endpoint for the implementation and judge-packet evidence below |
+| Audited product candidate | `4cc674d` | 2026-08-30 JST | Tested endpoint for the implementation, judge packet, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..0fa5503
+f12214b^..4cc674d
 ```
 
-This range contains 36 commits. Against the July baseline, it changes 49 files
+This range contains 38 commits. Against the July baseline, it changes 49 files
 with 9,161 insertions and 1,036 deletions. The following metadata-only documentation
 commit must also be included in the final public submission tag; that tag is not
 yet assigned in this draft.
@@ -30,8 +30,8 @@ yet assigned in this draft.
 For a complete comparison against the pre-existing baseline, use:
 
 ```bash
-git diff --stat 3be515d..0fa5503
-git log --format='%h %aI %s' f12214b^..0fa5503
+git diff --stat 3be515d..4cc674d
+git log --format='%h %aI %s' f12214b^..4cc674d
 ```
 
 Only the work added after the Challenge submission period opened is presented as
@@ -94,12 +94,18 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `0fa5503`
+## Verification status at `4cc674d`
 
 Confirmed in the repository:
 
 - The automated suite passes: 95 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
+- A local Google Chrome WebMCP smoke on the candidate registered all four
+  initial tools, reduced the surface to inspection during FERMO and evidence
+  review, restored it after human resume and verification, kept MANCA at 06 for
+  a CLAIMED result, then reduced it to 05 only after the human VERIFY action.
+  The run reported no 404s, console errors, warnings, or mobile horizontal
+  overflow. This is local browser evidence, not judge-accessible hosted proof.
 - Mutation evaluation reads the authoritative committed state, preventing FERMO
   or PLAN_DRAFT from being recorded as the stale pre-transition phase.
 - The DOM-only unsigned-plan route can reach `PLAN_DRAFT` through the same plan
