@@ -4016,6 +4016,23 @@ textarea:focus-visible {
   margin: 4px 0;
 }
 
+.evidence-claims .claim-status {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-family: var(--sans-ja);
+  font-size: 10px;
+}
+
+.evidence-claims .claim-status span {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.11em;
+}
+
 .evidence-claims button {
   background: var(--ultramarine, #284f9e);
   border: 0;

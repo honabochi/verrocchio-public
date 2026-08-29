@@ -95,7 +95,7 @@ implementation, not on the July workshop shell by itself.
 
 Confirmed in the repository:
 
-- The automated suite passes: 76 tests across state, commands, WebMCP tools,
+- The automated suite passes: 80 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - Mutation evaluation reads the authoritative committed state, preventing FERMO
   or PLAN_DRAFT from being recorded as the stale pre-transition phase.

@@ -813,6 +813,10 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
           {pendingClaims.map((claim) => (
             <article key={claim.id}>
               <div>
+                <p className="claim-status">
+                  <span>CLAIMED</span>
+                  人間の確認待ち
+                </p>
                 <strong>{claim.gateTitle}</strong>
                 <p>{claim.summary}</p>
                 <small>

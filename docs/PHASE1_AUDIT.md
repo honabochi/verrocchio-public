@@ -27,7 +27,7 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, interaction, and evaluation checks: 76 passed.
+- Automated state, tool, command, interaction, evaluation, and submission-preflight checks: 80 passed.
 - Production build: passed after the August 29 fixes.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.

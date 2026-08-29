@@ -15,6 +15,8 @@ use beyond hackathons has not yet been validated.
 
 ## Run
 
+Use Node.js 20 LTS or newer.
+
 ```bash
 npm ci
 npm run dev
@@ -28,6 +30,18 @@ Open the local URL printed by Vite.
 npm test
 npm run build
 ```
+
+Before any public release, run the deterministic submission preflight:
+
+```bash
+npm run preflight:submission
+```
+
+It intentionally returns `INCOMPLETE` or `FAIL` until the public live,
+repository, and video URLs, final tag, official Devpost fields, evidence
+references, and Owner attestations in `submission-manifest.json` are real. The
+script reads only tracked filenames for secret-risk detection; the Owner
+performs the actual secret review off-screen.
 
 The automated suite covers native WebMCP tool registration, state-dependent
 tool availability, agent claims versus human verification, mission planning, strict server contracts, dynamic

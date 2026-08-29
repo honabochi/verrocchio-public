@@ -204,6 +204,9 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
     expect(screen.getByLabelText("人間による証拠確認待ち")).toBeVisible();
+    expect(screen.getByLabelText("人間による証拠確認待ち")).toHaveTextContent(
+      "CLAIMED人間の確認待ち",
+    );
     await user.click(screen.getByRole("button", { name: /証拠主張を確認する/ }));
     expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
 

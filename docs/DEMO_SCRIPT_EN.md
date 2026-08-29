@@ -49,7 +49,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 **Shot**
 
 - Show the inspection result: missing proof gates, `MANCA`, the active work item, and the human-only boundary.
-- Highlight only two fields with restrained callouts: `Missing proof` and `Next action`.
+- Highlight only two fields with restrained callouts: `MANCA / 未確認の証拠` and `NEXT / 次の一手`.
 - Do not scroll through every dashboard section.
 - **HOSTED EVIDENCE REQUIRED**
 
@@ -76,7 +76,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 - Pause long enough to show that the draft is waiting for a human.
 - Briefly reveal the risks and first evidence gate.
-- Click the visible human `Give FIRMA and adopt` control.
+- Click the large Japanese `署名して計画を採用` control with its smaller `GIVE FIRMA & ADOPT` label.
 - Show the adopted plan and active CARTONE stroke.
 
 **Narration**
@@ -94,7 +94,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 - Start or select the active stroke.
 - In the host, ask it to inspect the active work, perform the bounded task, and return its result without approving it.
 - Show `return_work_result` execute.
-- In VERROCCHIO, show the returned summary, verification performed, evidence reference, remaining risk, and `CLAIMED` status.
+- In VERROCCHIO, show the returned summary, verification performed, evidence reference, remaining risk, and `CLAIMED / 人間の確認待ち` badge.
 - Keep `MANCA` unchanged.
 - **HOSTED EVIDENCE REQUIRED**
 
@@ -107,7 +107,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 **Shot**
 
 - Show the three review checks: current, reproducible, and acceptable remaining risk.
-- Show both human choices: `Verify claim` and `Request changes`.
+- Show both human choices with their current Japanese-first labels: `証拠主張を確認する / VERIFY CLAIM` and `差し戻す / REQUEST CHANGES`.
 - Primary take: verify only if the evidence shown in the recording is genuinely inspectable.
 - Safe fallback take: choose `Request changes`, enter a short concrete reason, and show the work return to the queue without erasing the claim history.
 
@@ -123,15 +123,20 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 **Shot**
 
-- Use a clean two-column end frame made from the product's own UI:
+- Use a clean editing card built from the real host output; this comparison is not a product UI screen:
   - left: `DOM — find controls, read labels, click fields`
-  - right: `WebMCP — inspect state, call a bounded transition, receive a receipt`
+  - right: `WebMCP — inspect state, call a bounded transition, receive a bounded tool result`
 - End on VERROCCHIO with the next action and human boundary visible.
 - Caption: `A disciplined team of one. Evidence before completion.`
 
 **Narration**
 
 > A DOM agent has to rediscover controls and infer their meaning on every screen. WebMCP gives the host a small, state-aware contract: inspect, stop, propose, and return a claim. VERROCCHIO uses that leverage to reduce fragile coordination while keeping approval, evidence verification, and final submission human. It is a disciplined workshop for a team of one.
+
+**Production note / 制作メモ**
+
+- The comparison card may be edited for legibility, but every value must come from the real recorded host interaction.
+- Record at 2560×1440 and export at 1920×1080. Keep the app at least 1280px wide and show the host and app as separate full-width cuts rather than a narrow split screen.
 
 ## Shot checklist
 

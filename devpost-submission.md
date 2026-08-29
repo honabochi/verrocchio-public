@@ -238,7 +238,7 @@ official submission form after confirming the event rules and access policy.
 
 ## Verification and evaluation status
 
-- Local automated tests: 76 passing on the current local candidate. Re-run and
+- Local automated tests: 80 passing on the current local candidate. Re-run and
   record the final count on the frozen submission revision.
 - Production build: TODO — record the final build result for the frozen
   submission revision.
