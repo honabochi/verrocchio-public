@@ -24,3 +24,30 @@ Only gate 1 is actionable now. Before any registration call, Mission Control
 must show the Owner an exact summary of the selected form answers and receive an
 explicit `登録して`. A general `GO` does not authorize registration, agreement,
 publication, tag creation, deployment, video upload, or final submission.
+
+## Registration readback template — answers stay off-repository
+
+These public option labels were read from the official registration flow on
+2026-08-30 JST. Re-read the live form immediately before registration because
+the organizer may change it. Do not write the Owner's selected values, country,
+eligibility response, or agreement state into this repository.
+
+1. **Team state** — `Working solo`, `Looking for teammates`, or
+   `Already have a team`.
+2. **Work category** — `Founder`, `Developer at a startup`,
+   `Developer at a mid-large company`, `Independent developer or freelancer`,
+   `Student`, `Non-technical builder or creator`, or `Other`.
+3. **Codex frequency** — `Never`, `Occasionally`, or `Regularly`.
+4. **Prior WebMCP familiarity** — from never having heard of it through already
+   having built something with it; use the exact live label.
+5. **ChatGPT in-app-browser usage** — `Never`, `Once or twice`, `Occasionally`,
+   or `Regularly`.
+6. **Eligibility** — Owner confirms the actual country/residency and that the
+   legal-age and excluded-territory conditions are satisfied.
+7. **Agreements** — Owner opens and accepts the official Challenge rules and
+   Devpost terms only after reading them.
+
+Before execution, read back all seven items in one compact summary without
+persisting the answers. Registration is authorized only by the exact phrase
+`登録して` after that readback. Record only the resulting boolean registration
+status, never the personal answers.
