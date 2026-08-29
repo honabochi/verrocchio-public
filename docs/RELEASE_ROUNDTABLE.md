@@ -11,8 +11,8 @@ credentials, private fixtures, or protected data were included.
 
 | Seat | Status | Independent finding |
 | --- | --- | --- |
-| Gemini | attempted-unavailable | A Gemini runtime was later found, but file-read permission and the host sharing gate prevented a review from being returned; no finding or agreement is attributed to Gemini |
-| Claude | participated | A fresh read-only re-audit found direction GO, current submission NO-GO, and challenged the workflow boundary plus two false-pass routes |
+| Gemini | participated | Gemini 3.1 Pro independently reviewed the minimal v2 share packet and returned direction GO / current submission NO-GO; it found that the planned first 60 seconds did not state why WebMCP matters clearly enough |
+| Claude | participated | Claude independently reviewed the same minimal v2 packet and returned direction GO / current submission NO-GO; it found WebMCP central to the state contract but challenged impact evidence and release readiness |
 | Architecture audit | participated | Local code, MIT license, build definition, and README are viable; the branch upstream was unsafe and external freeze/publication evidence is missing |
 | Evidence audit | participated | Public URLs, official fields, final tag, clean judge smoke, and video are hard gates; numeric performance claims remain prohibited without a fresh verified receipt |
 | Product/UX audit | participated | The demo should use desktop capture and show the real host call, MANCA, unsigned FIRMA stop, and the visible CLAIMED human-review state |
@@ -144,3 +144,144 @@ product candidate. The implementation now accepts only HTTPS evidence URLs or
 recognized receipt paths, rejects deferred prose, and limits post-candidate
 metadata to the explicit release packet. Numeric-claim detection also covers
 `fewer` and `less` wording.
+
+## External-model share packet v2 — sent to both named seats
+
+Only the text in this section was sent to Claude and Gemini 3.1 Pro after the
+Owner explicitly required both seats to participate. It contains no
+credentials, personal answers, protected data, private fixtures, repository
+contents, or raw conversation history.
+
+### Public challenge facts
+
+These facts were read back from the official challenge surfaces on 2026-08-30
+and must be rechecked before submission.
+
+- Event: **The WebMCP Challenge** (`webmcp`).
+- Deadline: `2026-09-03T20:00:00Z`.
+- Required product: a WebMCP-powered web app in which humans and agents
+  interact, collaborate, or create together.
+- Existing projects must document a meaningful WebMCP extension created after
+  the submission period opened on 2026-08-25.
+- Required submission artifacts: judge-accessible live URL, public source
+  repository with a visible open-source license, English materials or English
+  translations, and a public YouTube demo under three minutes with audio.
+- Judging: WebMCP Leverage, Execution, Potential Impact, and Creativity &
+  Ambition. No equal weighting is claimed.
+
+### Product claim under review
+
+VERROCCHIO is a browser-native workshop for time-constrained solo builders. It
+exposes four state-aware WebMCP actions: inspect the workshop, stop on
+uncertainty, propose a validated but unsigned plan, and return an unverified
+work claim. Approval, evidence verification, resume, publishing, deployment,
+and final submission are not WebMCP tools; they remain in the human-facing
+workflow. This is a workflow boundary, not actor authentication or tamper-proof
+security.
+
+The React/Vite app registers its tools with
+`document.modelContext.registerTool`. Tool availability changes with workflow
+state. Mutating calls require the latest `stateVersion` and an idempotency key,
+and return machine-readable reasons when held or rejected. The app itself owns
+the bounded state transitions and does not require an app-owned model API key.
+
+The intended judge journey is:
+
+```text
+inspect MANCA -> propose unsigned plan -> human FIRMA -> return CLAIMED result
+              -> human VERIFY or REQUEST CHANGES
+```
+
+### Current evidence and limits
+
+Locally verified:
+
+- A dated before/after challenge boundary exists, and the current product
+  candidate has been locally audited.
+- The candidate passed 95 automated tests and a real Chrome WebMCP smoke.
+- The Chrome smoke registered four initial tools, reduced the tool surface to
+  inspection during FERMO and evidence review, restored it after human action,
+  kept MANCA at 06 for a claim, and reduced it to 05 only after human VERIFY.
+- No measured speed, reliability, security, or 30 percent improvement is
+  claimed. Fresh-participant comprehension and general use beyond hackathons
+  remain unproven.
+
+Judge-visible evidence and release gates still unresolved:
+
+- Registration is incomplete.
+- Anonymous judge access to the live URL is not verified.
+- Public repository reachability and visible license are not verified.
+- The final annotated tag and its final clean-clone install, test, and build
+  receipt remain TODO.
+- No public demo-video URL is recorded or verified.
+
+The planned opening of that demo is: show the target-user caption at 0:00,
+send `What evidence is still missing?` at 0:02, show the real
+`inspect_workshop` call by 0:05, and show readable MANCA and NEXT by 0:08. End
+the first fifteen seconds with a clearly marked later-state montage of real
+FIRMA REQUIRED and CLAIMED shots captured from the same hosted build; do not
+imply that the inspection caused those states. Then show the one-sentence
+problem from 0:15 to 0:29, MANCA, NEXT, and the human-only boundary from 0:29
+to 0:49, and begin `propose_workshop_draft` from 0:49. By 1:00, show that the
+result is unsigned and held at FIRMA REQUIRED.
+
+### Independent questions
+
+Claude role — architecture and rules critic:
+
+1. Is the direction genuinely aligned with the official theme and judging
+   criteria, or is WebMCP incidental?
+2. Identify up to three supported counterarguments or overclaims. Say `none`
+   when this packet does not support one. Then identify the highest-risk rule
+   or submission gap.
+3. Recommend `DIRECTION_GO` or `PIVOT`, separately from
+   `SUBMISSION_GO` or `SUBMISSION_NO_GO`.
+
+Gemini role — product experience and demo critic:
+
+1. At fifteen seconds and again at sixty seconds, state whether a judge can
+   identify all five facts: target user, product action, why WebMCP matters,
+   the human-only boundary, and visible evidence that the product works.
+2. Identify up to three supported points of confusion. Say `none` when this
+   packet does not support one. Recommend the minimum repair to the planned
+   demonstration sequence.
+3. Recommend `DIRECTION_GO` or `PIVOT`, separately from
+   `SUBMISSION_GO` or `SUBMISSION_NO_GO`.
+
+Each model must answer independently in Japanese, cite only facts in this
+packet, and avoid guessing another model's opinion. Use this common return
+schema: facts used; unsupported assumptions; fifteen-second verdict;
+sixty-second verdict; direction verdict; submission verdict; confidence; and
+participation status. Mission Control, not either reviewer, owns the final
+synthesis.
+
+## Fresh external round v2 receipt
+
+Date: 2026-08-30 JST
+
+Both external seats independently returned a review from the packet above. No
+finding was attributed to a model before its response arrived.
+
+| Seat | Participation | Direction | Submission | Strongest finding |
+| --- | --- | --- | --- | --- |
+| Gemini 3.1 Pro (High) | completed-success | `DIRECTION_GO` | `SUBMISSION_NO_GO` | At fifteen seconds the target user, product action, and working UI are visible, but why WebMCP matters and the human-only boundary are not. At sixty seconds, why WebMCP matters remains too implicit. Remove the later-state cold-open montage and show the actual state sequence earlier. |
+| Claude | completed-success | `DIRECTION_GO` | `SUBMISSION_NO_GO` | WebMCP is central because tool registration, state-dependent availability, versioned mutations, and machine-readable holds form the workflow contract. Potential Impact and Creativity evidence are thin, the dated existing-project extension needs clearer proof, and mandatory public artifacts remain unresolved. |
+
+### Bounded synthesis
+
+The shared verdict is evidence, not automatic authority. The reasons are
+independent and complementary:
+
+- Preserve the product direction: a time-constrained solo builder delegates
+  inspection, stopping, unsigned planning, and claims through structured
+  browser-native actions while approval and verification remain human-facing.
+- Do not add another feature before submission. Repair the demonstration and
+  public proof instead.
+- Change the first minute from an explanatory montage to a chronological
+  working path. State the WebMCP advantage explicitly: structured live state
+  and state-aware tool availability, rather than DOM guessing.
+- Strengthen the dated post-2026-08-25 extension receipt and the concrete impact
+  story without inventing speed, reliability, security, or adoption metrics.
+- Keep the submission at NO-GO until registration, anonymous live access,
+  public repository/license identity, final tagged clean-clone proof, and the
+  public audio demo are all verified.
