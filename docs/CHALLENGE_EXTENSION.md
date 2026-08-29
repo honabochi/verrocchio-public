@@ -14,24 +14,24 @@ Official rules remain authoritative:
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `4736caa` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
+| Audited product candidate | `c5f7cad` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..4736caa
+f12214b^..c5f7cad
 ```
 
-This range contains 17 commits. Against the July baseline, it changes 42 files
-with 7,704 insertions and 899 deletions. The final metadata-only documentation
+This range contains 19 commits. Against the July baseline, it changes 46 files
+with 8,269 insertions and 1,017 deletions. The final metadata-only documentation
 commit must also be included in the final public submission tag; that tag is not
 yet assigned in this draft.
 
 For a complete comparison against the pre-existing baseline, use:
 
 ```bash
-git diff --stat 3be515d..4736caa
-git log --format='%h %aI %s' f12214b^..4736caa
+git diff --stat 3be515d..c5f7cad
+git log --format='%h %aI %s' f12214b^..c5f7cad
 ```
 
 Only the work added after the Challenge submission period opened is presented as
@@ -90,8 +90,11 @@ implementation, not on the July workshop shell by itself.
 - `docs/WEBMCP_EVALS.md` documents the hosted protocol and stop conditions.
 - `docs/WEBMCP_POC.md` records the falsification checkpoint and explicitly lists
   unproven claims.
+- `submission-manifest.json` and `scripts/verify-submission-readiness.mjs`
+  convert public URLs, official fields, freeze state, test/build evidence, and
+  Owner attestations into a deterministic final preflight.
 
-## Verification status at `4736caa`
+## Verification status at `c5f7cad`
 
 Confirmed in the repository:
 
