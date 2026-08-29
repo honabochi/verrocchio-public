@@ -285,3 +285,21 @@ independent and complementary:
 - Keep the submission at NO-GO until registration, anonymous live access,
   public repository/license identity, final tagged clean-clone proof, and the
   public audio demo are all verified.
+
+## Applied roundtable decision
+
+The next local revision applied the shared decision without adding product
+features:
+
+- The demo now keeps every product state in causal order. It shows a real
+  inspection, structured MANCA/NEXT and the human boundary, then reaches an
+  unsigned `FIRMA REQUIRED` plan before explaining the problem. Later FIRMA and
+  CLAIMED states are no longer inserted into the cold open.
+- The first fifteen seconds now carry the target user, working product action,
+  WebMCP reason, human boundary, and real evidence in one chronological path.
+- The Existing-project explanation now names the pre-Challenge shell and the
+  post-2026-08-25 WebMCP capability delta directly, while separating local
+  candidate evidence from incomplete public proof.
+- Potential Impact and Execution wording is limited to visible return-point
+  behavior and recorded candidate evidence. No attention, speed, reliability,
+  usability, adoption, or generalization improvement is claimed as proven.

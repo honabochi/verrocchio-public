@@ -14,7 +14,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 ## Storyboard and narration
 
-### 0:00–0:15 — Cold open: user, WebMCP, and human boundary
+### 0:00–0:15 — Real inspection: user, WebMCP, and human boundary
 
 **Shot**
 
@@ -23,63 +23,57 @@ Format: screen recording with English narration, restrained captions, and no bac
 - By 0:02, send `What evidence is still missing?` in the host conversation.
 - Show the real `inspect_workshop` call by 0:05, with a restrained caption:
   `Structured live state — not DOM guessing`.
-- Cut to readable `MANCA` and `NEXT` by 0:08.
-- End the cold open with two brief shots captured from the same hosted build:
-  `FIRMA REQUIRED / HUMAN ONLY`, then `CLAIMED / 人間の確認待ち` with MANCA
-  still open. Do not imply that these later states came from the read-only call.
+- By 0:08, show readable `MANCA`, `NEXT`, and the returned human-only decisions
+  together. Keep the real host result and corresponding app state in causal
+  order.
+- At 0:12, send `Create the smallest valid plan. Do not publish.` from the same
+  mission state. Do not show FIRMA or CLAIMED before the actions that create
+  those states.
 - **HOSTED EVIDENCE REQUIRED**
 
 **Narration**
 
-> For solo builders working in interrupted sessions, VERROCCHIO exposes missing proof as structured WebMCP state. AI can inspect, stop, propose, and return claims; only the human-facing workflow can approve or verify them.
+> For solo builders working through interruptions, VERROCCHIO exposes live work as structured WebMCP state, not DOM guessing. The agent sees missing proof and the next action; approval and verification have no agent tool and remain in the human-facing workflow.
 
 **Production note / 制作メモ**
 
 - 最初の8秒以内に、静止画ではなく実際の送信、tool call、MANCA/NEXTを見せる。
 - Keep the cursor visible and avoid a title card before the functioning product.
-- FIRMAとCLAIMEDの短い先出しは同じ凍結buildの実録だけを使い、
-  `inspect_workshop` が状態を変えたように編集しない。
+- All product states must appear in causal order from one clean mission.
+  Straight cuts may remove latency only; never insert a later FIRMA or CLAIMED
+  state before the action that created it.
 
-### 0:15–0:29 — The problem, in one sentence
-
-**Shot**
-
-- Hold on the mission summary and the one-step guide. Do not read every rule or
-  dashboard field.
-
-**Narration**
-
-> A solo builder has to remember every rule, handoff, and unfinished proof. AI can produce work, but a confident answer is not the same as verified progress.
-
-### 0:29–0:49 — MANCA and the bounded next action
+### 0:15–0:28 — Create an unsigned plan through WebMCP
 
 **Shot**
 
-- Show the inspection result: missing proof gates, `MANCA`, the active work item, and the human-only boundary.
-- Highlight only two fields with restrained callouts: `MANCA / 未確認の証拠` and `NEXT / 次の一手`.
-- Do not scroll through every dashboard section.
+- Continue the request sent at 0:12 and show the real
+  `propose_workshop_draft` call. If the host performs a fresh inspection first,
+  keep that call in sequence; do not recreate or skip it deceptively.
+- Leave one genuine pending moment, then use a visible straight cut if latency
+  would make the result unreadable within the segment.
+- Show the validated draft and hold on `FIRMA REQUIRED` by 0:28. The stroke
+  bodies must not appear in CARTONE before human adoption.
 - **HOSTED EVIDENCE REQUIRED**
 
 **Narration**
 
-> VERROCCHIO replaces vague percentages with MANCA: the number of required proofs that remain unverified. The inspection returns the next bounded stroke and also says which decisions belong only to the human.
+> The host sends a bounded plan through WebMCP. VERROCCHIO checks the live state, gate references, plan size, and retry key. The result is deliberately unsigned; no agent approval tool exists.
 
-### 0:49–1:13 — Create an unsigned plan through WebMCP
+### 0:28–0:49 — The problem, while FIRMA is visibly pending
 
 **Shot**
 
-- Send: `Turn the saved mission into the smallest valid plan. Do not publish anything.`
-- Show the host call `inspect_workshop`, then `propose_workshop_draft`.
-- Show the validated draft appear in the app with its contract, gates, risks,
-  stroke count, and `FIRMA REQUIRED` state. The stroke bodies become visible in
-  CARTONE only after human adoption.
-- **HOSTED EVIDENCE REQUIRED**
+- Keep the unsigned draft and `FIRMA REQUIRED` state visible.
+- Reveal only the mission, risks, and first evidence gate. Do not read every
+  rule or dashboard field.
+- Do not click the human control during this segment.
 
 **Narration**
 
-> The host model turns the saved mission into a strict plan, then submits it through WebMCP. VERROCCHIO validates the structure, state version, gate references, and retry key. The result is deliberately unsigned. The agent can propose this plan, but it cannot approve it.
+> An interrupted solo builder must track rules, handoffs, and unfinished proof. VERROCCHIO preserves the next bounded action, but a confident AI answer is still not verified progress. That is why this plan waits for me.
 
-### 1:13–1:32 — Human FIRMA
+### 0:49–1:08 — Human FIRMA
 
 **Shot**
 
@@ -90,7 +84,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 **Narration**
 
-> I inspect the scope and risks, and only then give FIRMA. Approval is not a hidden prompt instruction and there is no approval tool for the agent to call. This irreversible decision stays in the interface, with the human.
+> I inspect the scope and risks, and only then give FIRMA. Approval is not a hidden prompt instruction and there is no approval tool for the agent to call. This governed decision stays visible in the human interface.
 
 **Production note / 制作メモ**
 
@@ -100,7 +94,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 - After FIRMA, move to CARTONE explicitly. Adoption does not navigate there by
   itself.
 
-### 1:32–1:58 — Return work as a CLAIMED result
+### 1:08–1:34 — Return work as a CLAIMED result
 
 **Shot**
 
@@ -115,7 +109,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 > The active work packet says what to change, what evidence to return, and when to stop. The agent returns a structured claim with verification, an evidence reference, and remaining risk. MANCA does not decrease, because an AI claim is still not proof.
 
-### 1:58–2:20 — Human verification or return for changes
+### 1:34–1:56 — Human verification or return for changes
 
 **Shot**
 
@@ -134,7 +128,20 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 > If the evidence is stale or incomplete, the human sends it back with a reason. The claim stays in the history, the gate stays open, and the next attempt starts from an explicit return point.
 
-### 2:20–2:42 — Why WebMCP, and close
+### 1:56–2:18 — Preserved evidence and exact return point
+
+**Shot**
+
+- For the primary public take, use `REQUEST CHANGES` unless the returned
+  evidence is genuinely inspectable on camera.
+- Open EVIDENCE and show the preserved return reason, claim history, open gate,
+  and next action. Keep the text readable; do not scroll through the full log.
+
+**Narration**
+
+> A rejected claim is not erased or called complete. Its reason remains in history, the proof gate stays open, and the next attempt starts from an explicit return point after interruption.
+
+### 2:18–2:40 — Why WebMCP, and close
 
 **Shot**
 
@@ -146,7 +153,7 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 **Narration**
 
-> A DOM agent may need to rediscover controls and infer their meaning on every screen. WebMCP gives the host a small, state-aware contract: inspect, stop, propose, and return a claim. VERROCCHIO uses that leverage to reduce fragile coordination while keeping approval, evidence verification, and final submission in the human-facing workflow. It is a disciplined workshop for a team of one.
+> A DOM agent may rediscover controls and guess whether text is a claim or a decision. WebMCP replaces that guess with bounded, state-aware calls: inspect, stop, propose, and return a claim. Approval and verification remain in the human-facing workflow. A disciplined workshop for a team of one.
 
 **Production note / 制作メモ**
 

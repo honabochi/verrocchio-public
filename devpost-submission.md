@@ -6,13 +6,13 @@
 
 ## One-line summary
 
-VERROCCHIO helps time-constrained solo builders finish interrupted, high-stakes
-projects while keeping approval in the human-facing workflow. WebMCP exposes the live
-workshop as four state-aware tools—inspect, stop, propose an unsigned plan, and
+VERROCCHIO helps time-constrained solo builders preserve the next action,
+missing proof, and human checkpoints across interrupted projects. WebMCP
+exposes the browser workshop as four state-aware tools—inspect, stop, propose an unsigned plan, and
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-the current working tree passed 95 local tests in the latest review, while the
+local evidence at candidate `4cc674d` recorded 95 passing tests, while the
 final tagged clean-clone proof, public judge access, and fresh hosted evaluation
 remain incomplete.
 
@@ -47,21 +47,26 @@ MANCA → unsigned plan → human FIRMA → bounded work → CLAIMED
 
 ## Why this matters
 
-The product is designed to reduce attention cost, preserve an exact return
-point after interruption, and show why progress is claimed. Hackathons are the
-first proving ground; broader generalization remains unproven.
+The product keeps MANCA, active work, receipts, and the next action together so
+an interrupted participant can return to an explicit state instead of trusting
+a completion-sounding answer. Hackathons are the first proving ground; reduced
+attention cost, fresh-participant usability, and broader generalization remain
+unproven.
 
 ## Fit to the official judging criteria
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** the current working tree passed 95 automated tests and a
-  production build in the latest review; the final tagged clean-clone proof and
-  public judge access remain release gates.
+- **Execution:** local evidence at candidate `4cc674d` recorded 95 passing tests
+  and a real Chrome WebMCP smoke; the final tagged clean-clone test/build proof
+  and public judge access remain release gates.
 - **Potential Impact:** the target is a time-constrained solo builder who needs
-  continuity and proof-aware handoffs without forming a conventional team.
-- **Creativity & Ambition:** claims, proof, stops, approval, and resumption are
-  different states with different owners rather than one generic AI workflow.
+  continuity without forming a conventional team. Browser-local state keeps
+  MANCA, the active packet, receipts, and the next action together after an
+  interruption; fresh usability and adoption remain unproven.
+- **Creativity & Ambition:** tool availability changes with workshop state, an
+  agent claim cannot reduce MANCA, and approval and verification remain visible
+  human actions rather than one generic AI workflow.
 
 The official readback lists these four five-point criteria and no tracks; it
 does not establish equal weighting. The deadline is September 3, 2026 at 1:00
@@ -123,25 +128,29 @@ ChatGPT / Codex host
 
 Codex helped design schemas and state transitions, implement the React and
 WebMCP paths, add tests, and investigate hosted evaluation failures. Claude
-performed a read-only public release-preflight critique. A Gemini seat was
-requested for the latest round, but no review was returned through the current
-permission boundary, so no Gemini finding or agreement is claimed. AI output
-remained a candidate; source inspection,
-tests, browser behavior, and entrant approval remained separate evidence.
+independently reviewed architecture and rule fit. Gemini 3.1 Pro independently
+reviewed product experience and the demo's first sixty seconds. Both returned
+direction GO and current submission NO-GO for different stated reasons. AI
+output remained a candidate; source inspection, tests, browser behavior, and
+entrant approval remained separate evidence.
 
 ## New work added during the submission period
 
-VERROCCHIO existed before the Challenge, so the entry declares `Existing`.
+VERROCCHIO is an `Existing` project. The July 19 baseline `3be515d` already
+contained the local-first workshop, MANCA proof gates, work packets, and human
+FIRMA/FERMO controls, but it did not register WebMCP tools.
 
 - **Pre-existing baseline:** `3be515d` (July 19, 2026) — TODO public link.
 - **Challenge start:** `f12214b` (August 27, 2026) — TODO public link.
 - **Submission revision:** TODO — public annotated tag and commit link.
 - **Public comparison:** TODO — `3be515d...<final-submission-tag>`.
 
-The eligible extension added the native WebMCP tool surface, keyless host-driven
-path, phase-dependent registration, versioned/idempotent mutations, human-
-reviewed claims, evaluation receipts, Japanese-first operator guidance, and the
-hardened release preflight. Full statistics and dated evidence are in
+Beginning with `f12214b` on August 27, the eligible extension added four native,
+state-aware WebMCP tools; host-driven keyless planning; phase-dependent tool
+availability; versioned and idempotent mutations; unsigned plans; and
+`CLAIMED` results that require human verification before MANCA can decrease. It
+also added bounded evaluation receipts and a local Chrome WebMCP smoke path.
+Full statistics, limitations, and dated evidence are in
 `docs/CHALLENGE_EXTENSION.md`.
 
 ## Testing instructions for judges
@@ -165,8 +174,8 @@ Devpost—never in the repository.
 
 ## Verification and evaluation status
 
-- Local suite and production build: **95 passing** in the latest working-tree
-  review.
+- Local candidate evidence: **95 passing tests** and a real Chrome WebMCP smoke
+  at `4cc674d`.
 - Clean-clone dependency install, tests, and production build: **TODO** for the
   final tagged revision; prior-candidate evidence is not carried forward.
 - Judge-accessible unauthenticated live smoke: **TODO**.
@@ -185,15 +194,20 @@ data, credentials, unrelated tabs, and unsupported pass claims.
 
 ## 2:40 demo video outline
 
-- **0:00–0:15 — Working call:** show the deployed app and a real
-  `inspect_workshop` call before any title card.
-- **0:15–0:55 — User and MANCA:** identify the interrupted solo builder, missing
-  proof, bounded next action, and human-only decisions.
-- **0:55–1:50 — Plan, FIRMA, CLAIMED:** show an unsigned WebMCP plan, the human
-  adoption click, active CARTONE work, and a returned claim that leaves MANCA open.
-- **1:50–2:40 — Human review and WebMCP:** request changes, show preserved
-  history in EVIDENCE, then close with the qualitative DOM-versus-WebMCP
-  difference. Use no unverified performance numbers.
+- **0:00–0:15 — Real inspection:** identify the interrupted solo builder, send
+  the real request, show `inspect_workshop`, MANCA, NEXT, and the human-only
+  boundary, then begin the plan request. No later-state montage.
+- **0:15–0:49 — Unsigned plan:** show the real proposal in causal order, stop at
+  `FIRMA REQUIRED` by 0:28, and explain the problem while the human gate remains
+  visibly pending.
+- **0:49–1:34 — FIRMA and CLAIMED:** show the human adoption click, active
+  CARTONE work, and a returned claim that leaves MANCA open.
+- **1:34–2:18 — Human review and return point:** request changes unless evidence
+  is inspectable, then show the preserved history, open gate, and exact next
+  action.
+- **2:18–2:40 — Why WebMCP:** close with the qualitative difference between DOM
+  inference and bounded state-aware calls. Use no unverified performance
+  numbers.
 
 The public video must be under three minutes, include audible English narration,
 show the functioning product in the first 10–15 seconds, and use authorized
@@ -242,8 +256,8 @@ before submission. Identity and self-assessment answers remain Owner-only.
   with detected MIT license.
 - [ ] **28257 — Agents or clients used to test WebMCP** (required): TODO list
   only clients actually verified on the frozen revision.
-- [ ] **28258 — AI tools leveraged** (required): current verified candidates are
-  Codex and Claude; add another tool only with retained evidence.
+- [ ] **28258 — AI tools leveraged** (required): retained evidence currently
+  supports Codex, Claude, and Gemini; Owner reads back the final field.
 - [ ] **28259 — Learning level** (required): Owner selects the actual option.
 - [ ] **28260 — Career-reusable AI value** (required): Owner selects `Yes` or `No`.
 

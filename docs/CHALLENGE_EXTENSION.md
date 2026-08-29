@@ -8,6 +8,18 @@ period.
 Official rules remain authoritative:
 <https://webmcp.devpost.com/rules>.
 
+## Thirty-second judge explanation
+
+VERROCCHIO existed before the Challenge as a local-first workshop with MANCA
+proof gates and human FIRMA/FERMO controls. It did not register WebMCP tools.
+Beginning on 2026-08-27, the Challenge work converted that UI-only workshop into
+a host-operable browser contract: four native tools inspect live state, stop on
+uncertainty, propose an unsigned plan, and return an unverified result claim.
+Mutations are versioned and idempotent, tool availability changes at human
+checkpoints, and a claim cannot reduce MANCA until the human verifies it. The
+meaningful extension is this browser-native human-agent contract and its
+falsifiable verification path, not the pre-existing workshop shell.
+
 ## Commit boundary
 
 | Boundary | Commit | Date | Meaning |
@@ -23,16 +35,20 @@ f12214b^..4cc674d
 ```
 
 This range contains 38 commits. Against the July baseline, it changes 49 files
-with 9,161 insertions and 1,036 deletions. The following metadata-only documentation
-commit must also be included in the final public submission tag; that tag is not
-yet assigned in this draft.
+with 9,161 insertions and 1,036 deletions. The metadata-only commits after the
+product candidate, through the final submission tag, must also be included in
+the public comparison. That tag is not yet assigned in this draft.
 
-For a complete comparison against the pre-existing baseline, use:
+For the audited implementation comparison against the pre-existing baseline,
+use:
 
 ```bash
 git diff --stat 3be515d..4cc674d
 git log --format='%h %aI %s' f12214b^..4cc674d
 ```
+
+For the final public comparison, replace `4cc674d` in both commands with the
+annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
 Challenge work. The underlying VERROCCHIO concept and July implementation are
@@ -49,7 +65,7 @@ pre-existing work.
 | Human boundary | FIRMA and FERMO were visible product concepts | No WebMCP tool exists for FIRMA, evidence verification, FERMO resume, publishing, or final submission; mutation tools are removed while human review is pending |
 | Work results | A result could be entered through the human-facing workflow | `return_work_result` creates a structured `CLAIMED` result and cannot reduce MANCA; a human must verify it or return it for changes |
 | Evaluation | Local product tests and historical browser receipts | Isolated natural-language cases, bounded evaluation receipts, deterministic verification, and outcome-checked DOM comparison routes |
-| Judge path | General local/Vercel setup | A no-key 60-second WebMCP path, a Challenge mission fixture, ChatGPT in-app-browser support, and Chrome WebMCP testing instructions |
+| Judge path | General local/Vercel setup | A documented no-key WebMCP judge path, a Challenge mission fixture, and a locally verified Chrome route; final public ChatGPT in-app-browser proof remains pending |
 
 The Challenge submission should be judged on the right-hand column and its
 implementation, not on the July workshop shell by itself.
