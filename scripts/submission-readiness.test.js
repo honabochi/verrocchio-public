@@ -48,6 +48,24 @@ describe("submission readiness", () => {
     })).toEqual([]);
   });
 
+  test("requires the existing-app delta only for an Existing entry", () => {
+    const otherwiseComplete = {
+      28249: true,
+      28250: true,
+      28252: true,
+      28254: true,
+      28256: true,
+      28257: true,
+      28258: true,
+      28259: true,
+      28260: true,
+    };
+    expect(missingOfficialFields(otherwiseComplete, { appStatus: "Existing" }))
+      .toEqual(["28253"]);
+    expect(missingOfficialFields(otherwiseComplete, { appStatus: "New" }))
+      .toEqual([]);
+  });
+
   test("distinguishes local failure from an incomplete owner gate", () => {
     expect(summarizeSubmissionChecks([
       { id: "tests", status: "PASS" },

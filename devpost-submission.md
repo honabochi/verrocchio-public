@@ -61,6 +61,29 @@ Hackathons are the first demanding use case, not the product's limit. Their
 fixed deadlines, explicit requirements, and judge-visible deliverables make
 them a useful proving ground for a broader human-governed execution system.
 
+## Fit to the official judging criteria
+
+The live Devpost readback on 2026-08-30 JST lists four equally presented
+five-point criteria and no separate tracks:
+
+- **WebMCP Leverage:** four state-dependent tools provide a non-trivial shared
+  workshop contract, while approval and evidence judgment are deliberately not
+  exposed as agent tools.
+- **Execution:** the submission is a complete browser product rather than only
+  a tool-registration snippet; the current local candidate has 93 automated
+  tests and a reproducible production build, while public judge access remains
+  a release gate.
+- **Potential Impact:** the target is specific — a time-constrained solo builder
+  who needs continuity, proof-aware progress, and safe handoffs without forming
+  a conventional team.
+- **Creativity & Ambition:** the agent does not merely generate project text; it
+  joins a bounded workshop where claims, proof, stops, approval, and resumption
+  have different states and owners.
+
+The official submission deadline is September 3, 2026 at 1:00 PM Pacific Time
+(September 4 at 5:00 AM JST). The submission, repository, video, and live site
+must be frozen after that deadline until winners are announced.
+
 ## Why WebMCP is a strong fit
 
 The value of VERROCCHIO depends on a person and an agent acting on the same live

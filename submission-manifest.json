@@ -6,6 +6,9 @@
   "productCandidate": "b1910f5",
   "submissionTag": "",
   "expectedTestCount": 93,
+  "entryContext": {
+    "appStatus": "Existing"
+  },
   "urls": {
     "live": "https://verrocchio-workshop.honabochi.chatgpt.site/",
     "repository": "https://github.com/honabochi/verrocchio",
@@ -37,6 +40,8 @@
     "videoAssetsAndRightsConfirmed": false,
     "numericClaimsVerifiedOrRemoved": false,
     "frozenRevisionMatchesAllPublicArtifacts": false,
-    "finalEntryReadBack": false
+    "finalEntryReadBack": false,
+    "projectOwnershipThirdPartyRightsAndNoConflictConfirmed": false,
+    "postDeadlineFreezePlanConfirmed": false
   }
 }

@@ -112,8 +112,19 @@ add(
   { priority: 29, action: "数値性能主張を削除するか、同じ凍結revisionの検証済みhosted evaluationを付ける。", source: "public submission packet / submission-manifest.json" },
 );
 
-const fieldGaps = missingOfficialFields(manifest.officialFields);
-const fieldChecklistIssues = inspectOfficialFieldChecklist(draft, manifest.officialFields);
+const entryContextValid = ["New", "Existing"].includes(manifest.entryContext?.appStatus);
+add(
+  "entry-context",
+  entryContextValid ? "PASS" : "FAIL",
+  entryContextValid ? `App Status=${manifest.entryContext.appStatus}` : "entryContext.appStatus must be New or Existing",
+  { priority: 11, actor: "OWNER", ownerOnly: true, action: "Ownerが提出対象をNewまたはExistingとして確定する。", source: "submission-manifest.json / Devpost field 28252" },
+);
+const fieldGaps = missingOfficialFields(manifest.officialFields, manifest.entryContext);
+const fieldChecklistIssues = inspectOfficialFieldChecklist(
+  draft,
+  manifest.officialFields,
+  manifest.entryContext,
+);
 add(
   "official-required-fields",
   fieldChecklistIssues.length ? "FAIL" : fieldGaps.length ? "OWNER" : "PASS",
@@ -121,7 +132,7 @@ add(
     ? fieldChecklistIssues.join("; ")
     : fieldGaps.length
       ? `Owner confirmation missing: ${fieldGaps.join(", ")}`
-    : "All required field booleans confirmed",
+    : "All official required and entry-conditional field booleans confirmed",
   { priority: 12, actor: "OWNER", ownerOnly: true, action: "OwnerがDevpostの必須欄を読み、個人回答と規約確認を行う。AIは推測・代行しない。", source: "Devpost / submission-manifest.json" },
 );
 
@@ -413,13 +424,17 @@ if (repositoryAccessible) {
     });
     const metadata = metadataResponse.ok ? await metadataResponse.json() : null;
     if (metadata && metadata.private === false && metadata.default_branch) {
-      const statuses = await Promise.all(["README.md", "LICENSE", "package.json", "package-lock.json"].map(async (file) => {
+      const artifactFiles = ["README.md", "LICENSE", "package.json", "package-lock.json", "src/webmcp.js"];
+      const artifacts = await Promise.all(artifactFiles.map(async (file) => {
         const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repository}/${metadata.default_branch}/${file}`);
-        await response.body?.cancel();
-        return response.status;
+        return { file, status: response.status, body: response.ok ? await response.text() : "" };
       }));
-      repositoryArtifactsOk = statuses.every((status) => status === 200);
-      repositoryArtifactEvidence = `GitHub public=${!metadata.private}; ${metadata.default_branch} artifact statuses=${statuses.join(",")}`;
+      const licenseDetected = metadata.license?.spdx_id && metadata.license.spdx_id !== "NOASSERTION";
+      const webmcpSource = artifacts.find(({ file }) => file === "src/webmcp.js")?.body || "";
+      const registerToolPresent = /\.registerTool\s*\(/.test(webmcpSource);
+      repositoryArtifactsOk = artifacts.every(({ status }) => status === 200) &&
+        Boolean(licenseDetected) && registerToolPresent;
+      repositoryArtifactEvidence = `GitHub public=${!metadata.private}; branch=${metadata.default_branch}; license=${metadata.license?.spdx_id || "undetected"}; artifacts=${artifacts.map(({ file, status }) => `${file}:${status}`).join(",")}; registerTool=${registerToolPresent}`;
     } else {
       repositoryArtifactEvidence = `GitHub API returned ${metadataResponse.status} or repository is private`;
     }

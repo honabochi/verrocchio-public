@@ -64,6 +64,23 @@ the current execution boundary, so no new Gemini finding or agreement is
 claimed here. The earlier Gemini finding in the table above remains the last
 actual Gemini contribution.
 
+## Official MCP refresh
+
+The authenticated Devpost MCP readback on 2026-08-30 JST confirmed the selected
+event as `webmcp` / **The WebMCP Challenge**, with submissions open and no
+tracks. It also exposed a dangerous fuzzy-match route: looking up only "OpenAI
+WebMCP Challenge" first returned the unrelated, closed **OpenAI Build Week**
+event. Selection and registration must therefore use the canonical
+`https://webmcp.devpost.com/` URL or the exact `webmcp` slug.
+
+The live submission requirements and the latest announcement both require a
+public YouTube demo under three minutes with audio, despite one contradictory
+FAQ sentence suggesting there is no video. The mandatory submission-requirement
+record and official rules control: video remains a hard gate. Field `28253` is
+not globally required by the form, but it is required for this entry because
+VERROCCHIO declares App Status `Existing` and the rules require a clear dated
+before/after WebMCP extension.
+
 ## Strongest claim to preserve
 
 VERROCCHIO exposes a small, state-aware WebMCP contract for inspection, bounded

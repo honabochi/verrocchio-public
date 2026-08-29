@@ -2,7 +2,6 @@ export const REQUIRED_OFFICIAL_FIELDS = [
   "28249",
   "28250",
   "28252",
-  "28253",
   "28254",
   "28256",
   "28257",
@@ -41,6 +40,8 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
   "numericClaimsVerifiedOrRemoved",
   "frozenRevisionMatchesAllPublicArtifacts",
   "finalEntryReadBack",
+  "projectOwnershipThirdPartyRightsAndNoConflictConfirmed",
+  "postDeadlineFreezePlanConfirmed",
 ];
 
 export const MINIMUM_SUBMISSION_TEST_COUNT = 92;
@@ -88,11 +89,18 @@ export function inspectDraftSections(text) {
   return issues;
 }
 
-export function missingOfficialFields(fields = {}) {
-  return REQUIRED_OFFICIAL_FIELDS.filter((id) => fields[id] !== true);
+export function requiredSubmissionFieldsForEntry(entryContext = {}) {
+  return entryContext.appStatus === "Existing"
+    ? [...REQUIRED_OFFICIAL_FIELDS, "28253"]
+    : [...REQUIRED_OFFICIAL_FIELDS];
 }
 
-export function inspectOfficialFieldChecklist(text, manifestFields = {}) {
+export function missingOfficialFields(fields = {}, entryContext = {}) {
+  return requiredSubmissionFieldsForEntry(entryContext)
+    .filter((id) => fields[id] !== true);
+}
+
+export function inspectOfficialFieldChecklist(text, manifestFields = {}, entryContext = {}) {
   const matches = [...text.matchAll(/^- \[([ xX])\] \*\*(282\d+)\b/gm)];
   const byId = new Map();
   for (const match of matches) {
@@ -101,7 +109,8 @@ export function inspectOfficialFieldChecklist(text, manifestFields = {}) {
     byId.set(match[2], entries);
   }
   const issues = [];
-  for (const id of REQUIRED_OFFICIAL_FIELDS) {
+  const requiredForEntry = requiredSubmissionFieldsForEntry(entryContext);
+  for (const id of requiredForEntry) {
     const entries = byId.get(id) || [];
     if (entries.length !== 1) {
       issues.push(`${id} appears ${entries.length} times`);
@@ -111,7 +120,9 @@ export function inspectOfficialFieldChecklist(text, manifestFields = {}) {
       issues.push(`${id} checklist and manifest disagree`);
     }
   }
-  for (const optionalId of ["28251", "28255"]) {
+  for (const optionalId of ["28251", "28253", "28255"].filter(
+    (id) => !requiredForEntry.includes(id),
+  )) {
     const entries = byId.get(optionalId) || [];
     if (entries.length > 1) issues.push(`${optionalId} appears ${entries.length} times`);
   }
