@@ -3,7 +3,7 @@
   "event": "OpenAI WebMCP Challenge",
   "challengeBaseline": "3be515d",
   "challengeStart": "f12214b",
-  "productCandidate": "031b380",
+  "productCandidate": "b1910f5",
   "submissionTag": "",
   "expectedTestCount": 93,
   "urls": {
