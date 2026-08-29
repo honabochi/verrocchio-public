@@ -14,24 +14,24 @@ Official rules remain authoritative:
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `b1910f5` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
+| Audited product candidate | `7c5e712` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..b1910f5
+f12214b^..7c5e712
 ```
 
-This range contains 26 commits. Against the July baseline, it changes 48 files
-with 8,938 insertions and 1,017 deletions. The final metadata-only documentation
+This range contains 28 commits. Against the July baseline, it changes 48 files
+with 9,027 insertions and 1,017 deletions. The final metadata-only documentation
 commit must also be included in the final public submission tag; that tag is not
 yet assigned in this draft.
 
 For a complete comparison against the pre-existing baseline, use:
 
 ```bash
-git diff --stat 3be515d..b1910f5
-git log --format='%h %aI %s' f12214b^..b1910f5
+git diff --stat 3be515d..7c5e712
+git log --format='%h %aI %s' f12214b^..7c5e712
 ```
 
 Only the work added after the Challenge submission period opened is presented as
@@ -94,11 +94,11 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `b1910f5`
+## Verification status at `7c5e712`
 
 Confirmed in the repository:
 
-- The automated suite passes: 93 tests across state, commands, WebMCP tools,
+- The automated suite passes: 94 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - Mutation evaluation reads the authoritative committed state, preventing FERMO
   or PLAN_DRAFT from being recorded as the stale pre-transition phase.

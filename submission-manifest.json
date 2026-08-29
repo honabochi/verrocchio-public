@@ -3,9 +3,9 @@
   "event": "OpenAI WebMCP Challenge",
   "challengeBaseline": "3be515d",
   "challengeStart": "f12214b",
-  "productCandidate": "b1910f5",
+  "productCandidate": "7c5e712",
   "submissionTag": "",
-  "expectedTestCount": 93,
+  "expectedTestCount": 94,
   "entryContext": {
     "appStatus": "Existing"
   },

@@ -70,7 +70,7 @@ five-point criteria and no separate tracks:
   workshop contract, while approval and evidence judgment are deliberately not
   exposed as agent tools.
 - **Execution:** the submission is a complete browser product rather than only
-  a tool-registration snippet; the current local candidate has 93 automated
+  a tool-registration snippet; the current local candidate has 94 automated
   tests and a reproducible production build, while public judge access remains
   a release gate.
 - **Potential Impact:** the target is specific — a time-constrained solo builder
@@ -261,7 +261,7 @@ official submission form after confirming the event rules and access policy.
 
 ## Verification and evaluation status
 
-- Local automated tests: 93 passing on the current local candidate. Re-run and
+- Local automated tests: 94 passing on the current local candidate. Re-run and
   record the final count on the frozen submission revision.
 - Production build: TODO — record the final build result for the frozen
   submission revision.
