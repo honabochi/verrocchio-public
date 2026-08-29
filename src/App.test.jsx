@@ -83,6 +83,8 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("残り7問を実行する")).toBeVisible();
     expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent("記録待ち");
     expect(screen.getByRole("group", { name: "人間による例外報告" })).toBeDisabled();
+    expect(screen.queryByText("LIVE GUIDE")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "頼む文をコピー" })).toHaveLength(1);
   });
 
   test("updates the eval recorder after a native WebMCP tool executes", async () => {

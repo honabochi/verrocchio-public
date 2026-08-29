@@ -4,18 +4,19 @@
 
 VERROCCHIO is a browser-native workshop for time-constrained solo builders. It gives one person the coordination layer that normally requires a team: bounded AI roles, interruption-safe context, evidence-gated progress, and human ownership of irreversible decisions.
 
-Hackathons are the first concrete mission, not the limit of the product. This WebMCP Challenge extension uses VERROCCHIO to finish VERROCCHIO itself: agents can inspect the workshop, prepare an unsigned plan, and return work claims, while only the human can verify evidence, give `FIRMA`, or sign `CONSEGNA`.
+Hackathons are the first concrete mission, not the limit of the product. This WebMCP Challenge extension uses VERROCCHIO to finish VERROCCHIO itself: agents can inspect the workshop, prepare an unsigned plan, and return work claims. Approval and evidence verification are not exposed through the WebMCP tool surface; the workflow reserves `FIRMA` and `CONSEGNA` for the human UI.
 
 Generic progress is replaced with `MANCA`: the number of required proofs that are still missing. AI output is a `CLAIMED` result until a human marks it `VERIFIED`.
 
-The engine is hackathon-agnostic. Each event begins by loading a fresh mission
-profile: official rules, judging criteria, deadline, track, constraints,
-available hands, and the decisions that must remain human.
+The engine is designed around replaceable mission profiles. The current
+Challenge profile records official rules, judging criteria, deadline, track,
+constraints, available hands, and the decisions reserved for the human. Broader
+use beyond hackathons has not yet been validated.
 
 ## Run
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -56,8 +57,9 @@ VERROCCHIO currently registers four imperative WebMCP tools:
 - `return_work_result` records a structured `CLAIMED` result without closing a gate.
 
 Every mutation requires the `stateVersion` returned by the latest inspection
-and an idempotency key. Stale calls are rejected, and retries return the stored
-receipt instead of repeating the transition.
+and an idempotency key. Stale calls are rejected, identical retries return the
+stored receipt instead of repeating the transition, and reuse of a current key
+with a different payload is rejected.
 
 When FIRMA, FERMO, a plan draft, or an evidence claim needs human attention,
 mutation tools are unregistered with `AbortSignal`. The agent cannot call
@@ -152,10 +154,12 @@ conversation to inspect the workshop and propose the smallest plan. The site
 does not pretend to have called a model: host-originated plans are marked
 `host-webmcp`, remain unsigned, and cannot close their own evidence gate.
 
-## Supported platform
+## Tested platform boundary
 
-- Current desktop browsers
-- Responsive mobile layout for monitoring and approvals
+- The ordinary UI is tested in current desktop browsers and includes a
+  responsive mobile layout for monitoring and approvals.
+- Native WebMCP actions require a WebMCP-capable host such as ChatGPT's in-app
+  browser or a supported browser testing configuration.
 
 ## One engine, many hackathons
 

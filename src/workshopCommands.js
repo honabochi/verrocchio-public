@@ -1,11 +1,40 @@
 import { createEvent } from "./model";
 import { normalizeWorkshopPlan } from "./workshopPlanContract";
 
-function receipt(transition, state, idempotencyKey, extra = {}) {
+function stableSerialize(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(stableSerialize).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableSerialize(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function requestFingerprint(input, actor) {
+  const payload = Object.fromEntries(
+    Object.entries(input).filter(
+      ([key]) => key !== "expectedStateVersion" && key !== "idempotencyKey",
+    ),
+  );
+  const source = stableSerialize({ actor, payload });
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `fnv1a32-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+function receipt(transition, state, idempotencyKey, fingerprint, extra = {}) {
   return {
     ok: true,
     receiptId: `receipt-${crypto.randomUUID()}`,
     idempotencyKey,
+    requestFingerprint: fingerprint,
     transition,
     stateVersion: (state.stateVersion || 0) + 1,
     manca: state.gates.filter((gate) => !gate.done).length,
@@ -13,7 +42,7 @@ function receipt(transition, state, idempotencyKey, extra = {}) {
   };
 }
 
-function validateMutationMeta(state, input, transition) {
+function validateMutationMeta(state, input, transition, actor) {
   const idempotencyKey = String(input.idempotencyKey || "").trim();
   if (!idempotencyKey || idempotencyKey.length > 64) {
     throw new Error("INVALID_IDEMPOTENCY_KEY: use 1 to 64 characters.");
@@ -22,9 +51,16 @@ function validateMutationMeta(state, input, transition) {
   const existing = (state.toolReceipts || []).find(
     (item) => item.idempotencyKey === idempotencyKey,
   );
+  const fingerprint = requestFingerprint(input, actor);
   if (existing) {
     if (existing.transition !== transition) {
       throw new Error("IDEMPOTENCY_CONFLICT: the key was used for another transition.");
+    }
+    if (
+      existing.requestFingerprint &&
+      existing.requestFingerprint !== fingerprint
+    ) {
+      throw new Error("IDEMPOTENCY_CONFLICT: the key was reused with another payload.");
     }
     return { existing: { ...existing, replayed: true }, idempotencyKey };
   }
@@ -35,11 +71,11 @@ function validateMutationMeta(state, input, transition) {
     );
   }
 
-  return { existing: null, idempotencyKey };
+  return { existing: null, idempotencyKey, fingerprint };
 }
 
 export function proposeWorkshopDraft(state, input, actor = "webmcp-agent") {
-  const meta = validateMutationMeta(state, input, "PLAN_DRAFTED");
+  const meta = validateMutationMeta(state, input, "PLAN_DRAFTED", actor);
   if (meta.existing) return { state, receipt: meta.existing };
   if (state.firmaPending) {
     throw new Error("FIRMA_REQUIRED: a human must resolve the pending signature in the UI.");
@@ -61,7 +97,7 @@ export function proposeWorkshopDraft(state, input, actor = "webmcp-agent") {
     createdAt: now,
     usage: null,
   };
-  const planReceipt = receipt("PLAN_DRAFTED", state, meta.idempotencyKey, {
+  const planReceipt = receipt("PLAN_DRAFTED", state, meta.idempotencyKey, meta.fingerprint, {
     planRevision: (state.cartone?.revision || 0) + 1,
     planId,
     phase: "PLAN_DRAFT",
@@ -91,7 +127,7 @@ export function proposeWorkshopDraft(state, input, actor = "webmcp-agent") {
 }
 
 export function claimWorkResult(state, input, actor = "webmcp-agent") {
-  const meta = validateMutationMeta(state, input, "RESULT_CLAIMED");
+  const meta = validateMutationMeta(state, input, "RESULT_CLAIMED", actor);
   if (meta.existing) return { state, receipt: meta.existing };
   if (state.firmaPending) {
     throw new Error("FIRMA_REQUIRED: a human must resolve the pending signature in the UI.");
@@ -128,7 +164,7 @@ export function claimWorkResult(state, input, actor = "webmcp-agent") {
     ...normalized,
   };
 
-  const resultReceipt = receipt("RESULT_CLAIMED", state, meta.idempotencyKey, {
+  const resultReceipt = receipt("RESULT_CLAIMED", state, meta.idempotencyKey, meta.fingerprint, {
     claimId: claim.id,
     phase: "EVIDENCE_REVIEW",
     next: { actor: "human", action: "VERIFY_EVIDENCE_IN_UI" },
@@ -220,7 +256,7 @@ export function claimAttachedEvidence(state, gateId, evidenceRef) {
 }
 
 export function holdWorkshop(state, input, actor = "webmcp-agent") {
-  const meta = validateMutationMeta(state, input, "FERMO_CALLED");
+  const meta = validateMutationMeta(state, input, "FERMO_CALLED", actor);
   if (meta.existing) return { state, receipt: meta.existing };
   if (state.firmaPending) {
     throw new Error("FIRMA_REQUIRED: the workshop is already held for a human signature.");
@@ -234,7 +270,7 @@ export function holdWorkshop(state, input, actor = "webmcp-agent") {
     throw new Error("INVALID_FERMO_REASON: use 1 to 200 characters.");
   }
 
-  const fermoReceipt = receipt("FERMO_CALLED", state, meta.idempotencyKey, {
+  const fermoReceipt = receipt("FERMO_CALLED", state, meta.idempotencyKey, meta.fingerprint, {
     phase: "FERMO",
     next: { actor: "human", action: "RESUME_IN_UI" },
   });

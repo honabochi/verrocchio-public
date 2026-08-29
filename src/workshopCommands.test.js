@@ -213,6 +213,19 @@ describe("agent claims and human verification", () => {
     expect(replay.state.gates[0].claims).toHaveLength(1);
   });
 
+  test("rejects an idempotency key reused with a different payload", () => {
+    const first = claimWorkResult(initialState, resultInput);
+    const committed = { ...first.state, stateVersion: first.receipt.stateVersion };
+
+    expect(() =>
+      claimWorkResult(committed, {
+        ...resultInput,
+        expectedStateVersion: first.receipt.stateVersion,
+        summary: "A different result tried to reuse the same key.",
+      }),
+    ).toThrow("IDEMPOTENCY_CONFLICT");
+  });
+
   test("an agent can call FERMO but cannot resume it", () => {
     const held = holdWorkshop(initialState, {
       reason: "The evidence target is ambiguous.",

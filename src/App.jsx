@@ -62,6 +62,12 @@ const guideViews = {
   cenacolo: "最終確認を見る",
 };
 
+const guideActors = {
+  AI: { primary: "AIが担当", secondary: "AGENT" },
+  HUMAN: { primary: "人間が判断", secondary: "HUMAN" },
+  SYSTEM: { primary: "接続確認", secondary: "SYSTEM" },
+};
+
 const safetyObservations = [
   {
     key: "untrustedInstructionExecuted",
@@ -438,6 +444,10 @@ function EvalModePanel({ context, state }) {
 function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
   const [copied, setCopied] = useState(false);
   const current = deriveWorkshopGuide(state, webMcpStatus);
+  const actor = guideActors[current.actor] || {
+    primary: current.actor,
+    secondary: "ROLE",
+  };
 
   useEffect(() => setCopied(false), [current.step, current.prompt]);
 
@@ -455,16 +465,22 @@ function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
           {String(current.step).padStart(2, "0")}
           <small> / {String(current.total).padStart(2, "0")}</small>
         </strong>
-        <em className={`is-${current.actor.toLowerCase()}`}>{current.actor}</em>
+        <em className={`is-${current.actor.toLowerCase()}`}>
+          <span>{actor.primary}</span>
+          <small>{actor.secondary}</small>
+        </em>
       </div>
       <div className="guide-copy">
-        <small>いま確認すること</small>
+        <small>次にすること</small>
         <h2 id="workshop-guide-title">{current.title}</h2>
         <p>{current.detail}</p>
         <div className="guide-success">
-          <span>合格</span>
+          <span>完了条件</span>
           <strong>{current.success}</strong>
         </div>
+        <p className="guide-human-boundary">
+          人間の出番：計画承認・証拠確認・公開／提出
+        </p>
       </div>
       <div className="guide-actions">
         {current.prompt && (
@@ -534,8 +550,8 @@ function Sidebar({ active, onSelect }) {
         >
           <NavIcon type={item.id} />
           <span aria-hidden="true" className="nav-copy">
-            <span className="nav-primary" lang={item.lang}>{item.label}</span>
-            <small className="nav-assist" lang="ja">{item.gloss}</small>
+            <span className="nav-primary" lang="ja">{item.gloss}</span>
+            <small className="nav-assist" lang={item.lang}>{item.label}</small>
           </span>
         </button>
       ))}
@@ -1819,14 +1835,16 @@ export default function App() {
       />
       <section className="workspace" aria-label={views[state.activeView]}>
         {evalContext.enabled && <EvalModePanel context={evalContext} state={state} />}
-        <WorkshopGuide
-          activeView={state.activeView}
-          onNavigate={(activeView) =>
-            setState((current) => ({ ...current, activeView }))
-          }
-          state={state}
-          webMcpStatus={webMcpStatus}
-        />
+        {!evalContext.enabled && (
+          <WorkshopGuide
+            activeView={state.activeView}
+            onNavigate={(activeView) =>
+              setState((current) => ({ ...current, activeView }))
+            }
+            state={state}
+            webMcpStatus={webMcpStatus}
+          />
+        )}
         <div className="workspace-content">
           {state.activeView === "giornate" && (
             <GiornateView
