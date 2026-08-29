@@ -1,0 +1,57 @@
+# Release Roundtable Decision
+
+Date: 2026-08-30 JST  
+Scope: public, non-sensitive submission preflight for the OpenAI WebMCP Challenge
+
+This is a compact decision receipt, not a transcript. External reviews were
+asked to judge only the public product description and release gates. No
+credentials, private fixtures, or protected data were included.
+
+## Participation
+
+| Seat | Status | Independent finding |
+| --- | --- | --- |
+| Gemini | participated | The concept is differentiated, but the current artifact is not judge-accessible while the live URL returns 401, the repository returns 404, and no video or tag exists |
+| Claude | participated | The WebMCP-specific structural claim is strong; the current candidate must not be submitted before public access, clean frozen-revision verification, and video |
+| Architecture audit | participated | Local code, MIT license, build definition, and README are viable; the branch upstream was unsafe and external freeze/publication evidence is missing |
+| Evidence audit | participated | Public URLs, official fields, final tag, clean judge smoke, and video are hard gates; numeric performance claims remain prohibited without a fresh verified receipt |
+| Product/UX audit | participated | The demo should use desktop capture and show the real host call, MANCA, unsigned FIRMA stop, and the visible CLAIMED human-review state |
+
+## Dissent
+
+- Gemini prioritized repository, video, registration, live access, then tag.
+- Claude prioritized repository, live access, frozen clean verification, video,
+  then Devpost completion.
+- Internal evidence review treated registration as an independent early gate
+  because registration may close separately from the artifact deadline.
+
+## Mission Control decision
+
+The product direction remains **GO**. The current submission remains **NO-GO**.
+Use this order:
+
+1. Register for the Challenge and complete the Owner-only eligibility and terms
+   gate immediately.
+2. Perform the real secret review off-screen; do not expose secret contents to
+   the agent.
+3. Remove publication placeholders, create one final annotated tag, and use that
+   exact revision everywhere.
+4. Make the repository and live app judge-accessible, then verify both without
+   authentication.
+5. From a clean clone of the tag, run `npm ci`, tests, and the production build;
+   run a clean hosted WebMCP smoke. A full numeric evaluation is optional only if
+   all numeric improvement claims are removed.
+6. Record and publish the shorter-than-three-minute English-audio/captioned demo
+   from the same frozen public build.
+7. Read back every Devpost field, give final FIRMA, submit, and freeze the public
+   artifacts.
+
+## Strongest claim to preserve
+
+VERROCCHIO exposes a small, state-aware WebMCP contract for inspection, bounded
+stopping, unsigned planning, and unverified result claims. Approval, evidence
+verification, resume, publishing, and final submission are absent from the
+WebMCP tool surface and remain reserved for the human-facing workflow.
+
+Do not upgrade this to actor authentication, tamper-proof evidence, or a measured
+speed/reliability result. Those claims are not proven by the current artifact.

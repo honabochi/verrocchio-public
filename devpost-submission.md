@@ -385,9 +385,8 @@ residency, organization, and self-assessment answers remain intentionally blank.
   only final verified clients, expected to include ChatGPT's in-app browser and
   any supported Chrome build actually used for the frozen revision.
 - [ ] **28258 — AI tools leveraged** (required): draft candidates are Codex for
-  implementation and verification, Claude for a bounded rules critique, and
-  Gemini for an independent public-rules critique. Owner confirms the final
-  truthful list.
+  implementation and verification, plus Claude and Gemini for independent
+  public release-preflight critiques. Owner confirms the final truthful list.
 - [ ] **28259 — Learning level** (required): Owner selects `None`, `Moderate`,
   or `Significant`.
 - [ ] **28260 — Career-reusable AI value** (required): Owner selects `Yes` or
