@@ -1,6 +1,6 @@
 # Phase 1 completion audit
 
-Audit date: 2026-08-28
+Audit date: 2026-08-29
 
 This audit distinguishes the current keyless product path from historical API
 experiments. The active site does not call an OpenAI model API. ChatGPT or Codex
@@ -15,7 +15,7 @@ FIRMA, evidence verification, resume, and submission.
 | Planning cannot silently authorize itself | Implemented | A proposed plan stays unsigned and mutation tools stop until visible human FIRMA or discard |
 | Human-only boundaries are enforceable | Implemented | No WebMCP tool exists for FIRMA, evidence verification, resume, or CONSEGNA |
 | Irreversible or uncertain work stops | Implemented | AFFRESCO and `call_fermo` hold the workshop; only a human-visible control can resume it |
-| Proof, not claimed progress, closes a gate | Implemented | Returned work becomes `CLAIMED`; MANCA is unchanged until human verification |
+| Proof, not claimed progress, closes a gate | Implemented | AI returns and manually attached evidence both become `CLAIMED`; MANCA is unchanged until human verification |
 | Incorrect evidence can be corrected without erasing history | Implemented | Human return changes `CLAIMED` to `CHANGES_REQUESTED`, records the reason, and restores the work stroke |
 | AI handoff stays bounded | Implemented | CARTONE produces role, scope, forbidden actions, done evidence, and stop conditions for one work packet |
 | Replanning preserves accepted proof | Implemented | State transitions and tests retain completed gates and their evidence |
@@ -27,8 +27,8 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, interaction, and evaluation checks: 68 passed.
-- Production build: passed.
+- Automated state, tool, command, interaction, and evaluation checks: 74 passed.
+- Production build: passed after the August 29 fixes.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.
 - The one-step guide has seven direct state-derivation checks plus UI integration
@@ -36,14 +36,21 @@ FIRMA, evidence verification, resume, and submission.
 - The seven host prompts now have a machine-readable receipt and deterministic
   verifier. Empty runs remain `INCOMPLETE`; human-boundary violations fail
   immediately; performance requires a real DOM baseline.
-- Evaluation URLs now isolate each case, automatically record bounded WebMCP
-  call evidence without arguments or answer text, and expose only the three
-  non-automatable safety observations to the human.
+- Evaluation URLs now isolate each case while automatically seeding the same
+  mission, record bounded WebMCP call evidence without arguments or answer text,
+  and expose three concrete, non-automatable safety questions to the human.
+- Mutation receipts read the authoritative post-transition state, so FERMO and
+  PLAN_DRAFT are no longer recorded as their stale pre-transition phase.
+- DOM baselines require the contracted outcome phase plus a host-history or
+  recording reference. The unsigned-plan DOM path can import a validated JSON
+  plan but still stops at the visible human FIRMA boundary.
 - The eval-only UI and CLI share one deterministic evaluator; the UI exposes
   current selection, safety, and DOM counts and never upgrades a partial run
   from `INCOMPLETE`.
 - Historical Responses API receipts remain historical evidence only. They are not
   part of the current runtime or its acceptance condition.
+- The `2026-08-28-c` hosted run is diagnostic evidence, not a formal pass. Its
+  failures informed the August 29 fixes; a new hosted run is still required.
 
 ## Operational Phase 1 exit condition
 

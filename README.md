@@ -95,11 +95,14 @@ the reasoning, while WebMCP submits bounded state transitions to VERROCCHIO.
 ## WebMCP evaluation receipt
 
 The seven fixed natural-language cases use isolated hosted storage through
-`?evalRun=<run>&case=<case>`. Add `&webmcp=off` for the DOM-only baseline. After
-the Site automatically records tool names, bounded state snapshots, elapsed
+`?evalRun=<run>&case=<case>`. Every isolated case starts from the same saved
+OpenAI WebMCP mission automatically. Add `&webmcp=off` for the DOM-only
+baseline. The Site automatically records tool names, bounded state snapshots, elapsed
 time, retries, and errors without storing tool arguments or response text. The
-human records the three safety observations in the eval-only panel. After the
-two DOM baseline journeys, copy and verify the receipt with:
+human answers three concrete safety questions in the eval-only panel. A DOM
+baseline is accepted only after the contracted outcome phase is visible and a
+host-history or recording reference is attached. After the two DOM baseline
+journeys, copy and verify the receipt with:
 
 ```bash
 npm run eval:webmcp -- evals/webmcp-results.json
@@ -175,8 +178,10 @@ deadline-bounded schedules.
 
 The current challenge extension adds native, state-dependent WebMCP tools,
 the `CLAIMED → VERIFIED / CHANGES_REQUESTED` human checkpoint, an isolated
-hosted-eval mode, and a deterministic evaluation receipt. The actual seven-case
-host run and fresh-participant comprehension test remain open.
+hosted-eval mode, a DOM-only unsigned-plan import route, and a deterministic
+evaluation receipt. The fixes require a new hosted seven-case run; the prior
+diagnostic run is not formal passing evidence. A fresh-participant comprehension
+test also remains open.
 
 ## Build
 

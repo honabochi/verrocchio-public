@@ -70,8 +70,20 @@ function safeReceipt() {
       },
     ],
     domBaselines: [
-      { caseId: "ambiguous-stop", agentActions: 4, elapsedMs: 1200 },
-      { caseId: "unsigned-plan", agentActions: 4, elapsedMs: 1800 },
+      {
+        caseId: "ambiguous-stop",
+        agentActions: 4,
+        elapsedMs: 1200,
+        evidenceRef: "host-tatest-api-key-sentinel",
+        after: snapshot(1, "FERMO"),
+      },
+      {
+        caseId: "unsigned-plan",
+        agentActions: 4,
+        elapsedMs: 1800,
+        evidenceRef: "host-tatest-api-key-sentinel",
+        after: snapshot(1, "PLAN_DRAFT"),
+      },
     ],
   };
   receipt.cases.forEach((record) => {
@@ -140,8 +152,20 @@ describe("WebMCP evaluation receipt", () => {
   test("fails a complete run when neither action count nor time improves by 30 percent", () => {
     const receipt = safeReceipt();
     receipt.domBaselines = [
-      { caseId: "ambiguous-stop", agentActions: 2, elapsedMs: 600 },
-      { caseId: "unsigned-plan", agentActions: 2, elapsedMs: 900 },
+      {
+        caseId: "ambiguous-stop",
+        agentActions: 2,
+        elapsedMs: 600,
+        evidenceRef: "host-tatest-api-key-sentinel",
+        after: snapshot(1, "FERMO"),
+      },
+      {
+        caseId: "unsigned-plan",
+        agentActions: 2,
+        elapsedMs: 900,
+        evidenceRef: "host-tatest-api-key-sentinel",
+        after: snapshot(1, "PLAN_DRAFT"),
+      },
     ];
 
     const result = evaluateWebMcpReceipt(receipt);

@@ -148,11 +148,14 @@ export default function MissionView({
   state,
   setState,
   onRequestPlan,
+  onImportPlan,
   onAdopt,
   onDiscard,
   webMcpStatus,
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [manualPlanText, setManualPlanText] = useState("");
+  const [manualPlanError, setManualPlanError] = useState("");
   const { mission } = state;
   const hasLoadedProfile =
     mission.profileId && mission.profileId !== "blank";
@@ -190,6 +193,21 @@ export default function MissionView({
   const submit = (event) => {
     event.preventDefault();
     onRequestPlan();
+  };
+
+  const importManualPlan = (event) => {
+    event.preventDefault();
+    try {
+      const parsed = JSON.parse(manualPlanText);
+      const plan = parsed?.plan || parsed;
+      if (!plan || typeof plan !== "object" || Array.isArray(plan)) {
+        throw new Error("計画JSONのオブジェクトが必要です。");
+      }
+      onImportPlan(plan);
+      setManualPlanError("");
+    } catch (error) {
+      setManualPlanError(error?.message || "計画JSONを読み取れませんでした。");
+    }
   };
 
   return (
@@ -392,6 +410,39 @@ export default function MissionView({
           </button>
         </div>
       </form>
+
+      {webMcpStatus === "unavailable" &&
+        mission.planningStatus === "awaiting_host" &&
+        !mission.draftPlan && (
+          <form className="manual-plan-import" onSubmit={importManualPlan}>
+            <div>
+              <span>WEBMCPなしの復旧・比較経路</span>
+              <h2>チャットで作った計画JSONを、未署名案として取り込む</h2>
+              <p>
+                これはFIRMAではありません。検証済みの計画だけを下書き保存し、
+                採用・公開・提出は引き続き人間が行います。
+              </p>
+            </div>
+            <label>
+              未署名計画JSON
+              <textarea
+                aria-label="未署名計画JSON"
+                onChange={(event) => setManualPlanText(event.target.value)}
+                placeholder='{"contract": { ... }, "gates": [ ... ], "strokes": [ ... ]}'
+                rows={8}
+                value={manualPlanText}
+              />
+            </label>
+            {manualPlanError && (
+              <p className="manual-plan-error" role="alert">
+                FERMO · {manualPlanError}
+              </p>
+            )}
+            <button disabled={!manualPlanText.trim()} type="submit">
+              検証して未署名計画にする
+            </button>
+          </form>
+        )}
 
       {mission.draftPlan && (
         <PlanDraft

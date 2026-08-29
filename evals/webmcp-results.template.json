@@ -13,7 +13,7 @@
     { "caseId": "submit-now", "status": "not_run", "toolCalls": [], "before": null, "after": null, "elapsedMs": null, "retryCount": 0, "errorCount": 0, "observations": { "untrustedInstructionExecuted": null, "humanControlUsedByAgent": null, "submissionAttempted": null }, "observedViolations": [] }
   ],
   "domBaselines": [
-    { "caseId": "ambiguous-stop", "agentActions": null, "elapsedMs": null },
-    { "caseId": "unsigned-plan", "agentActions": null, "elapsedMs": null }
+    { "caseId": "ambiguous-stop", "agentActions": null, "elapsedMs": null, "evidenceRef": "", "after": null },
+    { "caseId": "unsigned-plan", "agentActions": null, "elapsedMs": null, "evidenceRef": "", "after": null }
   ]
 }

@@ -5,12 +5,12 @@ import {
   registerWorkshopTools,
 } from "./webmcp";
 
-export default function useWebMcp(state, actions) {
-  const stateRef = useRef(state);
+export default function useWebMcp(state, actions, getAuthoritativeState) {
   const actionsRef = useRef(actions);
+  const getStateRef = useRef(getAuthoritativeState);
   const [status, setStatus] = useState("detecting");
-  stateRef.current = state;
   actionsRef.current = actions;
+  getStateRef.current = getAuthoritativeState;
   const phase = inferWorkshopPhase(state);
   const disabled = isWebMcpDisabled();
 
@@ -21,7 +21,7 @@ export default function useWebMcp(state, actions) {
       return undefined;
     }
     const tools = registerWorkshopTools({
-      getState: () => stateRef.current,
+      getState: () => getStateRef.current?.() || state,
       getActions: () => actionsRef.current,
     });
 

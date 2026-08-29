@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { initialState } from "./model";
 import {
+  claimAttachedEvidence,
   claimWorkResult,
   holdWorkshop,
   proposeWorkshopDraft,
@@ -52,6 +53,27 @@ const hostPlanInput = {
 };
 
 describe("agent claims and human verification", () => {
+  test("manually attached evidence uses the same claimed-to-verified boundary", () => {
+    const claimed = claimAttachedEvidence(
+      initialState,
+      "working-product",
+      "browser-run-01",
+    );
+
+    expect(claimed.gates[0].done).toBe(false);
+    expect(claimed.gates[0].claims[0]).toMatchObject({
+      status: "CLAIMED",
+      submittedBy: "human-attached",
+      evidenceRef: "browser-run-01",
+    });
+    const verified = verifyEvidenceClaim(
+      claimed,
+      claimed.gates[0].claims[0].id,
+    );
+    expect(verified.gates[0].done).toBe(true);
+    expect(verified.gates[0].claims[0].status).toBe("VERIFIED");
+  });
+
   test("a host model can submit a plan but cannot approve it", () => {
     const result = proposeWorkshopDraft(initialState, hostPlanInput);
 

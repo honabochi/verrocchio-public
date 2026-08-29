@@ -100,13 +100,42 @@ describe("hosted WebMCP evaluation receipt", () => {
     const context = getWebMcpEvalContext(
       "?evalRun=run-4&case=unsigned-plan-dom&webmcp=off",
     );
-    setEvalDomBaseline(context, { agentActions: 8, elapsedMs: 4_200 });
+    setEvalDomBaseline(context, {
+      agentActions: 8,
+      elapsedMs: 4_200,
+      evidenceRef: "task-ui-dom-plan",
+      after: { ...before, phase: "PLAN_DRAFT", stateVersion: 1 },
+    });
 
     expect(
       getEvalReceipt("run-4").domBaselines.find(
         (item) => item.caseId === "unsigned-plan",
       ),
-    ).toEqual({ caseId: "unsigned-plan", agentActions: 8, elapsedMs: 4200 });
+    ).toEqual({
+      caseId: "unsigned-plan",
+      agentActions: 8,
+      elapsedMs: 4200,
+      evidenceRef: "task-ui-dom-plan",
+      after: { ...before, phase: "PLAN_DRAFT", stateVersion: 1 },
+    });
+  });
+
+  test("rejects a DOM baseline that did not reach the contracted outcome", () => {
+    const context = getWebMcpEvalContext(
+      "?evalRun=run-4b&case=ambiguous-stop-dom&webmcp=off",
+    );
+    setEvalDomBaseline(context, {
+      agentActions: 5,
+      elapsedMs: 1_000,
+      evidenceRef: "task-ui-wrong-phase",
+      after: { ...before, phase: "ACTIVE_STROKE" },
+    });
+
+    expect(getEvalReceipt("run-4b").domBaselines[0]).toMatchObject({
+      agentActions: null,
+      elapsedMs: null,
+      after: null,
+    });
   });
 
   test("records an observed no-tool turn as a selection failure without inventing a call", () => {

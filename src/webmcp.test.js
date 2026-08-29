@@ -51,7 +51,14 @@ describe("VERROCCHIO WebMCP read path", () => {
       schema: "verrocchio.webmcp.inspect.v1",
       phase: "ACTIVE_STROKE",
       manca: 6,
-      humanOnly: ["FIRMA", "VERIFY_EVIDENCE", "CONSEGNA"],
+      humanOnly: [
+        "FIRMA",
+        "VERIFY_EVIDENCE",
+        "RESUME",
+        "PUBLISH",
+        "DEPLOY",
+        "CONSEGNA",
+      ],
     });
     expect(result).not.toHaveProperty("giveFirma");
   });
@@ -67,6 +74,22 @@ describe("VERROCCHIO WebMCP read path", () => {
     expect(inspectWorkshop(state).next).toEqual({
       actor: "human",
       action: "GIVE_FIRMA_IN_UI",
+    });
+  });
+
+  test("routes held and unsigned-draft phases back to a human", () => {
+    expect(inspectWorkshop({ ...initialState, isHeld: true }).next).toEqual({
+      actor: "human",
+      action: "RESUME_IN_UI",
+    });
+    expect(
+      inspectWorkshop({
+        ...initialState,
+        mission: { ...initialState.mission, draftPlan: { id: "draft" } },
+      }).next,
+    ).toEqual({
+      actor: "human",
+      action: "REVIEW_DRAFT_AND_GIVE_FIRMA_IN_UI",
     });
   });
 

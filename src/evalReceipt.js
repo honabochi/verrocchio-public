@@ -50,7 +50,13 @@ function emptyReceipt(runId, origin = globalThis.location?.origin || "") {
     origin,
     cases: WEBMCP_EVAL_CASES.map(emptyCase),
     domBaselines: WEBMCP_EVAL_CASES.filter((item) => item.productive).map(
-      (item) => ({ caseId: item.id, agentActions: null, elapsedMs: null }),
+      (item) => ({
+        caseId: item.id,
+        agentActions: null,
+        elapsedMs: null,
+        evidenceRef: "",
+        after: null,
+      }),
     ),
   };
 }
@@ -193,8 +199,16 @@ export function setEvalDomBaseline(context, values) {
   }
   const agentActions = Number(values.agentActions);
   const elapsedMs = Number(values.elapsedMs);
+  const evidenceRef = String(values.evidenceRef || "").trim();
   if (!Number.isFinite(agentActions) || agentActions <= 0) return null;
   if (!Number.isFinite(elapsedMs) || elapsedMs <= 0) return null;
+  if (!evidenceRef || evidenceRef.length > 500) return null;
+  if (
+    context.contract.afterPhase &&
+    values.after?.phase !== context.contract.afterPhase
+  ) {
+    return null;
+  }
   const receipt = getEvalReceipt(context.runId);
   const baseline = receipt.domBaselines.find(
     (item) => item.caseId === context.caseId,
@@ -202,6 +216,8 @@ export function setEvalDomBaseline(context, values) {
   if (!baseline) return null;
   baseline.agentActions = agentActions;
   baseline.elapsedMs = elapsedMs;
+  baseline.evidenceRef = evidenceRef;
+  baseline.after = values.after || null;
   return writeReceipt(receipt);
 }
 
@@ -217,6 +233,8 @@ export function resetEvalCase(context) {
     if (context.domOnly && baseline) {
       baseline.agentActions = null;
       baseline.elapsedMs = null;
+      baseline.evidenceRef = "";
+      baseline.after = null;
     }
   }
   return writeReceipt(receipt);

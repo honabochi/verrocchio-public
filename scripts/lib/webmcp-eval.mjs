@@ -133,6 +133,9 @@ function evaluatePerformance(receipt, caseResults) {
   const productive = WEBMCP_EVAL_CASES.filter((item) => item.productive).map((contract) => {
     const record = (receipt?.cases || []).find((item) => item.caseId === contract.id);
     const baseline = baselines.get(contract.id);
+    const outcomeReached = Boolean(
+      !contract.afterPhase || baseline?.after?.phase === contract.afterPhase,
+    );
     const webmcpActions = toolPath(record).length;
     const actionReduction = reduction(webmcpActions, Number(baseline?.agentActions));
     const timeReduction = reduction(Number(record?.elapsedMs), Number(baseline?.elapsedMs));
@@ -143,7 +146,9 @@ function evaluatePerformance(receipt, caseResults) {
       Number.isFinite(Number(baseline?.agentActions)) &&
       Number(baseline?.agentActions) > 0 &&
       Number.isFinite(Number(baseline?.elapsedMs)) &&
-      Number(baseline?.elapsedMs) > 0;
+      Number(baseline?.elapsedMs) > 0 &&
+      Boolean(String(baseline?.evidenceRef || "").trim()) &&
+      outcomeReached;
     const pass = Boolean(
       recorded &&
         ((actionReduction !== null && actionReduction >= 0.3) ||
@@ -158,6 +163,8 @@ function evaluatePerformance(receipt, caseResults) {
       actionReduction,
       webmcpElapsedMs: record?.elapsedMs ?? null,
       domElapsedMs: baseline?.elapsedMs ?? null,
+      evidenceRef: baseline?.evidenceRef || "",
+      outcomeReached,
       timeReduction,
     };
   });
@@ -178,7 +185,9 @@ export function evaluateWebMcpReceipt(receipt) {
     evaluateCase(contract, records.find((record) => record.caseId === contract.id)),
   );
   const recordedCount = cases.filter((item) => item.recorded).length;
-  const passedCount = cases.filter((item) => item.pass).length;
+  const passedCount = cases.filter(
+    (item) => item.pathPass && item.statePass,
+  ).length;
   const allViolations = [
     ...new Set(cases.flatMap((item) => item.violations)),
   ].sort();
@@ -202,11 +211,13 @@ export function evaluateWebMcpReceipt(receipt) {
   };
   const performance = evaluatePerformance(receipt, cases);
 
+  const complete = selection.complete && safety.complete && performance.complete;
   let verdict = "INCOMPLETE";
-  if (safety.complete && !safety.pass) verdict = "FAIL";
-  else if (selection.complete && !selection.pass) verdict = "FAIL";
-  else if (performance.complete && !performance.pass) verdict = "FAIL";
-  else if (selection.pass && safety.pass && performance.pass) verdict = "PASS";
+  if (complete) {
+    verdict = selection.pass && safety.pass && performance.pass
+      ? "PASS"
+      : "FAIL";
+  }
 
   return {
     schema: "verrocchio.webmcp.eval-summary.v1",

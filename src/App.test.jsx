@@ -1,10 +1,46 @@
 import React from "react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
 import { initialState, STORAGE_KEY } from "./model";
 import { claimWorkResult } from "./workshopCommands";
+
+function makeValidPlan() {
+  return {
+    contract: {
+      objective: "保存済みミッションを最小の実行計画にする。",
+      track: "WebMCP",
+      deadline: "2026-09-04T05:00:00+09:00",
+      humanRule: "承認と証拠確定は人間だけが行う。",
+      irreversibleRule: "公開と提出にはFIRMAが必要。",
+    },
+    gates: ["mission", "plan", "execution", "submission"].map((id) => ({
+      id: `${id}-proof`,
+      title: `${id}の証拠`,
+      detail: `${id}が確認できる。`,
+      proofRequired: `${id}の検証記録`,
+    })),
+    strokes: ["mission", "execution", "submission"].map((id, index) => ({
+      id: `${id}-stroke`,
+      title: `${id}を確認`,
+      outcome: `${id}の結果を残す。`,
+      gateId: `${id}-proof`,
+      role: ["vasari", "prima-mano", "colorista"][index],
+      classification: index === 0 ? "GESSO" : "SECCO",
+      evidenceExpected: `${id}の証拠`,
+    })),
+    schedule: [
+      { label: "点検", dueAt: "2026-09-01T12:00:00+09:00", deliverable: "点検記録" },
+      { label: "実行", dueAt: "2026-09-02T12:00:00+09:00", deliverable: "実行記録" },
+      { label: "提出準備", dueAt: "2026-09-03T12:00:00+09:00", deliverable: "提出確認" },
+    ],
+    risks: ["証拠不足", "範囲拡大", "承認の取り違え"],
+    rationale: "最短の一巡だけを先に証明する。",
+    scopeEffect: "SHRINKS",
+    humanAction: "FIRMA_REQUIRED",
+  };
+}
 
 describe("VERROCCHIO core path", () => {
   beforeEach(() => {
@@ -45,7 +81,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("まだ呼び出しなし")).toBeVisible();
     expect(screen.getByText("INCOMPLETE")).toBeVisible();
     expect(screen.getByText("残り7問を実行する")).toBeVisible();
-    expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeDisabled();
+    expect(screen.getByRole("group", { name: "直前のAI行動を人間が確認" })).toBeDisabled();
   });
 
   test("updates the eval recorder after a native WebMCP tool executes", async () => {
@@ -72,16 +108,18 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("inspect_workshop", { selector: "strong" })).toBeVisible();
     expect(screen.getByText(/MANCA 6 → 6/)).toBeVisible();
     expect(screen.getByText("記録済み1問の安全観察を確定する")).toBeVisible();
-    expect(screen.getByRole("group", { name: "人間が観察する3点" })).toBeEnabled();
-    expect(screen.getByRole("link", { name: "次の評価へ" })).toHaveAttribute(
+    expect(screen.getByRole("group", { name: "直前のAI行動を人間が確認" })).toBeEnabled();
+    expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
       "aria-disabled",
       "true",
     );
 
-    for (const button of screen.getAllByRole("button", { name: "なし" })) {
-      await user.click(button);
-    }
-    expect(screen.getByRole("link", { name: "次の評価へ" })).toHaveAttribute(
+    await user.click(
+      screen.getByRole("button", {
+        name: "3項目とも「していない（安全）」で確定",
+      }),
+    );
+    expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
       "href",
       "/?evalRun=ui-instrumented&case=ambiguous-stop",
     );
@@ -134,7 +172,7 @@ describe("VERROCCHIO core path", () => {
     );
   });
 
-  test("begins a giornata, attaches proof, and reduces MANCA", async () => {
+  test("keeps MANCA open until a human verifies attached evidence", async () => {
     const user = userEvent.setup();
     render(<App />);
 
@@ -155,7 +193,9 @@ describe("VERROCCHIO core path", () => {
     await user.type(evidence, "Private Sites deployment v1");
     await user.click(screen.getByRole("button", { name: /証拠を添付する/ }));
 
-    await user.click(screen.getByRole("button", { name: "Mark Working product complete" }));
+    expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
+    expect(screen.getByLabelText("人間による証拠確認待ち")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /証拠主張を確認する/ }));
     expect(screen.getByLabelText("5 submission gates missing")).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: /最終確認を開く/ }));
@@ -167,7 +207,9 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
-    await user.click(screen.getByRole("button", { name: "Mark Working product complete" }));
+    await user.click(
+      screen.getByRole("button", { name: "証拠候補を添付: Working product" }),
+    );
 
     expect(screen.getByRole("heading", { name: "Working product" })).toBeVisible();
     expect(screen.getByLabelText("6 submission gates missing")).toBeVisible();
@@ -187,6 +229,71 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent("再開しました");
     expect(screen.getByRole("button", { name: /GIORNATA ACTIVE/ })).toBeDisabled();
+  });
+
+  test("records the authoritative FERMO state after a WebMCP mutation", async () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/?evalRun=ui-fermo&case=ambiguous-stop",
+    );
+    const registered = new Map();
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: {
+        registerTool: vi.fn(async (tool) => registered.set(tool.name, tool)),
+      },
+    });
+    render(<App />);
+    await waitFor(() => expect(registered.has("call_fermo")).toBe(true));
+
+    await act(async () => {
+      await registered.get("inspect_workshop").execute({ view: "summary" });
+      await registered.get("call_fermo").execute({
+        expectedStateVersion: 0,
+        idempotencyKey: "ui-fermo-live-state",
+        reason: "証拠対象が曖昧なため停止する。",
+      });
+    });
+
+    expect(screen.getByText(/MANCA 6 → 6 · FERMO/)).toBeVisible();
+  });
+
+  test("seeds the same mission in every isolated evaluation case", () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/?evalRun=ui-seed&case=self-approve",
+    );
+    render(<App />);
+
+    expect(
+      screen.getAllByText("OpenAI WebMCP Challenge", { selector: "dd" })[0],
+    ).toBeVisible();
+  });
+
+  test("imports a DOM-only host plan as an unsigned draft", async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(
+      {},
+      "",
+      "/?evalRun=ui-dom-plan&case=unsigned-plan-dom&webmcp=off",
+    );
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }));
+    fireEvent.change(screen.getByLabelText("未署名計画JSON"), {
+      target: { value: JSON.stringify(makeValidPlan()) },
+    });
+    await user.click(
+      screen.getByRole("button", { name: "検証して未署名計画にする" }),
+    );
+
+    expect(await screen.findByText("計画はまだ乾いていない。")).toBeVisible();
+    expect(screen.getByText(/現在 PLAN_DRAFT · 目標 PLAN_DRAFT/)).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "到達状態を確認してDOM比較を記録" }),
+    ).toBeEnabled();
   });
 
   test("CAPOBOTTEGA truthfully routes thinking to the ChatGPT or Codex host", async () => {

@@ -55,7 +55,7 @@ export function proposeWorkshopDraft(state, input, actor = "webmcp-agent") {
   const planId = `host-plan-${crypto.randomUUID()}`;
   const plan = {
     ...normalizeWorkshopPlan(input.plan),
-    source: "host-webmcp",
+    source: actor === "webmcp-agent" ? "host-webmcp" : "host-dom-import",
     model: "ChatGPT/Codex host",
     responseId: planId,
     createdAt: now,
@@ -164,6 +164,61 @@ export function claimWorkResult(state, input, actor = "webmcp-agent") {
   };
 }
 
+export function claimAttachedEvidence(state, gateId, evidenceRef) {
+  const proof = String(evidenceRef || "").trim();
+  if (!proof || proof.length > 500) {
+    throw new Error("INVALID_EVIDENCE_REF: use 1 to 500 characters.");
+  }
+
+  const gate = state.gates.find((item) => item.id === gateId);
+  if (!gate || gate.done) return state;
+  if ((gate.claims || []).some((claim) => claim.status === "CLAIMED")) {
+    return state;
+  }
+
+  const stroke = state.cartone.strokes.find(
+    (item) => item.gateId === gateId && item.status === "active",
+  );
+  const claim = {
+    id: `claim-${crypto.randomUUID()}`,
+    strokeId: stroke?.id || null,
+    submittedBy: "human-attached",
+    submittedAt: new Date().toISOString(),
+    status: "CLAIMED",
+    summary: `${gate.title}に証拠候補が添付されました。`,
+    verification: "未確認。人間による現在性と再現性の確認が必要です。",
+    evidenceRef: proof,
+    remainingRisk: "証拠の現在性、再現性、対象範囲がまだ確認されていません。",
+  };
+
+  return {
+    ...state,
+    isRunning: stroke ? false : state.isRunning,
+    cartone: stroke
+      ? {
+          ...state.cartone,
+          strokes: state.cartone.strokes.map((item) =>
+            item.id === stroke.id
+              ? { ...item, status: "claimed", result: claim }
+              : item,
+          ),
+        }
+      : state.cartone,
+    gates: state.gates.map((item) =>
+      item.id === gateId
+        ? { ...item, claims: [claim, ...(item.claims || [])] }
+        : item,
+    ),
+    events: [
+      createEvent(
+        "CLAIM",
+        `Human attached evidence for ${gate.title}; verification is still required.`,
+      ),
+      ...state.events,
+    ],
+  };
+}
+
 export function holdWorkshop(state, input, actor = "webmcp-agent") {
   const meta = validateMutationMeta(state, input, "FERMO_CALLED");
   if (meta.existing) return { state, receipt: meta.existing };
@@ -221,10 +276,18 @@ export function verifyEvidenceClaim(state, claimId) {
 
   if (!verifiedClaim || !verifiedGate) return state;
 
-  const completedStrokes = state.cartone.strokes.map((stroke) =>
-    stroke.id === verifiedClaim.strokeId ? { ...stroke, status: "done" } : stroke,
+  const claimedStroke = state.cartone.strokes.find(
+    (stroke) =>
+      stroke.id === verifiedClaim.strokeId && stroke.status === "claimed",
   );
-  const nextIndex = completedStrokes.findIndex((stroke) => stroke.status === "queued");
+  const completedStrokes = claimedStroke
+    ? state.cartone.strokes.map((stroke) =>
+        stroke.id === claimedStroke.id ? { ...stroke, status: "done" } : stroke,
+      )
+    : state.cartone.strokes;
+  const nextIndex = claimedStroke
+    ? completedStrokes.findIndex((stroke) => stroke.status === "queued")
+    : -1;
   const nextStroke = nextIndex >= 0 ? completedStrokes[nextIndex] : null;
   const strokes = completedStrokes.map((stroke) =>
     nextStroke && stroke.id === nextStroke.id ? { ...stroke, status: "active" } : stroke,

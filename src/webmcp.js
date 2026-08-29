@@ -73,12 +73,23 @@ export function inspectWorkshop(state, view = "summary") {
     stateVersion: state.stateVersion || 0,
     phase,
     manca: missingGates.length,
-    next: state.firmaPending
+    next: phase === "AWAITING_HUMAN_FIRMA"
       ? { actor: "human", action: "GIVE_FIRMA_IN_UI" }
-      : pendingClaim
-        ? { actor: "human", action: "VERIFY_EVIDENCE_IN_UI" }
-        : { actor: "agent_or_human", action: stroke?.title || "REVIEW_EVIDENCE" },
-    humanOnly: ["FIRMA", "VERIFY_EVIDENCE", "CONSEGNA"],
+      : phase === "FERMO"
+        ? { actor: "human", action: "RESUME_IN_UI" }
+        : phase === "PLAN_DRAFT"
+          ? { actor: "human", action: "REVIEW_DRAFT_AND_GIVE_FIRMA_IN_UI" }
+          : pendingClaim
+            ? { actor: "human", action: "VERIFY_EVIDENCE_IN_UI" }
+            : { actor: "agent_or_human", action: stroke?.title || "REVIEW_EVIDENCE" },
+    humanOnly: [
+      "FIRMA",
+      "VERIFY_EVIDENCE",
+      "RESUME",
+      "PUBLISH",
+      "DEPLOY",
+      "CONSEGNA",
+    ],
   };
 
   if (view === "manca") {
