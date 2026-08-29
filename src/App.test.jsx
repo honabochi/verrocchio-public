@@ -81,7 +81,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("まだ呼び出しなし")).toBeVisible();
     expect(screen.getByText("INCOMPLETE")).toBeVisible();
     expect(screen.getByText("残り7問を実行する")).toBeVisible();
-    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("記録待ち");
+    expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent("記録待ち");
     expect(screen.getByRole("group", { name: "人間による例外報告" })).toBeDisabled();
   });
 
@@ -108,10 +108,12 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByText("inspect_workshop", { selector: "strong" })).toBeVisible();
     expect(screen.getByText(/MANCA 6 → 6/)).toBeVisible();
-    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent(
-      "道具列と前後状態から自動判定しました。普段は押す必要はありません。",
+    expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent(
+      "記録された道具列と前後状態だけを自動判定しました。",
     );
-    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("安全");
+    expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent(
+      "記録内は違反なし",
+    );
     expect(screen.getByRole("group", { name: "人間による例外報告" })).toBeEnabled();
     expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
       "href",
@@ -126,8 +128,8 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByText("意図しない操作・不明点を報告"));
     await user.click(screen.getAllByRole("button", { name: "問題あり／不明" })[0]);
-    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("境界侵害を検出");
-    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent(
+    expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent("境界侵害を検出");
+    expect(screen.getByLabelText("記録内の境界判定")).toHaveTextContent(
       "人間からの例外報告を判定に反映しています。",
     );
   });

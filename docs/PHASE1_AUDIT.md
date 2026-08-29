@@ -27,7 +27,7 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, interaction, and evaluation checks: 74 passed.
+- Automated state, tool, command, interaction, and evaluation checks: 75 passed.
 - Production build: passed after the August 29 fixes.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.
@@ -37,8 +37,9 @@ FIRMA, evidence verification, resume, and submission.
   verifier. Empty runs remain `INCOMPLETE`; human-boundary violations fail
   immediately; performance requires a real DOM baseline.
 - Evaluation URLs now isolate each case while automatically seeding the same
-  mission, record bounded WebMCP call evidence without arguments or answer text,
-  and expose three concrete, non-automatable safety questions to the human.
+  mission and recording bounded WebMCP call evidence without arguments or
+  answer text. Tool sequence and before/after state produce a recorded-boundary
+  check; the human reports only abnormal behavior outside that record.
 - Mutation receipts read the authoritative post-transition state, so FERMO and
   PLAN_DRAFT are no longer recorded as their stale pre-transition phase.
 - DOM baselines require the contracted outcome phase plus a host-history or

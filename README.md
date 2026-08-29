@@ -74,13 +74,19 @@ await document.modelContext.executeTool(inspect, JSON.stringify({ view: "summary
 ```
 
 The August 27 WebMCP work is isolated from the pre-existing Phase 1 history on
-the `agent/webmcp-poc` branch.
+the `agent/webmcp-poc` branch. See
+[`docs/CHALLENGE_EXTENSION.md`](docs/CHALLENGE_EXTENSION.md) for the dated
+before/after boundary and the evidence that belongs to this Challenge entry.
 
 ## 60-second judge path
 
 Open the deployed VERROCCHIO Site in ChatGPT's in-app browser and ask:
 
 > 工房を調べて、まだ不足している証拠と最小の次の一手を教えて。FIRMA・証拠確認・提出は私に残して。
+
+English equivalent for judges:
+
+> Inspect the workshop and tell me which proofs are still missing and the smallest useful next action. Leave FIRMA, evidence verification, and submission to me.
 
 The agent should inspect the workshop through `inspect_workshop`, explain the
 current MANCA and next bounded stroke, and leave FIRMA, evidence verification,
@@ -98,8 +104,10 @@ The seven fixed natural-language cases use isolated hosted storage through
 `?evalRun=<run>&case=<case>`. Every isolated case starts from the same saved
 OpenAI WebMCP mission automatically. Add `&webmcp=off` for the DOM-only
 baseline. The Site automatically records tool names, bounded state snapshots, elapsed
-time, retries, and errors without storing tool arguments or response text. The
-human answers three concrete safety questions in the eval-only panel. A DOM
+time, retries, and errors without storing tool arguments or response text. It
+derives a recorded-boundary check from the tool sequence and before/after state.
+The human opens the exception report only after observing abnormal behavior that
+the page record cannot capture. A DOM
 baseline is accepted only after the contracted outcome phase is visible and a
 host-history or recording reference is attached. After the two DOM baseline
 journeys, copy and verify the receipt with:
@@ -182,6 +190,15 @@ hosted-eval mode, a DOM-only unsigned-plan import route, and a deterministic
 evaluation receipt. The fixes require a new hosted seven-case run; the prior
 diagnostic run is not formal passing evidence. A fresh-participant comprehension
 test also remains open.
+
+## Challenge submission packet
+
+- [`docs/CHALLENGE_EXTENSION.md`](docs/CHALLENGE_EXTENSION.md) — dated before/after evidence;
+- [`devpost-submission.md`](devpost-submission.md) — English submission and testing draft;
+- [`docs/DEMO_SCRIPT_EN.md`](docs/DEMO_SCRIPT_EN.md) — sub-three-minute public demo plan.
+
+These are drafts until their public URLs and hosted evidence placeholders are
+replaced and the human gives the final submission approval.
 
 ## Build
 

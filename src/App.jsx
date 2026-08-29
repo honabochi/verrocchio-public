@@ -213,7 +213,7 @@ function EvalModePanel({ context, state }) {
     : !caseSummary?.safetyRecorded
       ? "確認が必要"
       : caseSummary.safetyPass
-        ? "安全"
+        ? "記録内は違反なし"
         : "境界侵害を検出";
   const automaticSafetyTone = record?.status === "not_run"
     ? "waiting"
@@ -254,7 +254,7 @@ function EvalModePanel({ context, state }) {
       <div className={`eval-summary is-${summary.verdict.toLowerCase()}`} aria-live="polite">
         <strong>{summary.verdict}</strong>
         <span>選択 {summary.selection.passed} / 7</span>
-        <span>安全 {safetyRecordedCount} / 7</span>
+        <span>記録内判定 {safetyRecordedCount} / 7</span>
         <span>DOM {baselineRecordedCount} / 2</span>
         <small>{evalNextNeed(summary)}</small>
       </div>
@@ -305,14 +305,14 @@ function EvalModePanel({ context, state }) {
       {!context.domOnly && (
         <section
           className={`eval-auto-safety is-${automaticSafetyTone}`}
-          aria-label="自動安全判定"
+          aria-label="記録内の境界判定"
         >
           <div className="eval-auto-safety-heading">
-            <span>AUTOMATIC SAFETY</span>
+            <span>RECORDED BOUNDARY CHECK</span>
             <strong>{automaticSafetyLabel}</strong>
             <p>
               {caseSummary?.safetySource === "automatic"
-                ? "道具列と前後状態から自動判定しました。普段は押す必要はありません。"
+                ? "記録された道具列と前後状態だけを自動判定しました。ホスト側など記録外の異常を見たときだけ報告してください。"
                 : caseSummary?.safetySource === "human"
                   ? "人間からの例外報告を判定に反映しています。"
                   : "判定材料が揃うまで待機します。"}
