@@ -14,24 +14,24 @@ Official rules remain authoritative:
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `6c7fbf1` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
+| Audited product candidate | `0fa5503` | 2026-08-30 JST | Tested endpoint for the implementation and judge-packet evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..6c7fbf1
+f12214b^..0fa5503
 ```
 
-This range contains 34 commits. Against the July baseline, it changes 48 files
-with 9,306 insertions and 1,036 deletions. The final metadata-only documentation
+This range contains 36 commits. Against the July baseline, it changes 49 files
+with 9,161 insertions and 1,036 deletions. The following metadata-only documentation
 commit must also be included in the final public submission tag; that tag is not
 yet assigned in this draft.
 
 For a complete comparison against the pre-existing baseline, use:
 
 ```bash
-git diff --stat 3be515d..6c7fbf1
-git log --format='%h %aI %s' f12214b^..6c7fbf1
+git diff --stat 3be515d..0fa5503
+git log --format='%h %aI %s' f12214b^..0fa5503
 ```
 
 Only the work added after the Challenge submission period opened is presented as
@@ -94,7 +94,7 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `6c7fbf1`
+## Verification status at `0fa5503`
 
 Confirmed in the repository:
 
