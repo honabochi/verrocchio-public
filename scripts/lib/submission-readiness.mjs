@@ -217,9 +217,17 @@ export function validatePublicUrlKinds(urls = {}) {
 
 export function isMeaningfulEvidenceRef(value) {
   const normalized = String(value || "").trim();
-  return normalized.length >= 8 &&
-    !/^(todo|tbd|pending|none|n\/a|done|complete|completed)$/i.test(normalized) &&
-    !/example\.(?:com|org|net)/i.test(normalized);
+  if (normalized.length < 8 ||
+    /^(?:todo|tbd|pending|none|n\/a|done|complete|completed|coming soon|will add later)$/i.test(normalized) ||
+    /example\.(?:com|org|net)/i.test(normalized)) return false;
+  try {
+    const url = new URL(normalized);
+    return url.protocol === "https:" &&
+      !url.username && !url.password &&
+      !/^(?:localhost|127\.|10\.|192\.168\.)/i.test(url.hostname);
+  } catch {
+    return /^(?:docs|receipts|evidence|artifacts)\/[A-Za-z0-9._/-]+\.(?:json|md|txt|png|jpe?g|webm|mp4)$/i.test(normalized);
+  }
 }
 
 export function findPositiveNumericPerformanceClaims(text) {
@@ -228,7 +236,7 @@ export function findPositiveNumericPerformanceClaims(text) {
     .map((line) => line.trim())
     .filter((line) => (
       /\b\d+(?:\.\d+)?\s*(?:%|percent\b|x\b)/i.test(line) &&
-      /\b(?:faster|slower|improv(?:e|ed|ement)|reduc(?:e|ed|tion)|sav(?:e|ed|ing)|throughput|latency|response time)\b/i.test(line)
+      /\b(?:faster|slower|fewer|less|improv(?:e|ed|ement)|reduc(?:e|ed|tion)|sav(?:e|ed|ing)|throughput|latency|response time)\b/i.test(line)
     ) || /\b\d+(?:\.\d+)?\s*(?:ms|req(?:uests)?\/s)\b.*\b(?:latency|throughput|response time)\b/i.test(line))
     .filter((line) => !/\b(?:no claim|do not claim|must not|until|unproven|not yet proven)\b/i.test(line));
 }
@@ -242,11 +250,14 @@ export function isAuthenticationPath(pathname) {
 }
 
 export function arePostCandidateChangesMetadataOnly(files = []) {
-  return files.every((file) => (
-    file === "submission-manifest.json" ||
-    file === "devpost-submission.md" ||
-    file.startsWith("docs/")
-  ));
+  const allowed = new Set([
+    "submission-manifest.json",
+    "devpost-submission.md",
+    "docs/CHALLENGE_EXTENSION.md",
+    "docs/DEMO_SCRIPT_EN.md",
+    "docs/RELEASE_ROUNDTABLE.md",
+  ]);
+  return files.every((file) => allowed.has(file));
 }
 
 export function verifyBuildArtifactCopies({

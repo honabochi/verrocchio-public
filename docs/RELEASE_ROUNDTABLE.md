@@ -123,3 +123,22 @@ and the production build before these re-audit changes. Because the re-audit
 changes include implementation and preflight code, the next final candidate
 must repeat that clean-clone proof; the earlier result is not carried forward as
 final acceptance.
+
+## Fresh external-seat status after the re-audit
+
+Claude was actually re-invited after the hardened candidate was committed. It
+performed a new read-only review of the named public packet and source files and
+returned **direction GO / current submission NO-GO**. Gemini was also requested
+as a required roundtable seat, but no callable Gemini runtime was present in the
+current environment. Gemini is therefore `attempted-unavailable`, not a
+participant, and no Gemini agreement is claimed for this round.
+
+Claude's strongest dissent was that the human boundary is a WebMCP workflow
+boundary, not actor authentication: separate DOM automation could still click a
+human-facing control. It also found two remaining local false-pass routes. A
+generic sentence such as `coming soon` could satisfy an evidence-reference
+field, and every file under `docs/` was treated as harmless metadata after the
+product candidate. The implementation now accepts only HTTPS evidence URLs or
+recognized receipt paths, rejects deferred prose, and limits post-candidate
+metadata to the explicit release packet. Numeric-claim detection also covers
+`fewer` and `less` wording.

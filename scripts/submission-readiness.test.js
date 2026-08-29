@@ -149,7 +149,11 @@ describe("submission readiness", () => {
     expect(isMeaningfulEvidenceRef("        ")).toBe(false);
     expect(isMeaningfulEvidenceRef("completed")).toBe(false);
     expect(isMeaningfulEvidenceRef("https://example.com/receipt")).toBe(false);
+    expect(isMeaningfulEvidenceRef("coming soon")).toBe(false);
+    expect(isMeaningfulEvidenceRef("will add later")).toBe(false);
+    expect(isMeaningfulEvidenceRef("a convincing sentence but not a reference")).toBe(false);
     expect(isMeaningfulEvidenceRef("receipts/judge-smoke-2026-08-30.json")).toBe(true);
+    expect(isMeaningfulEvidenceRef("https://proof.example.invalid/receipt.json")).toBe(true);
   });
 
   test("prioritizes one concrete Owner action without hiding blockers", () => {
@@ -177,6 +181,7 @@ describe("submission readiness", () => {
     ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly(["src/App.jsx"])).toBe(false);
     expect(arePostCandidateChangesMetadataOnly(["package.json"])).toBe(false);
+    expect(arePostCandidateChangesMetadataOnly(["docs/WEBMCP_EVALS.md"])).toBe(false);
   });
 
   test("rejects stale or mismatched build copies", () => {
@@ -199,6 +204,7 @@ describe("submission readiness", () => {
     expect(findPositiveNumericPerformanceClaims("The verified flow is 30% faster.")).toHaveLength(1);
     expect(findPositiveNumericPerformanceClaims("The verified flow is 3x faster.")).toHaveLength(1);
     expect(findPositiveNumericPerformanceClaims("Measured latency is 45ms latency.")).toHaveLength(1);
+    expect(findPositiveNumericPerformanceClaims("The route uses 30 percent fewer actions.")).toHaveLength(1);
     expect(findPositiveNumericPerformanceClaims("Do not claim a 30 percent improvement until verified.")).toHaveLength(0);
     expect(MINIMUM_SUBMISSION_TEST_COUNT).toBe(92);
   });
