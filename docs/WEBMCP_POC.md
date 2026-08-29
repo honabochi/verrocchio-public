@@ -25,7 +25,8 @@ resume a held workshop, or submit the result.
    decrease.
 5. While the claim awaits review, mutation tools are unregistered and only
    `inspect_workshop` remains.
-6. The visible review controls are human-only. A human checks currency,
+6. The visible review controls are reserved for the human workflow rather than
+   exposed through WebMCP. A human checks currency,
    reproducibility, and remaining risk, then chooses verify or return for changes.
 7. Verification changes the claim to `VERIFIED`, closes its gate, reduces MANCA,
    advances the next stroke, and re-registers the applicable tools. Returning it

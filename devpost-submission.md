@@ -70,8 +70,9 @@ claim with a verified decision.
 
 WebMCP gives the page an explicit agent-facing contract. The host can discover
 bounded tools, inspect the current state, and perform only the transitions the
-workshop exposes. The page retains the authoritative state and the human-only
-boundaries. This makes the collaboration more direct and testable while avoiding
+workshop exposes through WebMCP. The page retains the authoritative state and
+reserves approval steps for the human-facing workflow. This makes the
+collaboration more direct and testable while avoiding
 an application-owned model API key in the active path.
 
 The current implementation exposes four WebMCP tools:
@@ -79,7 +80,7 @@ The current implementation exposes four WebMCP tools:
 1. `inspect_workshop` — reads the mission, current phase, missing proof, active
    work, and human-only boundary.
 2. `call_fermo` — stops the workshop when scope, evidence, safety, or intent is
-   uncertain; only a human can resume it.
+   uncertain; resume is not exposed as a WebMCP tool and remains in the UI.
 3. `propose_workshop_draft` — returns a validated, unsigned plan and stops for
    human review and FIRMA.
 4. `return_work_result` — records a bounded `CLAIMED` result without closing its
@@ -106,8 +107,9 @@ The current implementation exposes four WebMCP tools:
 
 This division was difficult to express safely through a conventional visual UI
 alone. WebMCP makes the allowed agent actions explicit, while the absence of
-approval, verification, resume, publish, deploy, and submission tools preserves
-the human boundary.
+approval, verification, resume, publish, deploy, and submission tools makes the
+intended human boundary explicit. The current browser-local prototype does not
+authenticate the actor behind ordinary DOM controls.
 
 ## Key features
 
@@ -119,7 +121,8 @@ the human boundary.
 - Human FIRMA before a proposed plan or irreversible action is adopted.
 - State-version checks and idempotency keys for agent mutations.
 - `CLAIMED → VERIFIED / CHANGES_REQUESTED` evidence control.
-- FERMO as an explicit stop that only a human can release.
+- FERMO as an explicit stop whose release is reserved for the human UI rather
+  than exposed as a WebMCP action.
 - Replanning that is designed to preserve accepted proof.
 - A bilingual, dark-first workshop UI with a state-derived next-action guide.
 - A deterministic evaluation receipt for fixed adversarial tool-selection cases
@@ -138,8 +141,9 @@ FIRMA, or FERMO requires human attention, mutation tools are removed and the
 next action points back to the person.
 
 Every mutation requires the `stateVersion` returned by the latest inspection
-and an idempotency key. Stale state is rejected, and a retry with the same key
-returns the existing receipt instead of repeating the transition. Structured
+and an idempotency key. Stale state is rejected, an identical retry returns the
+existing receipt instead of repeating the transition, and a current key reused
+with a different payload is rejected. Structured
 schemas bound plan and result size, identifiers, deadlines, gate references,
 roles, classifications, and required evidence fields.
 
@@ -166,7 +170,7 @@ VERROCCHIO state and transition contracts
         └── local browser persistence
         │
         ▼
-Human-only UI: FIRMA · verify/reject · resume · publish · deploy · CONSEGNA
+Human-reserved UI/workflow: FIRMA · verify/reject · resume · publish · deploy · CONSEGNA
 ```
 
 ## How Codex and other AI assistance were used
@@ -234,7 +238,7 @@ official submission form after confirming the event rules and access policy.
 
 ## Verification and evaluation status
 
-- Local automated tests: 75 passing on the current local candidate. Re-run and
+- Local automated tests: 76 passing on the current local candidate. Re-run and
   record the final count on the frozen submission revision.
 - Production build: TODO — record the final build result for the frozen
   submission revision.
@@ -308,6 +312,9 @@ frozen public build.
   not complete at the time of this draft.
 - The current workshop uses browser-local persistence rather than synchronized
   multi-device storage.
+- Human-reserved DOM controls are a workflow boundary, not actor authentication;
+  the prototype does not technically prevent a separate DOM automation layer
+  from clicking them.
 - Mission rule text is entered or loaded as a profile; automatic provenance and
   clause-level rule coverage are not yet complete.
 - The active keyless path depends on a WebMCP-capable host such as ChatGPT's

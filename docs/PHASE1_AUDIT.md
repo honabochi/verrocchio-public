@@ -13,8 +13,8 @@ FIRMA, evidence verification, resume, and submission.
 | Mission input forms a closed operational world | Implemented | Mission intake captures rules, criteria, deadline, constraints, available hands, deferrals, and human boundary |
 | Planning is useful without an app-owned API key | Implemented | `propose_workshop_draft` accepts a strict host-authored plan; no active model API route or key is required |
 | Planning cannot silently authorize itself | Implemented | A proposed plan stays unsigned and mutation tools stop until visible human FIRMA or discard |
-| Human-only boundaries are enforceable | Implemented | No WebMCP tool exists for FIRMA, evidence verification, resume, or CONSEGNA |
-| Irreversible or uncertain work stops | Implemented | AFFRESCO and `call_fermo` hold the workshop; only a human-visible control can resume it |
+| Human-reserved boundaries are explicit on the WebMCP surface | Implemented | No WebMCP tool exists for FIRMA, evidence verification, resume, or CONSEGNA; ordinary DOM controls are not actor-authenticated |
+| Irreversible or uncertain work stops | Implemented | AFFRESCO and `call_fermo` hold the workshop; resume remains a visible UI control rather than a WebMCP action |
 | Proof, not claimed progress, closes a gate | Implemented | AI returns and manually attached evidence both become `CLAIMED`; MANCA is unchanged until human verification |
 | Incorrect evidence can be corrected without erasing history | Implemented | Human return changes `CLAIMED` to `CHANGES_REQUESTED`, records the reason, and restores the work stroke |
 | AI handoff stays bounded | Implemented | CARTONE produces role, scope, forbidden actions, done evidence, and stop conditions for one work packet |
@@ -27,7 +27,7 @@ FIRMA, evidence verification, resume, and submission.
 
 ## Current verification snapshot
 
-- Automated state, tool, command, interaction, and evaluation checks: 75 passed.
+- Automated state, tool, command, interaction, and evaluation checks: 76 passed.
 - Production build: passed after the August 29 fixes.
 - Keyless contracts cover inspect, unsigned plan, FERMO, result claim, human
   verification, return for changes, and re-registration after the human decision.

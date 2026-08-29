@@ -14,24 +14,24 @@ Official rules remain authoritative:
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited challenge head | `e8568bc` | 2026-08-30 JST | Current endpoint of this evidence statement |
+| Audited product candidate | `4736caa` | 2026-08-30 JST | Tested endpoint for the implementation evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..e8568bc
+f12214b^..4736caa
 ```
 
-This range contains 15 commits. Against the July baseline, it changes 39 files
-with 6,762 insertions and 896 deletions. Submission-packet edits made after
-`e8568bc` must be included in the final public submission tag; that tag is not
+This range contains 17 commits. Against the July baseline, it changes 42 files
+with 7,704 insertions and 899 deletions. The final metadata-only documentation
+commit must also be included in the final public submission tag; that tag is not
 yet assigned in this draft.
 
 For a complete comparison against the pre-existing baseline, use:
 
 ```bash
-git diff --stat 3be515d..e8568bc
-git log --format='%h %aI %s' f12214b^..e8568bc
+git diff --stat 3be515d..4736caa
+git log --format='%h %aI %s' f12214b^..4736caa
 ```
 
 Only the work added after the Challenge submission period opened is presented as
@@ -91,11 +91,11 @@ implementation, not on the July workshop shell by itself.
 - `docs/WEBMCP_POC.md` records the falsification checkpoint and explicitly lists
   unproven claims.
 
-## Verification status at `e8568bc`
+## Verification status at `4736caa`
 
 Confirmed in the repository:
 
-- The automated suite passes: 75 tests across state, commands, WebMCP tools,
+- The automated suite passes: 76 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - Mutation evaluation reads the authoritative committed state, preventing FERMO
   or PLAN_DRAFT from being recorded as the stale pre-transition phase.
@@ -134,7 +134,7 @@ boundary and the exported receipt passes deterministic verification.**
 ### Local code and tests
 
 ```bash
-npm install
+npm ci
 npm test
 npm run build
 ```
