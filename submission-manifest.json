@@ -3,9 +3,9 @@
   "event": "OpenAI WebMCP Challenge",
   "challengeBaseline": "3be515d",
   "challengeStart": "f12214b",
-  "productCandidate": "c5f7cad",
+  "productCandidate": "d476147",
   "submissionTag": "",
-  "expectedTestCount": 80,
+  "expectedTestCount": 92,
   "urls": {
     "live": "https://verrocchio-workshop.honabochi.chatgpt.site/",
     "repository": "https://github.com/honabochi/verrocchio",
