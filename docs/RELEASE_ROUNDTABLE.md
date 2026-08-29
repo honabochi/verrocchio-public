@@ -46,6 +46,24 @@ Use this order:
 7. Read back every Devpost field, give final FIRMA, submit, and freeze the public
    artifacts.
 
+## Hardened-preflight follow-up
+
+After the first decision, the internal architecture, evidence, and product/UX
+seats independently attacked the preflight for false passes. The implementation
+now rejects missing or duplicated manifest gates, unchecked/duplicated Devpost
+fields, hollow draft sections, placeholder variants, role-mismatched or local
+URLs, login redirects, unannotated or wrong-revision tags, implementation drift
+after the candidate, stale build copies, test-count regression below the frozen
+floor, and unevidenced numeric performance claims.
+
+Claude participated again after those changes. It kept the direction at GO and
+the current submission at NO-GO, and identified residual URL-login, non-percent
+numeric-claim, and test-count regression routes; those checks were tightened in
+the next candidate. A fresh Gemini follow-up was attempted but unavailable in
+the current execution boundary, so no new Gemini finding or agreement is
+claimed here. The earlier Gemini finding in the table above remains the last
+actual Gemini contribution.
+
 ## Strongest claim to preserve
 
 VERROCCHIO exposes a small, state-aware WebMCP contract for inspection, bounded
