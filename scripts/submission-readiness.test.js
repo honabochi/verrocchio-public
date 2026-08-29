@@ -7,7 +7,9 @@ import {
   inspectOfficialFieldChecklist,
   inspectRequiredManifestKeys,
   isAnnotatedTagAtHead,
+  isAuthenticationPath,
   isMeaningfulEvidenceRef,
+  MINIMUM_SUBMISSION_TEST_COUNT,
   missingDraftHeadings,
   missingOfficialFields,
   summarizeSubmissionChecks,
@@ -159,6 +161,15 @@ describe("submission readiness", () => {
 
   test("requires evidence for positive numeric performance claims but ignores explicit non-claims", () => {
     expect(findPositiveNumericPerformanceClaims("The verified flow is 30% faster.")).toHaveLength(1);
+    expect(findPositiveNumericPerformanceClaims("The verified flow is 3x faster.")).toHaveLength(1);
+    expect(findPositiveNumericPerformanceClaims("Measured latency is 45ms latency.")).toHaveLength(1);
     expect(findPositiveNumericPerformanceClaims("Do not claim a 30 percent improvement until verified.")).toHaveLength(0);
+    expect(MINIMUM_SUBMISSION_TEST_COUNT).toBe(92);
+  });
+
+  test("rejects same-host authentication redirect paths", () => {
+    expect(isAuthenticationPath("/login")).toBe(true);
+    expect(isAuthenticationPath("/oauth/authorize")).toBe(true);
+    expect(isAuthenticationPath("/projects/login-report")).toBe(false);
   });
 });

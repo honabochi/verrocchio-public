@@ -43,6 +43,8 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
   "finalEntryReadBack",
 ];
 
+export const MINIMUM_SUBMISSION_TEST_COUNT = 92;
+
 const URL_KIND_HOSTS = {
   repository: new Set(["github.com"]),
   video: new Set(["youtube.com", "www.youtube.com", "youtu.be"]),
@@ -176,13 +178,19 @@ export function findPositiveNumericPerformanceClaims(text) {
   return String(text || "")
     .split("\n")
     .map((line) => line.trim())
-    .filter((line) => /\b\d+(?:\.\d+)?\s*(?:%|percent\b)/i.test(line))
-    .filter((line) => /\b(?:faster|slower|improv(?:e|ed|ement)|reduc(?:e|ed|tion)|sav(?:e|ed|ing))\b/i.test(line))
+    .filter((line) => (
+      /\b\d+(?:\.\d+)?\s*(?:%|percent\b|x\b)/i.test(line) &&
+      /\b(?:faster|slower|improv(?:e|ed|ement)|reduc(?:e|ed|tion)|sav(?:e|ed|ing)|throughput|latency|response time)\b/i.test(line)
+    ) || /\b\d+(?:\.\d+)?\s*(?:ms|req(?:uests)?\/s)\b.*\b(?:latency|throughput|response time)\b/i.test(line))
     .filter((line) => !/\b(?:no claim|do not claim|must not|until|unproven|not yet proven)\b/i.test(line));
 }
 
 export function isAnnotatedTagAtHead({ exists, type, tagCommit, head }) {
   return exists === true && type === "tag" && Boolean(head) && tagCommit === head;
+}
+
+export function isAuthenticationPath(pathname) {
+  return /\/(?:login|sign-?in|auth|oauth|consent)(?:\/|$)/i.test(String(pathname || ""));
 }
 
 export function arePostCandidateChangesMetadataOnly(files = []) {

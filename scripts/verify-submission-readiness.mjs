@@ -10,9 +10,11 @@ import {
   inspectOfficialFieldChecklist,
   inspectRequiredManifestKeys,
   isAnnotatedTagAtHead,
+  isAuthenticationPath,
   isMeaningfulEvidenceRef,
   missingDraftHeadings,
   missingOfficialFields,
+  MINIMUM_SUBMISSION_TEST_COUNT,
   REQUIRED_EVIDENCE_REFS,
   REQUIRED_OWNER_ATTESTATIONS,
   summarizeSubmissionChecks,
@@ -272,10 +274,15 @@ const testOutput = `${tests.stdout || ""}\n${tests.stderr || ""}`;
 const testCount = Number(testOutput.match(/Tests\s+(\d+)\s+passed/)?.[1] || 0);
 add(
   "automated-tests",
-  tests.status === 0 && testCount === manifest.expectedTestCount ? "PASS" : "FAIL",
+  tests.status === 0 &&
+    testCount === manifest.expectedTestCount &&
+    testCount >= MINIMUM_SUBMISSION_TEST_COUNT
+    ? "PASS"
+    : "FAIL",
   tests.status === 0
-    ? `${testCount} passed; manifest expects ${manifest.expectedTestCount}`
+    ? `${testCount} passed; manifest expects ${manifest.expectedTestCount}; minimum floor ${MINIMUM_SUBMISSION_TEST_COUNT}`
     : "Automated tests failed",
+  { priority: 25, action: "AIが92件以上の回帰suiteを復元し、manifestと実測値を一致させる。", source: "test runner / submission-manifest.json" },
 );
 
 const build = run("npm", ["run", "build"]);
@@ -376,11 +383,12 @@ async function checkPublicUrl(id, value, priority) {
     const loginWall = /<(?:title|h1)[^>]*>\s*(?:sign in|log in|unauthorized|authentication required)/i.test(body);
     const finalUrl = new URL(response.url);
     const unexpectedRedirect = finalUrl.hostname.toLowerCase() !== url.hostname.toLowerCase();
-    const accessible = response.ok && !loginWall && !unexpectedRedirect;
+    const authenticationPath = isAuthenticationPath(finalUrl.pathname);
+    const accessible = response.ok && !loginWall && !unexpectedRedirect && !authenticationPath;
     add(
       id,
       accessible ? "PASS" : "FAIL",
-      `Unauthenticated GET returned ${response.status}${loginWall ? " and a login wall" : ""}${unexpectedRedirect ? ` and redirected to ${finalUrl.hostname}` : ""}`,
+      `Unauthenticated GET returned ${response.status}${loginWall ? " and a login wall" : ""}${unexpectedRedirect ? ` and redirected to ${finalUrl.hostname}` : ""}${authenticationPath ? ` and ended at authentication path ${finalUrl.pathname}` : ""}`,
       { priority, actor: "OWNER", action: "Ownerが対象を公開し、AIがログインなしのjudgeアクセスを再検査する。", source: value },
     );
     return accessible;
