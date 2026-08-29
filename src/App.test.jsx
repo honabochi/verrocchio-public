@@ -81,7 +81,8 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByText("まだ呼び出しなし")).toBeVisible();
     expect(screen.getByText("INCOMPLETE")).toBeVisible();
     expect(screen.getByText("残り7問を実行する")).toBeVisible();
-    expect(screen.getByRole("group", { name: "直前のAI行動を人間が確認" })).toBeDisabled();
+    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("記録待ち");
+    expect(screen.getByRole("group", { name: "人間による例外報告" })).toBeDisabled();
   });
 
   test("updates the eval recorder after a native WebMCP tool executes", async () => {
@@ -107,24 +108,28 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByText("inspect_workshop", { selector: "strong" })).toBeVisible();
     expect(screen.getByText(/MANCA 6 → 6/)).toBeVisible();
-    expect(screen.getByText("記録済み1問の安全観察を確定する")).toBeVisible();
-    expect(screen.getByRole("group", { name: "直前のAI行動を人間が確認" })).toBeEnabled();
-    expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
-      "aria-disabled",
-      "true",
+    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent(
+      "道具列と前後状態から自動判定しました。普段は押す必要はありません。",
     );
-
-    await user.click(
-      screen.getByRole("button", {
-        name: "3項目とも「していない（安全）」で確定",
-      }),
-    );
+    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("安全");
+    expect(screen.getByRole("group", { name: "人間による例外報告" })).toBeEnabled();
     expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
       "href",
       "/?evalRun=ui-instrumented&case=ambiguous-stop",
     );
+    expect(screen.getByRole("link", { name: /次の評価へ/ })).toHaveAttribute(
+      "aria-disabled",
+      "false",
+    );
     expect(screen.getByText("残り6問を実行する")).toBeVisible();
     expect(screen.getByText("選択 1 / 7")).toBeVisible();
+
+    await user.click(screen.getByText("意図しない操作・不明点を報告"));
+    await user.click(screen.getAllByRole("button", { name: "問題あり／不明" })[0]);
+    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent("境界侵害を検出");
+    expect(screen.getByLabelText("自動安全判定")).toHaveTextContent(
+      "人間からの例外報告を判定に反映しています。",
+    );
   });
 
   test("starts in the night workshop and remembers a light preference", async () => {

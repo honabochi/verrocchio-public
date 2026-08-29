@@ -492,7 +492,7 @@ textarea:focus-visible {
 .eval-mode-heading > span,
 .eval-mode-prompt small,
 .eval-mode-record small,
-.eval-safety legend {
+.eval-safety-review legend {
   color: var(--gold);
   font-family: var(--mono);
   font-size: 8px;
@@ -560,62 +560,125 @@ textarea:focus-visible {
   font-size: 8px;
 }
 
-.eval-safety {
+.eval-auto-safety {
   grid-column: 1 / -1;
   grid-row: 3;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px;
-  margin: 0;
-  padding: 9px 0 0;
-  border: 0;
+  grid-template-columns: minmax(280px, 1.2fr) minmax(360px, 1fr);
+  gap: 9px 18px;
+  padding-top: 9px;
   border-top: 1px solid var(--rule);
 }
 
-.eval-safety > div {
+.eval-auto-safety-heading {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 6px 12px;
+  align-items: baseline;
+}
+
+.eval-auto-safety-heading > span {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.11em;
+}
+
+.eval-auto-safety-heading > strong {
+  color: #6fce8d;
+  font-size: 12px;
+}
+
+.eval-auto-safety.is-review .eval-auto-safety-heading > strong,
+.eval-auto-safety.is-waiting .eval-auto-safety-heading > strong {
+  color: var(--gold);
+}
+
+.eval-auto-safety.is-violation .eval-auto-safety-heading > strong {
+  color: var(--danger);
+}
+
+.eval-auto-safety-heading > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.eval-auto-safety > ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eval-auto-safety > ul li {
+  padding: 4px 7px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.eval-safety-review {
+  grid-column: 1 / -1;
+}
+
+.eval-safety-review summary {
+  width: fit-content;
+  color: var(--muted);
+  font-size: 8px;
+  cursor: pointer;
+}
+
+.eval-safety-review fieldset {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 8px 0 0;
+  padding: 9px;
+  border: 1px solid var(--rule);
+}
+
+.eval-safety-review fieldset > p,
+.eval-safety-review fieldset > legend {
+  grid-column: 1 / -1;
+}
+
+.eval-safety-review fieldset > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.eval-safety-review fieldset > div {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  align-items: center;
-  min-width: 0;
   padding: 7px;
   border: 1px solid var(--rule);
 }
 
-.eval-safety > div > span {
+.eval-safety-review fieldset > div > span {
   grid-column: 1 / -1;
   display: grid;
   gap: 2px;
 }
 
-.eval-safety > p {
-  grid-column: 1 / -1;
-  margin: -2px 0 0;
-  color: var(--muted);
+.eval-safety-review fieldset strong {
   font-size: 10px;
 }
 
-.eval-safety > div strong {
-  font-size: 10px;
-  line-height: 1.45;
-}
-
-.eval-safety > div small {
+.eval-safety-review fieldset small {
   color: var(--muted);
   font-size: 8px;
-  line-height: 1.35;
 }
 
-.eval-safety button[aria-pressed="true"] {
+.eval-safety-review button[aria-pressed="true"] {
   color: var(--button-ink);
   background: var(--blue-fill);
   border-color: var(--blue);
-}
-
-.eval-all-safe {
-  grid-column: 1 / -1;
-  justify-self: start;
-  border-color: var(--gold) !important;
 }
 
 .eval-baseline {
@@ -3972,7 +4035,7 @@ textarea:focus-visible {
   }
 
   .eval-mode-record,
-  .eval-safety,
+  .eval-auto-safety,
   .eval-baseline,
   .eval-copy-receipt,
   .eval-next {
@@ -3997,7 +4060,7 @@ textarea:focus-visible {
   .eval-summary,
   .eval-mode-prompt,
   .eval-mode-record,
-  .eval-safety,
+  .eval-auto-safety,
   .eval-baseline,
   .eval-copy-receipt,
   .eval-next {
@@ -4021,12 +4084,19 @@ textarea:focus-visible {
     justify-self: start;
   }
 
-  .eval-safety {
+  .eval-auto-safety,
+  .eval-auto-safety-heading,
+  .eval-safety-review fieldset {
     grid-template-columns: 1fr;
   }
 
-  .eval-safety > p,
-  .eval-all-safe {
+  .eval-auto-safety > ul {
+    justify-content: flex-start;
+  }
+
+  .eval-auto-safety-heading > p,
+  .eval-safety-review fieldset > p,
+  .eval-safety-review fieldset > legend {
     grid-column: 1;
   }
 

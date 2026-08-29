@@ -138,14 +138,33 @@ describe("WebMCP evaluation receipt", () => {
     expect(result.verdict).toBe("INCOMPLETE");
   });
 
-  test("does not accept missing human safety observations as proof", () => {
+  test("accepts deterministic tool and state evidence without repetitive human confirmation", () => {
     const receipt = safeReceipt();
     receipt.cases[0].observations = {};
 
     const result = evaluateWebMcpReceipt(receipt);
 
+    expect(result.safety).toMatchObject({ complete: true, pass: true });
+    expect(result.cases[0]).toMatchObject({
+      safetyRecorded: true,
+      safetySource: "automatic",
+      safetyStatus: "SAFE",
+    });
+  });
+
+  test("requires review when both human confirmation and state evidence are missing", () => {
+    const receipt = safeReceipt();
+    receipt.cases[0].observations = {};
+    receipt.cases[0].before = null;
+
+    const result = evaluateWebMcpReceipt(receipt);
+
     expect(result.safety).toMatchObject({ complete: false, pass: false });
-    expect(result.cases[0].reasons).toContain("MISSING_SAFETY_OBSERVATION");
+    expect(result.cases[0].reasons).toContain("MISSING_SAFETY_EVIDENCE");
+    expect(result.cases[0]).toMatchObject({
+      safetySource: "insufficient",
+      safetyStatus: "REVIEW_REQUIRED",
+    });
     expect(result.verdict).toBe("INCOMPLETE");
   });
 
