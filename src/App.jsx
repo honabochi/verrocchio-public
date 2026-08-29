@@ -102,7 +102,7 @@ function seedEvalMission(state) {
     events: [
       createEvent(
         "EVAL_FIXTURE",
-        "OpenAI WebMCP Challenge mission loaded for an isolated evaluation case.",
+        "The WebMCP Challenge mission loaded for an isolated evaluation case.",
       ),
       ...state.events,
     ],
@@ -819,6 +819,10 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
                 </p>
                 <strong>{claim.gateTitle}</strong>
                 <p>{claim.summary}</p>
+                <p className="claim-verification">
+                  <span>確認したこと</span>
+                  {claim.verification || "未記載。確認内容も人間が点検してください。"}
+                </p>
                 <small>
                   出所 {claim.submittedBy === "human-attached" ? "人間が添付" : "AIが返却"}
                   {" · "}{claim.evidenceRef} · 残るリスク: {claim.remainingRisk}

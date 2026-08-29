@@ -45,15 +45,15 @@ export const openAIBuildWeekExample = {
 
 export const webMcpChallengeProfile = {
   profileId: "openai-webmcp-challenge-2026",
-  name: "OpenAI WebMCP Challenge",
+  name: "The WebMCP Challenge",
   brief:
     "時間に制約のある個人が、規律あるチームのように動けるようにする。ブラウザエージェントは工房を点検し、不確実なら止まり、成果を主張として返す。承認と証拠の確定は人間に残す。",
   rules:
     "2026年8月25日開始の提出期間中に、既存成果との差分が明確なWebMCP拡張を実装する。審査員が使えるライブURL、ソース・導入手順・明示的なOSSライセンスを含む公開リポジトリ、WebMCPとの適合性・利用体験・人間とエージェントの協働・実装方法を説明する英語文、音声付き3分未満の公開YouTubeデモを提出する。締切後はDevpost提出物、リポジトリ、ライブサイトを変更しない。最終判断は公式ルールを正とする。",
   judgingCriteria:
-    "第1段階はテーマ適合と実質的なWebMCP利用の合否判定。第2段階はWebMCP Leverage、Execution、Potential Impact、Creativity & Ambitionの4項目を同じ比重で評価する。",
+    "第1段階はテーマ適合と実質的なWebMCP利用の合否判定。第2段階はWebMCP Leverage、Execution、Potential Impact、Creativity & Ambitionの4項目で評価する。公式readbackで比重は確認できていないため、同じ重みとは断定しない。",
   deadline: "2026-09-04T05:00:00+09:00",
-  track: "OpenAI WebMCP Challenge",
+  track: "トラックなし",
   constraints:
     "フルタイム勤務の合間、夜間に一人で制作する。短時間で中断・復帰でき、調整負荷が小さく、審査員が実際に使えるデモを優先する。締切は厳しい方のDevpost公式ルールを採用し、9月3日13:00 PDT＝9月4日05:00 JSTとする。公開、デプロイ、リポジトリ公開、最終提出には人間のFIRMAが必要。",
   availableAI:

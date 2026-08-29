@@ -1,11 +1,14 @@
 {
   "schema": "verrocchio.submission-manifest.v1",
-  "event": "OpenAI WebMCP Challenge",
+  "event": "The WebMCP Challenge",
+  "eventSlug": "webmcp",
+  "eventUrl": "https://webmcp.devpost.com/",
+  "deadlineUtc": "2026-09-03T20:00:00Z",
   "challengeBaseline": "3be515d",
   "challengeStart": "f12214b",
   "productCandidate": "7c5e712",
   "submissionTag": "",
-  "expectedTestCount": 94,
+  "expectedTestCount": 95,
   "entryContext": {
     "appStatus": "Existing"
   },
@@ -36,7 +39,7 @@
     "rulesAndTermsAccepted": false,
     "secretsReviewedOffScreen": false,
     "cleanCloneCiTestBuildPassed": false,
-    "videoUnderThreeMinutesWithEnglishAudioOrCaptions": false,
+    "videoUnderThreeMinutesWithAudibleEnglishNarration": false,
     "videoAssetsAndRightsConfirmed": false,
     "numericClaimsVerifiedOrRemoved": false,
     "frozenRevisionMatchesAllPublicArtifacts": false,

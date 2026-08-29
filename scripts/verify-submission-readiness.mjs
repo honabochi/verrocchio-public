@@ -7,6 +7,7 @@ import {
   countDraftPlaceholders,
   findPositiveNumericPerformanceClaims,
   inspectDraftSections,
+  inspectEventContract,
   inspectOfficialFieldChecklist,
   inspectRequiredManifestKeys,
   isAnnotatedTagAtHead,
@@ -142,6 +143,16 @@ add(
   manifestKeyIssues.length ? "FAIL" : "PASS",
   manifestKeyIssues.length ? manifestKeyIssues.join("; ") : "Required evidence and Owner attestation keys are present exactly once",
   { priority: 22, action: "AIがsubmission manifestの必須キーを復元し、重複を除く。", source: "submission-manifest.json" },
+);
+
+const eventContractIssues = inspectEventContract(manifest);
+add(
+  "official-event-contract",
+  eventContractIssues.length ? "FAIL" : "PASS",
+  eventContractIssues.length
+    ? eventContractIssues.join("; ")
+    : `${manifest.eventSlug} · ${manifest.eventUrl} · ${manifest.deadlineUtc}`,
+  { priority: 10, action: "AIが公式イベント名・slug・URL・UTC締切をcanonical contractへ戻す。", source: "submission-manifest.json / official Devpost MCP" },
 );
 
 const urlKindIssues = validatePublicUrlKinds(manifest.urls);
@@ -280,6 +291,19 @@ add(
   { priority: 35, actor: "OWNER", ownerOnly: true, action: "全ローカル検証後、Owner承認を得てHEADにannotated final tagを作る。", source: "git / submission-manifest.json" },
 );
 
+const headTimeResult = git("show", "-s", "--format=%cI", "HEAD");
+const headTime = headTimeResult.status === 0 ? Date.parse(headTimeResult.stdout.trim()) : Number.NaN;
+const deadlineTime = Date.parse(manifest.deadlineUtc || "");
+const headBeforeDeadline = Number.isFinite(headTime) && Number.isFinite(deadlineTime) && headTime <= deadlineTime;
+add(
+  "submission-revision-before-deadline",
+  headBeforeDeadline ? "PASS" : "FAIL",
+  headBeforeDeadline
+    ? `HEAD committed at ${headTimeResult.stdout.trim()} before ${manifest.deadlineUtc}`
+    : "HEAD commit time is missing, invalid, or after the official deadline",
+  { priority: 36, action: "締切後のrevisionを提出物に使わず、締切前の凍結tagへ戻す。", source: "git / submission-manifest.json" },
+);
+
 const tests = run("npm", ["test", "--", "--run"]);
 const testOutput = `${tests.stdout || ""}\n${tests.stderr || ""}`;
 const testCount = Number(testOutput.match(/Tests\s+(\d+)\s+passed/)?.[1] || 0);
@@ -325,6 +349,7 @@ if (build.status === 0) {
       workerBuilt,
       indexHtml,
       jsBundles,
+      expectedRevision: head,
     });
     artifactEvidence = artifactsMatch
       ? "Hosting config and worker copies match source; current UI marker exists in client bundle"
@@ -371,18 +396,18 @@ add(
 async function checkPublicUrl(id, value, priority) {
   if (!value) {
     add(id, "MISSING", "URL is unset", { priority, actor: "OWNER", action: "Ownerが公開先を作成し、AIが未認証アクセスを検証する。", source: "submission-manifest.json" });
-    return false;
+    return { accessible: false, body: "", finalUrl: null };
   }
   let url;
   try {
     url = new URL(value);
   } catch {
     add(id, "FAIL", "URL is invalid");
-    return false;
+    return { accessible: false, body: "", finalUrl: null };
   }
   if (url.protocol !== "https:") {
     add(id, "FAIL", "Public URL must use HTTPS");
-    return false;
+    return { accessible: false, body: "", finalUrl: null };
   }
   try {
     const response = await fetch(url, {
@@ -393,7 +418,11 @@ async function checkPublicUrl(id, value, priority) {
     const body = await response.text();
     const loginWall = /<(?:title|h1)[^>]*>\s*(?:sign in|log in|unauthorized|authentication required)/i.test(body);
     const finalUrl = new URL(response.url);
-    const unexpectedRedirect = finalUrl.hostname.toLowerCase() !== url.hostname.toLowerCase();
+    const youtubeHosts = new Set(["youtube.com", "www.youtube.com", "youtu.be"]);
+    const youtubeAliasRedirect = id === "public-video-url" &&
+      youtubeHosts.has(url.hostname.toLowerCase()) &&
+      youtubeHosts.has(finalUrl.hostname.toLowerCase());
+    const unexpectedRedirect = finalUrl.hostname.toLowerCase() !== url.hostname.toLowerCase() && !youtubeAliasRedirect;
     const authenticationPath = isAuthenticationPath(finalUrl.pathname);
     const accessible = response.ok && !loginWall && !unexpectedRedirect && !authenticationPath;
     add(
@@ -402,20 +431,52 @@ async function checkPublicUrl(id, value, priority) {
       `Unauthenticated GET returned ${response.status}${loginWall ? " and a login wall" : ""}${unexpectedRedirect ? ` and redirected to ${finalUrl.hostname}` : ""}${authenticationPath ? ` and ended at authentication path ${finalUrl.pathname}` : ""}`,
       { priority, actor: "OWNER", action: "Ownerが対象を公開し、AIがログインなしのjudgeアクセスを再検査する。", source: value },
     );
-    return accessible;
+    return { accessible, body, finalUrl };
   } catch (error) {
     add(id, "FAIL", `Unauthenticated GET failed: ${error.message}`, { priority, action: "通信状態と公開設定を確認して再検査する。", source: value });
-    return false;
+    return { accessible: false, body: "", finalUrl: null };
   }
 }
 
-await checkPublicUrl("public-live-url", manifest.urls?.live, 40);
-const repositoryAccessible = await checkPublicUrl("public-repository-url", manifest.urls?.repository, 41);
-await checkPublicUrl("public-video-url", manifest.urls?.video, 50);
+const liveProbe = await checkPublicUrl("public-live-url", manifest.urls?.live, 40);
+const repositoryProbe = await checkPublicUrl("public-repository-url", manifest.urls?.repository, 41);
+const videoProbe = await checkPublicUrl("public-video-url", manifest.urls?.video, 50);
+
+const liveRevisionMarker = `<meta name="verrocchio-revision" content="${head}"`;
+const liveRevisionMatches = liveProbe.accessible && liveProbe.body.includes(liveRevisionMarker);
+add(
+  "public-live-revision",
+  liveRevisionMatches ? "PASS" : liveProbe.accessible ? "FAIL" : "MISSING",
+  liveRevisionMatches
+    ? `Live HTML identifies frozen revision ${head}`
+    : liveProbe.accessible
+      ? `Live HTML does not identify current revision ${head}`
+      : "Live revision cannot be checked until the site is public",
+  { priority: 44, actor: "OWNER", action: "同じ凍結revisionを公開し、HTMLのrevision markerを未認証GETで照合する。", source: manifest.urls?.live },
+);
+
+let publicVideoResolved = false;
+if (videoProbe.accessible && manifest.urls?.video) {
+  try {
+    const oembed = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(manifest.urls.video)}&format=json`, {
+      headers: { "User-Agent": "VERROCCHIO-submission-preflight" },
+      signal: AbortSignal.timeout(15_000),
+    });
+    publicVideoResolved = oembed.ok;
+  } catch {
+    publicVideoResolved = false;
+  }
+}
+add(
+  "public-youtube-video",
+  publicVideoResolved ? "PASS" : videoProbe.accessible ? "FAIL" : "MISSING",
+  publicVideoResolved ? "YouTube oEmbed resolved one public video" : "A public, resolvable YouTube video is not yet verified",
+  { priority: 52, actor: "OWNER", action: "Ownerが3分未満・音声付きの動画を公開し、AIが実動画IDとoEmbedを確認する。", source: manifest.urls?.video },
+);
 
 let repositoryArtifactsOk = false;
-let repositoryArtifactEvidence = repositoryAccessible ? "Repository metadata probe not completed" : "Repository URL is not publicly accessible";
-if (repositoryAccessible) {
+let repositoryArtifactEvidence = repositoryProbe.accessible ? "Repository metadata probe not completed" : "Repository URL is not publicly accessible";
+if (repositoryProbe.accessible) {
   try {
     const repositoryUrl = new URL(manifest.urls.repository);
     const [owner, repository] = repositoryUrl.pathname.split("/").filter(Boolean);
@@ -423,20 +484,40 @@ if (repositoryAccessible) {
       headers: { Accept: "application/vnd.github+json", "User-Agent": "VERROCCHIO-submission-preflight" },
     });
     const metadata = metadataResponse.ok ? await metadataResponse.json() : null;
-    if (metadata && metadata.private === false && metadata.default_branch) {
+    if (metadata && metadata.private === false && metadata.default_branch && tag) {
+      const apiHeaders = { Accept: "application/vnd.github+json", "User-Agent": "VERROCCHIO-submission-preflight" };
+      const [branchResponse, tagRefResponse] = await Promise.all([
+        fetch(`https://api.github.com/repos/${owner}/${repository}/commits/${encodeURIComponent(metadata.default_branch)}`, { headers: apiHeaders }),
+        fetch(`https://api.github.com/repos/${owner}/${repository}/git/ref/tags/${encodeURIComponent(tag)}`, { headers: apiHeaders }),
+      ]);
+      const branchCommit = branchResponse.ok ? await branchResponse.json() : null;
+      const tagRef = tagRefResponse.ok ? await tagRefResponse.json() : null;
+      let peeledTagCommit = "";
+      if (tagRef?.object?.type === "tag" && tagRef.object.sha) {
+        const tagObjectResponse = await fetch(
+          `https://api.github.com/repos/${owner}/${repository}/git/tags/${tagRef.object.sha}`,
+          { headers: apiHeaders },
+        );
+        const tagObject = tagObjectResponse.ok ? await tagObjectResponse.json() : null;
+        if (tagObject?.object?.type === "commit") peeledTagCommit = tagObject.object.sha;
+      }
+      const remoteRevisionAligned = Boolean(head) &&
+        branchCommit?.sha === head &&
+        peeledTagCommit === head;
       const artifactFiles = ["README.md", "LICENSE", "package.json", "package-lock.json", "src/webmcp.js"];
       const artifacts = await Promise.all(artifactFiles.map(async (file) => {
-        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repository}/${metadata.default_branch}/${file}`);
+        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(tag)}/${file}`);
         return { file, status: response.status, body: response.ok ? await response.text() : "" };
       }));
-      const licenseDetected = metadata.license?.spdx_id && metadata.license.spdx_id !== "NOASSERTION";
+      const licenseBody = artifacts.find(({ file }) => file === "LICENSE")?.body || "";
+      const licenseMatches = metadata.license?.spdx_id === "MIT" && licenseBody === license;
       const webmcpSource = artifacts.find(({ file }) => file === "src/webmcp.js")?.body || "";
       const registerToolPresent = /\.registerTool\s*\(/.test(webmcpSource);
       repositoryArtifactsOk = artifacts.every(({ status }) => status === 200) &&
-        Boolean(licenseDetected) && registerToolPresent;
-      repositoryArtifactEvidence = `GitHub public=${!metadata.private}; branch=${metadata.default_branch}; license=${metadata.license?.spdx_id || "undetected"}; artifacts=${artifacts.map(({ file, status }) => `${file}:${status}`).join(",")}; registerTool=${registerToolPresent}`;
+        licenseMatches && registerToolPresent && remoteRevisionAligned;
+      repositoryArtifactEvidence = `GitHub public=${!metadata.private}; branch=${metadata.default_branch}@${branchCommit?.sha || "missing"}; tag=${tag}@${peeledTagCommit || "missing-or-not-annotated"}; local=${head}; license=${metadata.license?.spdx_id || "undetected"}/${licenseMatches ? "match" : "mismatch"}; artifacts=${artifacts.map(({ file, status }) => `${file}:${status}`).join(",")}; registerTool=${registerToolPresent}`;
     } else {
-      repositoryArtifactEvidence = `GitHub API returned ${metadataResponse.status} or repository is private`;
+      repositoryArtifactEvidence = `GitHub API returned ${metadataResponse.status}, repository is private, or submission tag is unset`;
     }
   } catch (error) {
     repositoryArtifactEvidence = `Repository artifact probe failed: ${error.message}`;
@@ -446,7 +527,7 @@ add(
   "public-repository-artifacts",
   repositoryArtifactsOk ? "PASS" : "FAIL",
   repositoryArtifactEvidence,
-  { priority: 43, actor: "OWNER", action: "公開GitHubの既定branchにREADME・LICENSE・package filesが見える状態にする。", source: manifest.urls?.repository },
+  { priority: 43, actor: "OWNER", action: "公開GitHubでannotated tag・default branch・ローカルHEADを同じSHAにし、そのtag上のMIT LICENSEと全必須fileを検証する。", source: manifest.urls?.repository },
 );
 
 for (const id of [...REQUIRED_EVIDENCE_REFS, "hostedEvaluation"]) {

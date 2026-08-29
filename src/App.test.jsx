@@ -163,7 +163,7 @@ describe("VERROCCHIO core path", () => {
 
     expect(screen.getByLabelText("読み込んだミッションの要約")).toBeVisible();
     expect(
-      screen.getAllByText("OpenAI WebMCP Challenge", { selector: "dd" })[0],
+      screen.getAllByText("The WebMCP Challenge", { selector: "dd" })[0],
     ).toBeVisible();
     expect(screen.getByText(/規律あるチームのように動ける/)).toBeVisible();
     expect(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ })).toBeVisible();
@@ -173,7 +173,7 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: "詳細を編集" }));
 
-    expect(screen.getByLabelText(/対象イベント/)).toHaveValue("OpenAI WebMCP Challenge");
+    expect(screen.getByLabelText(/対象イベント/)).toHaveValue("The WebMCP Challenge");
     expect(screen.getByLabelText(/制約/).value).toMatch(/夜間に一人で制作/);
     expect(screen.getByRole("button", { name: "要約に戻る" })).toHaveAttribute(
       "aria-expanded",
@@ -280,7 +280,7 @@ describe("VERROCCHIO core path", () => {
     render(<App />);
 
     expect(
-      screen.getAllByText("OpenAI WebMCP Challenge", { selector: "dd" })[0],
+      screen.getAllByText("The WebMCP Challenge", { selector: "dd" })[0],
     ).toBeVisible();
   });
 
@@ -352,6 +352,7 @@ describe("VERROCCHIO core path", () => {
     expect(screen.getByLabelText("証拠主張を確認する三つの観点")).toHaveTextContent(
       "内容が今も正しい",
     );
+    expect(screen.getByText("旧経路だけを確認した。")).toBeVisible();
     await user.click(screen.getByRole("button", { name: /差し戻す/ }));
     await user.type(
       screen.getByLabelText(/差し戻す理由/),

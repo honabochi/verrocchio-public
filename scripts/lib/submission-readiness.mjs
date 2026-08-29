@@ -35,7 +35,7 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
   "rulesAndTermsAccepted",
   "secretsReviewedOffScreen",
   "cleanCloneCiTestBuildPassed",
-  "videoUnderThreeMinutesWithEnglishAudioOrCaptions",
+  "videoUnderThreeMinutesWithAudibleEnglishNarration",
   "videoAssetsAndRightsConfirmed",
   "numericClaimsVerifiedOrRemoved",
   "frozenRevisionMatchesAllPublicArtifacts",
@@ -46,10 +46,47 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
 
 export const MINIMUM_SUBMISSION_TEST_COUNT = 92;
 
+export const EXPECTED_EVENT_CONTRACT = {
+  name: "The WebMCP Challenge",
+  slug: "webmcp",
+  url: "https://webmcp.devpost.com/",
+  deadlineUtc: "2026-09-03T20:00:00Z",
+};
+
 const URL_KIND_HOSTS = {
   repository: new Set(["github.com"]),
   video: new Set(["youtube.com", "www.youtube.com", "youtu.be"]),
 };
+
+export function inspectEventContract(manifest = {}) {
+  const actual = {
+    name: manifest.event,
+    slug: manifest.eventSlug,
+    url: manifest.eventUrl,
+    deadlineUtc: manifest.deadlineUtc,
+  };
+  return Object.entries(EXPECTED_EVENT_CONTRACT)
+    .filter(([key, value]) => actual[key] !== value)
+    .map(([key, value]) => `${key} must equal ${value}`);
+}
+
+export function youtubeVideoId(value) {
+  let url;
+  try {
+    url = new URL(String(value || ""));
+  } catch {
+    return "";
+  }
+  const host = url.hostname.toLowerCase();
+  let id = "";
+  if (host === "youtu.be") {
+    id = url.pathname.split("/").filter(Boolean)[0] || "";
+  } else if (host === "youtube.com" || host === "www.youtube.com") {
+    if (url.pathname === "/watch") id = url.searchParams.get("v") || "";
+    if (url.pathname.startsWith("/shorts/")) id = url.pathname.split("/")[2] || "";
+  }
+  return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : "";
+}
 
 export function countDraftPlaceholders(text) {
   const markers = [
@@ -159,11 +196,11 @@ export function validatePublicUrlKinds(urls = {}) {
     if (expectedHosts && !expectedHosts.has(host)) {
       issues.push(`${kind} URL uses an unexpected host`);
     }
-    if (kind === "live" && !host.endsWith(".chatgpt.site")) {
-      issues.push("live URL must use the configured ChatGPT Sites host");
-    }
     if (kind === "repository" && url.pathname.split("/").filter(Boolean).length !== 2) {
       issues.push("repository URL must identify exactly one GitHub repository");
+    }
+    if (kind === "video" && !youtubeVideoId(value)) {
+      issues.push("video URL must identify one YouTube video");
     }
     if (kind === "live" && (
       URL_KIND_HOSTS.repository.has(host) ||
@@ -219,11 +256,15 @@ export function verifyBuildArtifactCopies({
   workerBuilt,
   indexHtml,
   jsBundles = [],
+  expectedRevision,
 }) {
   return Buffer.isBuffer(hostingSource) && Buffer.isBuffer(hostingBuilt) &&
     Buffer.isBuffer(workerSource) && Buffer.isBuffer(workerBuilt) &&
     hostingSource.equals(hostingBuilt) && workerSource.equals(workerBuilt) &&
     String(indexHtml || "").includes("VERROCCHIO") &&
+    String(indexHtml || "").includes(
+      `<meta name="verrocchio-revision" content="${expectedRevision}"`,
+    ) &&
     jsBundles.some((bundle) => String(bundle).includes("人間の確認待ち"));
 }
 

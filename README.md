@@ -178,7 +178,7 @@ does not pretend to have called a model: host-originated plans are marked
 ## One engine, many hackathons
 
 `START BLANK` resets the mission to a neutral intake. `LOAD WEBMCP MISSION`
-loads the current OpenAI WebMCP Challenge working profile, including the solo,
+loads the current working profile for The WebMCP Challenge, including the solo,
 after-hours operating constraint. Official rules remain the source of truth
 and must be rechecked before publication or final submission.
 

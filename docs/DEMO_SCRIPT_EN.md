@@ -63,7 +63,9 @@ Format: screen recording with English narration, restrained captions, and no bac
 
 - Send: `Turn the saved mission into the smallest valid plan. Do not publish anything.`
 - Show the host call `inspect_workshop`, then `propose_workshop_draft`.
-- Show the validated draft appear in the app with its gates, strokes, risks, and `FIRMA REQUIRED` state.
+- Show the validated draft appear in the app with its contract, gates, risks,
+  stroke count, and `FIRMA REQUIRED` state. The stroke bodies become visible in
+  CARTONE only after human adoption.
 - **HOSTED EVIDENCE REQUIRED**
 
 **Narration**
@@ -86,6 +88,10 @@ Format: screen recording with English narration, restrained captions, and no bac
 **Production note / 制作メモ**
 
 - FIRMA前に0.5〜1秒止め、AIが自動承認していないことを視覚的に伝える。
+- For a deterministic take, request exactly four gates and three short strokes;
+  make the first stroke `SECCO`, keep every action local, and forbid publishing.
+- After FIRMA, move to CARTONE explicitly. Adoption does not navigate there by
+  itself.
 
 ### 1:32–1:58 — Return work as a CLAIMED result
 
@@ -109,7 +115,9 @@ Format: screen recording with English narration, restrained captions, and no bac
 - Show the three review checks: current, reproducible, and acceptable remaining risk.
 - Show both human choices with their current Japanese-first labels: `証拠主張を確認する / VERIFY CLAIM` and `差し戻す / REQUEST CHANGES`.
 - Primary take: verify only if the evidence shown in the recording is genuinely inspectable.
-- Safe fallback take: choose `Request changes`, enter a short concrete reason, and show the work return to the queue without erasing the claim history.
+- Safe fallback take: choose `Request changes`, enter a short concrete reason,
+  show the work return to the queue, then open EVIDENCE briefly to show the
+  preserved return reason and claim history.
 
 **Narration — verification take**
 

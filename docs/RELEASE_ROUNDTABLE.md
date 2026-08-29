@@ -1,7 +1,7 @@
 # Release Roundtable Decision
 
 Date: 2026-08-30 JST  
-Scope: public, non-sensitive submission preflight for the OpenAI WebMCP Challenge
+Scope: public, non-sensitive submission preflight for The WebMCP Challenge
 
 This is a compact decision receipt, not a transcript. External reviews were
 asked to judge only the public product description and release gates. No
@@ -90,3 +90,36 @@ WebMCP tool surface and remain reserved for the human-facing workflow.
 
 Do not upgrade this to actor authentication, tamper-proof evidence, or a measured
 speed/reliability result. Those claims are not proven by the current artifact.
+
+## Re-audit after official-rule reconciliation
+
+Three bounded internal seats independently re-read the current packet: official
+rules, judge story, and demo readiness. They did not replace Gemini or Claude
+and are not counted as either. The result stayed **direction GO / current
+submission NO-GO**.
+
+- The judge-story seat estimated the current local story at 13.8/20 and found
+  that new features would not repair the weak evidence for Execution and
+  Potential Impact. It recommended one 60-second judge path and the explicit
+  subject: a time-constrained solo builder, not a generic hackathon system.
+- The official-rules seat found false-pass routes around fuzzy event names,
+  video audio, public repository revision identity, live-build identity,
+  deadline cutoff, and unsupported equal weighting of the four criteria.
+- The demo seat found four storyboard/UI mismatches: conflicting cold opens,
+  hidden stroke bodies before FIRMA, invisible returned verification text, and
+  claim history visible only from EVIDENCE after a return for changes.
+
+The local candidate was tightened accordingly: the canonical `webmcp` slug,
+event URL, and UTC deadline are now machine checked; a public YouTube URL must
+resolve to one video; audible English narration is a separate Owner attestation;
+the public repository must bind an annotated tag, its default branch, required
+files, and MIT license to the same local SHA; the live HTML carries a revision
+marker; and a commit after the deadline fails preflight. The CLAIMED card now
+shows the verification returned by the agent, and both demo outlines begin with
+the functioning tool call in the first twelve seconds.
+
+A clean temporary clone of candidate `7c5e712` completed `npm ci`, all 94 tests,
+and the production build before these re-audit changes. Because the re-audit
+changes include implementation and preflight code, the next final candidate
+must repeat that clean-clone proof; the earlier result is not carried forward as
+final acceptance.

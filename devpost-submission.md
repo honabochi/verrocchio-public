@@ -23,11 +23,10 @@ verification, publishing, and final submission under human control.
 
 ## The problem
 
-Solo builders rarely fail because they cannot produce ideas or code. They fail
-because the coordination work normally carried by a team accumulates around
-them: interpreting rules, choosing the next task, remembering why a decision
-was made, recovering after an interruption, distinguishing a claim from proof,
-and stopping before an irreversible action.
+A time-constrained solo builder must carry coordination work that a team would
+normally distribute: interpreting rules, choosing the next task, remembering
+why a decision was made, recovering after an interruption, distinguishing a
+claim from proof, and stopping before an irreversible action.
 
 This is especially visible in short hackathons and after-hours projects. An AI
 assistant can generate work quickly, but speed alone does not answer four
@@ -57,22 +56,21 @@ giving up authorship or judgment. It aims to reduce the attention cost of
 working alone, preserve an exact return point after interruption, and make the
 evidence behind progress visible to both the builder and a reviewer.
 
-Hackathons are the first demanding use case, not the product's limit. Their
-fixed deadlines, explicit requirements, and judge-visible deliverables make
-them a useful proving ground for a broader human-governed execution system.
+Hackathons are the first demanding use case. Their fixed deadlines, explicit
+requirements, and judge-visible deliverables make them a useful proving ground
+for this human-governed execution pattern; broader use remains unproven.
 
 ## Fit to the official judging criteria
 
-The live Devpost readback on 2026-08-30 JST lists four equally presented
-five-point criteria and no separate tracks:
+The live Devpost readback on 2026-08-30 JST lists four five-point criteria and
+no separate tracks. It does not establish that the criteria have equal weight:
 
 - **WebMCP Leverage:** four state-dependent tools provide a non-trivial shared
   workshop contract, while approval and evidence judgment are deliberately not
   exposed as agent tools.
-- **Execution:** the submission is a complete browser product rather than only
-  a tool-registration snippet; the current local candidate has 94 automated
-  tests and a reproducible production build, while public judge access remains
-  a release gate.
+- **Execution:** the local candidate is a browser product rather than only a
+  tool-registration snippet. It has 95 automated tests and passed a clean-clone
+  production build; public judge access remains a separate release gate.
 - **Potential Impact:** the target is specific — a time-constrained solo builder
   who needs continuity, proof-aware progress, and safe handoffs without forming
   a conventional team.
@@ -261,7 +259,7 @@ official submission form after confirming the event rules and access policy.
 
 ## Verification and evaluation status
 
-- Local automated tests: 94 passing on the current local candidate. Re-run and
+- Local automated tests: 95 passing on the current local candidate. Re-run and
   record the final count on the frozen submission revision.
 - Production build: TODO — record the final build result for the frozen
   submission revision.
@@ -289,45 +287,51 @@ unsupported pass claims before uploading them.
 
 ## 2:40 demo video outline
 
-### 0:00–0:20 — The coordination problem
+### 0:00–0:12 — Working cold open
 
-Introduce the target user: a solo builder working in short, interruptible
-sessions. Show that ordinary progress percentages do not answer what proof is
-still missing or who owns the next decision.
+On the deployed app, ask what evidence is still missing. Show the real
+`inspect_workshop` call, then cut to the unchanged MANCA count and bounded next
+action. The functioning product appears before any title card.
 
-### 0:20–0:45 — Mission and boundary
+### 0:12–0:28 — User and problem
 
-Load the challenge mission. Point out the deadline, constraints, MANCA gates,
-and the visible division between agent work and human-only decisions.
+Introduce the solo builder working in short, interrupted sessions. Show only
+the mission summary, deadline, and the human-only boundary.
 
-### 0:45–1:10 — WebMCP inspection
+### 0:28–0:49 — MANCA and next action
 
-Ask the host what evidence is missing. Show `inspect_workshop` reading structured
-state directly and returning the next bounded step.
+Show the structured inspection result: missing proof, active work, next step,
+and human-owned decisions. Do not imply that the read-only call changed state.
 
-### 1:10–1:40 — Unsigned plan and FIRMA
+### 0:49–1:13 — Unsigned WebMCP plan
 
-Ask for the smallest plan. Show `propose_workshop_draft`, the validated plan,
-and the deliberate stop before human FIRMA. Briefly contrast this with an agent
-clicking through the visual UI.
+Ask for the smallest valid plan with no publication. Show
+`inspect_workshop → propose_workshop_draft`, then the visible contract, gates,
+risks, stroke count, and `FIRMA REQUIRED`. Stroke bodies appear only after
+human adoption in CARTONE.
 
-### 1:40–2:05 — Claim is not proof
+### 1:13–1:32 — Human FIRMA
 
-Show a returned result entering `CLAIMED` without reducing MANCA. Demonstrate a
-human verification or request-changes decision, using only non-sensitive demo
-data.
+Pause on the unsigned state, then click the human-only FIRMA control. Move to
+CARTONE and show the adopted revision and active stroke.
 
-### 2:05–2:25 — Boundary challenge
+### 1:32–1:58 — Claim is not proof
 
-Ask the agent to approve or submit by itself. Show that approval, resume,
-publishing, deployment, and final submission are unavailable as agent tools.
+Re-inspect active work, then show `return_work_result`. The CLAIMED card displays
+summary, verification performed, evidence reference, and remaining risk while
+MANCA stays unchanged.
 
-### 2:25–2:40 — Outcome
+### 1:58–2:20 — Human review
 
-Return to the central promise: WebMCP lets one person gain structured agent
-leverage while keeping authorship, evidence judgment, and irreversible actions
-in human hands. Display only evaluation numbers that have been verified on the
-frozen public build.
+Use the request-changes branch unless the evidence is independently inspectable
+on camera. Show the work return to the queue, then briefly open EVIDENCE to show
+that the return reason and claim history were preserved.
+
+### 2:20–2:40 — WebMCP difference and close
+
+Use a qualitative card built only from the recorded calls: DOM agents rediscover
+controls; WebMCP exposes bounded, state-aware transitions. End on the human
+boundary. Do not show unverified performance numbers.
 
 ## Known limitations
 

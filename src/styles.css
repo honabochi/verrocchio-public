@@ -4033,6 +4033,22 @@ textarea:focus-visible {
   letter-spacing: 0.11em;
 }
 
+.evidence-claims .claim-verification {
+  border-left: 2px solid rgba(40, 79, 158, 0.35);
+  color: var(--muted);
+  font-size: 11px;
+  padding: 6px 9px;
+}
+
+.evidence-claims .claim-verification span {
+  color: var(--ultramarine, #284f9e);
+  display: block;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
 .evidence-claims button {
   background: var(--ultramarine, #284f9e);
   border: 0;

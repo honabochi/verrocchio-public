@@ -4,6 +4,7 @@ import {
   countDraftPlaceholders,
   findPositiveNumericPerformanceClaims,
   inspectDraftSections,
+  inspectEventContract,
   inspectOfficialFieldChecklist,
   inspectRequiredManifestKeys,
   isAnnotatedTagAtHead,
@@ -15,6 +16,7 @@ import {
   summarizeSubmissionChecks,
   validatePublicUrlKinds,
   verifyBuildArtifactCopies,
+  youtubeVideoId,
 } from "./lib/submission-readiness.mjs";
 
 describe("submission readiness", () => {
@@ -113,6 +115,20 @@ describe("submission readiness", () => {
     ]));
     expect(validatePublicUrlKinds({ live: "https://127.0.0.1/app" }))
       .toContain("live URL cannot target a private or local host");
+    expect(validatePublicUrlKinds({ video: "https://www.youtube.com/" }))
+      .toContain("video URL must identify one YouTube video");
+    expect(youtubeVideoId("https://youtu.be/dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
+  });
+
+  test("pins the canonical WebMCP event instead of relying on fuzzy names", () => {
+    expect(inspectEventContract({
+      event: "The WebMCP Challenge",
+      eventSlug: "webmcp",
+      eventUrl: "https://webmcp.devpost.com/",
+      deadlineUtc: "2026-09-03T20:00:00Z",
+    })).toEqual([]);
+    expect(inspectEventContract({ event: "OpenAI Build Week" }))
+      .toEqual(expect.arrayContaining(["slug must equal webmcp"]));
   });
 
   test("rejects empty required manifest objects and duplicate JSON keys", () => {
@@ -171,7 +187,9 @@ describe("submission readiness", () => {
       workerBuilt: Buffer.from("worker"),
       indexHtml: "<title>VERROCCHIO</title>",
       jsBundles: ["人間の確認待ち"],
+      expectedRevision: "abc123",
     };
+    good.indexHtml = '<meta name="verrocchio-revision" content="abc123"><title>VERROCCHIO</title>';
     expect(verifyBuildArtifactCopies(good)).toBe(true);
     expect(verifyBuildArtifactCopies({ ...good, workerBuilt: Buffer.from("stale") })).toBe(false);
     expect(verifyBuildArtifactCopies({ ...good, jsBundles: ["old copy"] })).toBe(false);

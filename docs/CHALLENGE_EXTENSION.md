@@ -1,7 +1,7 @@
 # WebMCP Challenge Extension Boundary
 
 This document separates the pre-existing VERROCCHIO project from the work built
-for the OpenAI WebMCP Challenge. It is intended to make the eligible challenge
+for The WebMCP Challenge. It is intended to make the eligible challenge
 work inspectable without attributing earlier product work to the submission
 period.
 
@@ -98,7 +98,7 @@ implementation, not on the July workshop shell by itself.
 
 Confirmed in the repository:
 
-- The automated suite passes: 94 tests across state, commands, WebMCP tools,
+- The automated suite passes: 95 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - Mutation evaluation reads the authoritative committed state, preventing FERMO
   or PLAN_DRAFT from being recorded as the stale pre-transition phase.
