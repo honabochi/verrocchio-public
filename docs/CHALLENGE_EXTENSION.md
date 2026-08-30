@@ -26,16 +26,16 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3b5e0ab` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `0ad6b17` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `2ee0a68` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
+| Audited product candidate | `46ac3c3` | 2026-08-31 JST | Security-audited endpoint for the implementation, Owner-boundary remediation, fail-closed evaluation evidence, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-0ad6b17^..2ee0a68
+0ad6b17^..46ac3c3
 ```
 
-This range contains 47 commits. Against the July baseline, it changes 56 files
-with 9,801 insertions and 1,096 deletions. The metadata-only commits after the
+This range contains 52 commits. Against the July baseline, it changes 56 files
+with 10,282 insertions and 1,122 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. That tag is not yet assigned in this draft.
 
@@ -43,8 +43,8 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 3b5e0ab..2ee0a68
-git log --format='%h %aI %s' 0ad6b17^..2ee0a68
+git diff --stat 3b5e0ab..46ac3c3
+git log --format='%h %aI %s' 0ad6b17^..46ac3c3
 ```
 
 For the final public comparison, replace `6bb60b9` in both commands with the
