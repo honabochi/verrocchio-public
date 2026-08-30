@@ -26,16 +26,16 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `6bb60b9` | 2026-08-30 JST | Tested endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
+| Audited product candidate | `c953708` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..6bb60b9
+f12214b^..c953708
 ```
 
-This range contains 43 commits. Against the July baseline, it changes 50 files
-with 9,603 insertions and 1,045 deletions. The metadata-only commits after the
+This range contains 47 commits. Against the July baseline, it changes 57 files
+with 9,803 insertions and 1,098 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. That tag is not yet assigned in this draft.
 
@@ -110,7 +110,7 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `6bb60b9`
+## Verification status at `c953708`
 
 Confirmed in the repository:
 
