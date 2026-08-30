@@ -5,6 +5,7 @@ import {
   exportWorkshop,
   initialState,
   loadWorkshop,
+  persistWorkshop,
   remainingTime,
   STORAGE_KEY,
   workshopStorageKey,
@@ -123,6 +124,17 @@ test("buildWorkPacket compiles the contract, next gate, duty, and stop rule", ()
   expect(packet).toContain("公開、支払い、個人データ");
 });
 
+test("buildWorkPacket gives the blindspot explorer a bounded discovery contract", () => {
+  const packet = buildWorkPacket(initialState, "colorista");
+
+  expect(packet).toContain("CARTONE PACKET · 周辺探索・視覚説明");
+  expect(packet).toContain("Owner・Codex・Claudeが共有している前提");
+  expect(packet).toContain("最大3件または20分で止まる");
+  expect(packet).toContain("探索経路と、意図的にずらした軸");
+  expect(packet).toContain("根拠URL・日付・一次／二次情報の区別");
+  expect(packet).toContain("未探索の範囲、次に確かめる最小の一手");
+});
+
 test("loadWorkshop migrates an old held AFFRESCO into a pending FIRMA", () => {
   localStorage.setItem(
     STORAGE_KEY,
@@ -158,6 +170,18 @@ test("isolates each hosted evaluation case without changing normal storage", () 
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ attentionMinutes: 42 }));
   expect(loadWorkshop(evalKey).attentionMinutes).toBe(7);
   expect(loadWorkshop().attentionMinutes).toBe(42);
+});
+
+test("persistWorkshop reports a failed save instead of claiming continuity", () => {
+  const originalSetItem = localStorage.setItem;
+  localStorage.setItem = () => {
+    throw new Error("quota exceeded");
+  };
+
+  expect(persistWorkshop(initialState)).toBe(false);
+
+  localStorage.setItem = originalSetItem;
+  expect(persistWorkshop(initialState)).toBe(true);
 });
 
 test("adoptWorkshopPlan replaces static gates and records model proof", () => {

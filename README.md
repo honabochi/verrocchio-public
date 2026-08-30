@@ -154,7 +154,7 @@ handoff. The packet can be aimed at:
 
 - `LA PRIMA MANO` — primary implementation agent;
 - `VASARI` — adversarial review, suited to Claude Fable or another critical model;
-- `IL COLORISTA` — bounded research and visual synthesis, suited to Gemini or another multimodal model.
+- `周辺探索・視覚説明 / IL COLORISTA` — Owner、Codex、Claudeの共通前提を疑い、探索軸をずらして盲点候補を持ち帰る、Agy、Gemini、その他の調査・視覚モデル向けの役割。
 
 Changing the actor changes its duty and stop rule, not the commission. Every
 active stroke must return what changed, verification, evidence, and remaining
@@ -188,7 +188,7 @@ it is evidence about the engine, not a permanent contest configuration.
 
 - CAPOBOTTEGA owns structured planning and reversible/irreversible classification.
 - Claude Fable can act as VASARI: attack the thesis, rules interpretation, and likely judge objections.
-- Gemini can act as IL COLORISTA: inspect visual/demo quality, alternatives, and multimodal evidence.
+- Agy or Gemini can act as IL COLORISTA: search beyond the current team's vocabulary, inspect visual/demo quality and adjacent fields, and return at most three source-labelled blindspot candidates. It must distinguish evidence from hypothesis and cannot claim that it has found every unknown.
 - Human or other model reviews use the same `reviewer`, `role`, `verdict`,
   `finding`, `risks`, `recommended next stroke`, and `evidence` contract.
 - Reviews are advisory. They never close MANCA or authorize CONSEGNA without

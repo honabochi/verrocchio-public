@@ -560,7 +560,7 @@ function Sidebar({ active, onSelect }) {
   );
 }
 
-function AttentionRail({ state }) {
+function AttentionRail({ persistenceStatus, state }) {
   const percent = Math.min(
     100,
     Math.round((state.attentionMinutes / state.attentionCeiling) * 100),
@@ -597,9 +597,21 @@ function AttentionRail({ state }) {
         <SignatureIcon />
         <p>取り消せない作業は、人間が署名するまでここで止まる。</p>
       </section>
-      <div className="autosave">
+      <div
+        className={`autosave is-${persistenceStatus}`}
+        role={persistenceStatus === "failed" ? "alert" : undefined}
+      >
         <span className="autosave-mark" />
-        ローカルへ自動保存
+        <span>
+          <strong>
+            {persistenceStatus === "failed"
+              ? "保存できていません"
+              : "ローカルへ保存済み"}
+          </strong>
+          {persistenceStatus === "failed" && (
+            <small>証拠台帳からJSONを書き出してください</small>
+          )}
+        </span>
       </div>
     </aside>
   );
@@ -1576,6 +1588,7 @@ export default function App() {
     stateRef.current = loaded;
     return loaded;
   });
+  const [persistenceStatus, setPersistenceStatus] = useState("saved");
   const setState = useCallback((update) => {
     const current = stateRef.current;
     const proposed = typeof update === "function" ? update(current) : update;
@@ -1593,7 +1606,9 @@ export default function App() {
   const [capobottegaOpen, setCapobottegaOpen] = useState(false);
   const [resultStroke, setResultStroke] = useState(null);
 
-  useEffect(() => persistWorkshop(state), [state]);
+  useEffect(() => {
+    setPersistenceStatus(persistWorkshop(state) ? "saved" : "failed");
+  }, [state]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -1888,7 +1903,7 @@ export default function App() {
           {state.activeView === "evidence" && <EvidenceView state={state} />}
         </div>
       </section>
-      <AttentionRail state={state} />
+      <AttentionRail persistenceStatus={persistenceStatus} state={state} />
       <EvidenceDialog
         gate={evidenceGate}
         key={evidenceGate?.id || "evidence-closed"}

@@ -16,6 +16,7 @@ import {
   summarizeSubmissionChecks,
   validatePublicUrlKinds,
   verifyBuildArtifactCopies,
+  worktreeStatusUnchanged,
   youtubeVideoId,
 } from "./lib/submission-readiness.mjs";
 
@@ -138,6 +139,7 @@ describe("submission readiness", () => {
     )).toEqual(expect.arrayContaining([
       "evidenceRefs.cleanJudgeSmoke is missing",
       "ownerAttestations.registered is missing",
+      "ownerAttestations.englishSubmissionMaterialsOrTranslationsVerified is missing",
     ]));
     expect(inspectRequiredManifestKeys(
       '{"evidenceRefs":{"cleanJudgeSmoke":"a","cleanJudgeSmoke":"b","demoRecording":"c"},"ownerAttestations":{}}',
@@ -213,5 +215,13 @@ describe("submission readiness", () => {
     expect(isAuthenticationPath("/login")).toBe(true);
     expect(isAuthenticationPath("/oauth/authorize")).toBe(true);
     expect(isAuthenticationPath("/projects/login-report")).toBe(false);
+  });
+
+  test("distinguishes pre-existing worktree changes from test or build mutations", () => {
+    const before = { status: 0, stdout: " M src/App.jsx\n" };
+    expect(worktreeStatusUnchanged(before, { status: 0, stdout: " M src/App.jsx\n" }))
+      .toBe(true);
+    expect(worktreeStatusUnchanged(before, { status: 0, stdout: " M src/App.jsx\n?? dist/debug.txt\n" }))
+      .toBe(false);
   });
 });

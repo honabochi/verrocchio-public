@@ -155,6 +155,23 @@ describe("VERROCCHIO core path", () => {
     expect(document.documentElement).toHaveAttribute("data-theme", "light");
   });
 
+  test("warns when the interruption recovery state could not be saved", async () => {
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = () => {
+      throw new Error("storage unavailable");
+    };
+
+    try {
+      render(<App />);
+      expect(await screen.findByRole("alert")).toHaveTextContent("保存できていません");
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "証拠台帳からJSONを書き出してください",
+      );
+    } finally {
+      localStorage.setItem = originalSetItem;
+    }
+  });
+
   test("loads the solo-builder WebMCP mission profile", async () => {
     const user = userEvent.setup();
     render(<App />);

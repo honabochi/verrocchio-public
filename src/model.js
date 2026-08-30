@@ -280,9 +280,11 @@ export function loadWorkshop(storageKey = workshopStorageKey()) {
 
 export function persistWorkshop(state, storageKey = workshopStorageKey()) {
   try {
-    localStorage.setItem(storageKey, JSON.stringify(state));
+    const serialized = JSON.stringify(state);
+    localStorage.setItem(storageKey, serialized);
+    return localStorage.getItem(storageKey) === serialized;
   } catch {
-    // The workshop remains usable when storage is unavailable or full.
+    return false;
   }
 }
 
@@ -356,10 +358,27 @@ const packetRoles = {
     stop: "プロダクトの目的を書き換えず、自分の指摘を自分で承認しない。",
   },
   colorista: {
-    label: "IL COLORISTA",
-    model: "Gemini、Claude Fable、その他の調査・視覚モデル",
-    duty: "範囲を限定して資料を集め、具体的なビジュアルまたは調査成果を返す。",
-    stop: "プロダクト判断を行わず、依頼範囲を広げない。",
+    label: "周辺探索・視覚説明",
+    model: "IL COLORISTA · Agy / Gemini など",
+    duty:
+      "既知の問いに答えるだけでなく、Owner・Codex・Claudeが共有している前提を疑う。探索軸をずらし、最新・周辺・隣接領域から最大3件の盲点候補を、説明図の候補とともに返す。",
+    lenses: [
+      "中断後に消える暗黙知と再開摩擦",
+      "予備知識ゼロの利用者・審査員が最初の30秒で遭遇する摩擦",
+      "環境・権限・依存関係が本番直前に壊れる経路",
+      "機能を捨てても価値を保てる負のスコープ",
+      "Owner・Codex・Claudeが当然視している共通前提",
+    ],
+    stop:
+      "未知を発見したと断定しない。出典のない最新情報は未検証仮説として分離し、最大3件または20分で止まる。非公開Notionの原文、外部書込み、プロダクト判断、無限調査は行わない。",
+    returnContract: [
+      "盲点候補と、三者が見落としていた可能性",
+      "探索経路と、意図的にずらした軸",
+      "根拠URL・日付・一次／二次情報の区別。根拠がなければ未検証と明記",
+      "3分トリアージ: A 今直す / B 捨てる / C 後で確かめる",
+      "説明画像・図解にすると理解が軽くなる箇所。なければ不要と明記",
+      "確度、未探索の範囲、次に確かめる最小の一手",
+    ],
   },
 };
 
@@ -384,7 +403,7 @@ export function buildWorkPacket(state, roleId = state.packetRole) {
   const brief =
     decision?.nextStroke || activeStroke?.title || state.giornata.title;
 
-  return [
+  const packet = [
     `# CARTONE PACKET · ${role.label}`,
     "",
     `モデル役割: ${role.model}`,
@@ -402,14 +421,29 @@ export function buildWorkPacket(state, roleId = state.packetRole) {
     "",
     "## 停止条件",
     role.stop,
+  ];
+
+  if (role.lenses?.length) {
+    packet.push(
+      "",
+      "## 探索レンズ",
+      ...role.lenses.map((lens) => `- ${lens}`),
+    );
+  }
+
+  packet.push(
     "",
     "## 返却契約",
-    "- 何を変更したか",
-    "- 実施した検証",
-    "- 証拠のパスまたはURL",
-    "- 残るリスク",
-    "- 次にFIRMAが必要か",
-  ].join("\n");
+    ...(role.returnContract || [
+      "何を変更したか",
+      "実施した検証",
+      "証拠のパスまたはURL",
+      "残るリスク",
+      "次にFIRMAが必要か",
+    ]).map((item) => `- ${item}`),
+  );
+
+  return packet.join("\n");
 }
 
 export function adoptWorkshopPlan(state, plan) {

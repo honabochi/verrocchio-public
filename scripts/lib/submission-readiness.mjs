@@ -19,6 +19,7 @@ export const REQUIRED_DRAFT_HEADINGS = [
   "## Key features",
   "## Implementation",
   "## Testing instructions for judges",
+  "## Language and judge accessibility",
   "## Suggested screenshots",
   "## 2:40 demo video outline",
   "## Known limitations",
@@ -36,6 +37,7 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
   "secretsReviewedOffScreen",
   "cleanCloneCiTestBuildPassed",
   "videoUnderThreeMinutesWithAudibleEnglishNarration",
+  "englishSubmissionMaterialsOrTranslationsVerified",
   "videoAssetsAndRightsConfirmed",
   "numericClaimsVerifiedOrRemoved",
   "frozenRevisionMatchesAllPublicArtifacts",
@@ -247,6 +249,12 @@ export function isAnnotatedTagAtHead({ exists, type, tagCommit, head }) {
 
 export function isAuthenticationPath(pathname) {
   return /\/(?:login|sign-?in|auth|oauth|consent)(?:\/|$)/i.test(String(pathname || ""));
+}
+
+export function worktreeStatusUnchanged(before, after) {
+  return before?.status === 0 &&
+    after?.status === 0 &&
+    String(before.stdout || "") === String(after.stdout || "");
 }
 
 export function arePostCandidateChangesMetadataOnly(files = []) {

@@ -21,6 +21,7 @@ import {
   summarizeSubmissionChecks,
   validatePublicUrlKinds,
   verifyBuildArtifactCopies,
+  worktreeStatusUnchanged,
 } from "./lib/submission-readiness.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -366,11 +367,14 @@ add(
 );
 
 const postBuildDirty = git("status", "--porcelain=v1");
+const buildKeptWorktreeStable = worktreeStatusUnchanged(dirty, postBuildDirty);
 add(
   "post-build-clean-worktree",
-  postBuildDirty.status === 0 && !postBuildDirty.stdout.trim() ? "PASS" : "FAIL",
-  postBuildDirty.status === 0 && !postBuildDirty.stdout.trim()
-    ? "Tests and production build did not modify tracked or untracked files"
+  buildKeptWorktreeStable ? "PASS" : "FAIL",
+  buildKeptWorktreeStable
+    ? dirty.stdout.trim()
+      ? "Tests and production build added no changes; pre-existing worktree changes remain and are reported separately"
+      : "Tests and production build did not modify tracked or untracked files"
     : "Tests or production build changed the worktree",
   { priority: 27, action: "AIがtest/buildによる生成差分を確認し、sourceを変更しない再現可能な手順に直す。", source: "git" },
 );
