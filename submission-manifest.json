@@ -4,9 +4,9 @@
   "eventSlug": "webmcp",
   "eventUrl": "https://webmcp.devpost.com/",
   "deadlineUtc": "2026-09-03T20:00:00Z",
-  "challengeBaseline": "69c5bda",
-  "challengeStart": "b44898e",
-  "productCandidate": "2169ecc",
+  "challengeBaseline": "3b5e0ab",
+  "challengeStart": "0ad6b17",
+  "productCandidate": "2ee0a68",
   "submissionTag": "",
   "expectedTestCount": 102,
   "entryContext": {
