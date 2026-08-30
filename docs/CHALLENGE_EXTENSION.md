@@ -24,18 +24,18 @@ falsifiable verification path, not the pre-existing workshop shell.
 
 | Boundary | Commit | Date | Meaning |
 | --- | --- | --- | --- |
-| Pre-existing baseline | `113edee` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
-| First challenge commit | `346f591` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `9d79f29` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
+| Pre-existing baseline | `69c5bda` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
+| First challenge commit | `b44898e` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
+| Audited product candidate | `2169ecc` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-346f591^..9d79f29
+b44898e^..2169ecc
 ```
 
-This range contains 47 commits. Against the July baseline, it changes 57 files
-with 9,803 insertions and 1,098 deletions. The metadata-only commits after the
+This range contains 47 commits. Against the July baseline, it changes 56 files
+with 9,801 insertions and 1,096 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. That tag is not yet assigned in this draft.
 
@@ -43,8 +43,8 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 113edee..9d79f29
-git log --format='%h %aI %s' 346f591^..9d79f29
+git diff --stat 69c5bda..2169ecc
+git log --format='%h %aI %s' b44898e^..2169ecc
 ```
 
 For the final public comparison, replace `6bb60b9` in both commands with the
@@ -56,7 +56,7 @@ pre-existing work.
 
 ## Truthful before and after
 
-| Area | At baseline `113edee` | Added during the Challenge range |
+| Area | At baseline `69c5bda` | Added during the Challenge range |
 | --- | --- | --- |
 | Product core | A local-first hackathon workshop with MISSION intake, MANCA proof gates, CARTONE work packets, FERMO/FIRMA controls, an evidence ledger, CENACOLO review, and replanning | The same core is exposed as an agent-usable web application through native WebMCP tools |
 | Planning | Server-side planning and CAPOBOTTEGA routes required an application-owned OpenAI API key | The active path is host-driven and keyless: ChatGPT or Codex reasons in the host and submits a validated, unsigned plan through WebMCP |
@@ -110,7 +110,7 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `9d79f29`
+## Verification status at `2169ecc`
 
 Confirmed in the repository:
 

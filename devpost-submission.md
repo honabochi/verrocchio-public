@@ -146,16 +146,16 @@ remained separate acceptance signals.
 
 ## New work added during the submission period
 
-VERROCCHIO is an `Existing` project. The July 19 baseline `113edee` already
+VERROCCHIO is an `Existing` project. The July 19 baseline `69c5bda` already
 contained the local-first workshop, MANCA proof gates, work packets, and human
 FIRMA/FERMO controls, but it did not register WebMCP tools.
 
-- **Pre-existing baseline:** `113edee` (July 19, 2026) — TODO public link.
-- **Challenge start:** `346f591` (August 27, 2026) — TODO public link.
+- **Pre-existing baseline:** `69c5bda` (July 19, 2026) — TODO public link.
+- **Challenge start:** `b44898e` (August 27, 2026) — TODO public link.
 - **Submission revision:** TODO — public annotated tag and commit link.
-- **Public comparison:** TODO — `113edee...<final-submission-tag>`.
+- **Public comparison:** TODO — `69c5bda...<final-submission-tag>`.
 
-Beginning with `346f591` on August 27, the eligible extension added four native,
+Beginning with `b44898e` on August 27, the eligible extension added four native,
 state-aware WebMCP tools; host-driven keyless planning; phase-dependent tool
 availability; versioned and idempotent mutations; unsigned plans; and
 `CLAIMED` results that require human verification before MANCA can decrease. It
