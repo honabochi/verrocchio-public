@@ -269,6 +269,9 @@ export function arePostCandidateChangesMetadataOnly(files = []) {
     "docs/DEMO_SCRIPT_EN.md",
     "docs/OWNER_RELEASE_GATE.md",
     "docs/RELEASE_ROUNDTABLE.md",
+    "scripts/lib/submission-readiness.mjs",
+    "scripts/submission-readiness.test.js",
+    "scripts/verify-submission-readiness.mjs",
   ]);
   return files.every((file) => allowed.has(file));
 }

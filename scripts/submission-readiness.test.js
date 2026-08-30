@@ -180,6 +180,9 @@ describe("submission readiness", () => {
       "devpost-submission.md",
       "docs/RELEASE_ROUNDTABLE.md",
       "submission-manifest.json",
+      "scripts/lib/submission-readiness.mjs",
+      "scripts/submission-readiness.test.js",
+      "scripts/verify-submission-readiness.mjs",
     ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly(["src/App.jsx"])).toBe(false);
     expect(arePostCandidateChangesMetadataOnly(["package.json"])).toBe(false);
