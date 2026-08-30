@@ -11,19 +11,23 @@ export const REQUIRED_OFFICIAL_FIELDS = [
 ];
 
 export const REQUIRED_DRAFT_HEADINGS = [
-  "## One-line summary",
-  "## The problem",
-  "## The solution",
-  "## Why this matters",
-  "## How Codex and other AI assistance were used",
-  "## Key features",
-  "## Implementation",
-  "## Testing instructions for judges",
+  "## One-line Summary",
+  "## Problem",
+  "## Solution",
+  "## Why This Matters",
+  "## How We Used AI",
+  "## How We Used Codex",
+  "## Key Features",
+  "## Architecture",
+  "## Testing Instructions",
+  "## Public Demo Link",
+  "## Public Repository Link",
   "## Language and judge accessibility",
-  "## Suggested screenshots",
-  "## 2:40 demo video outline",
-  "## Known limitations",
-  "## Official Devpost form field checklist",
+  "## Demo Video",
+  "## Screenshot Shot List",
+  "## Submission Readiness Notes",
+  "## Known Limitations",
+  "## TODO Official Form Fields",
 ];
 
 export const REQUIRED_EVIDENCE_REFS = [

@@ -135,7 +135,7 @@ add(
     : fieldGaps.length
       ? `Owner confirmation missing: ${fieldGaps.join(", ")}`
     : "All official required and entry-conditional field booleans confirmed",
-  { priority: 12, actor: "OWNER", ownerOnly: true, action: "OwnerがDevpostの必須欄を読み、個人回答と規約確認を行う。AIは推測・代行しない。", source: "Devpost / submission-manifest.json" },
+  { priority: 12, actor: "OWNER", ownerOnly: true, action: "Ownerが未確定のDevpost必須欄を本人入力し、公開後にURLと実測回答を照合する。AIは居住国や自己評価を推測しない。", source: "Devpost / submission-manifest.json" },
 );
 
 const manifestKeyIssues = inspectRequiredManifestKeys(rawManifest, manifest);

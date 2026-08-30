@@ -28,8 +28,8 @@ describe("submission readiness", () => {
   });
 
   test("requires every draft heading", () => {
-    expect(missingDraftHeadings("## One-line summary\n## The problem")).toContain(
-      "## The solution",
+    expect(missingDraftHeadings("## One-line Summary\n## Problem")).toContain(
+      "## Solution",
     );
   });
 
@@ -94,8 +94,8 @@ describe("submission readiness", () => {
   });
 
   test("rejects hollow or duplicate required sections", () => {
-    expect(inspectDraftSections("## One-line summary\n\n## One-line summary\ntext"))
-      .toContain("## One-line summary appears 2 times");
+    expect(inspectDraftSections("## One-line Summary\n\n## One-line Summary\ntext"))
+      .toContain("## One-line Summary appears 2 times");
   });
 
   test("rejects placeholder variants", () => {

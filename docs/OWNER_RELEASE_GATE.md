@@ -20,12 +20,16 @@ browser and are never copied into this repository or an AI transcript.
 
 ## Current exact next action
 
-Only gate 1 is actionable now. Before any registration call, Mission Control
-must show the Owner an exact summary of the selected form answers and receive an
-explicit `登録して`. A general `GO` does not authorize registration, agreement,
-publication, tag creation, deployment, video upload, or final submission.
+Gate 1 completed through the authenticated Devpost flow on 2026-08-30. Devpost
+returned a registration receipt after the Owner reviewed the exact answers and
+explicitly authorized `登録して`; only the completion boolean is retained here.
 
-## Registration readback template — answers stay off-repository
+The exact next action is gate 2: the Owner reviews tracked and public-bound
+files for secrets and private data off-screen, without showing values, paths, or
+screenshots to AI. A general `GO` does not authorize publication, tag creation,
+deployment, video upload, or final submission.
+
+## Registration readback template — completed; answers stay off-repository
 
 These public option labels were read from the official registration flow on
 2026-08-30 JST. Re-read the live form immediately before registration because
@@ -47,7 +51,7 @@ eligibility response, or agreement state into this repository.
 7. **Agreements** — Owner opens and accepts the official Challenge rules and
    Devpost terms only after reading them.
 
-Before execution, read back all seven items in one compact summary without
-persisting the answers. Registration is authorized only by the exact phrase
-`登録して` after that readback. Record only the resulting boolean registration
-status, never the personal answers.
+This sequence was completed through the live form. The selected personal
+answers remain off-repository. If registration must ever be repeated, re-read
+the live form, show all seven items in one compact summary, require the exact
+phrase `登録して`, and record only the resulting boolean status.

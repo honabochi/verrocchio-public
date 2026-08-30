@@ -4,7 +4,7 @@
 > `TODO`, verify the frozen public artifacts, and read the actual form back to
 > the entrant before publication or submission.
 
-## One-line summary
+## One-line Summary
 
 VERROCCHIO helps time-constrained solo builders preserve the next action,
 missing proof, and human checkpoints across interrupted projects. WebMCP
@@ -17,23 +17,26 @@ Chrome WebMCP smoke, while the
 final tagged clean-clone proof, public judge access, and fresh hosted evaluation
 remain incomplete.
 
-## Project URLs
+## Public Demo Link
 
-- **Working live project:** TODO — insert the unauthenticated, judge-accessible
-  URL only after its revision marker and WebMCP path are verified.
-- **Public source repository:** TODO — insert the repository URL only after the
-  tagged source, setup instructions, assets, and detected MIT license are public.
-- **Public YouTube demo:** TODO — insert one public video under three minutes
-  with audible English narration.
+TODO — insert the judge-accessible URL only after its revision marker and
+WebMCP path are verified. The current hosted URL still requires authentication
+and is not suitable as the final judge link.
 
-## The problem
+## Public Repository Link
+
+TODO — insert the repository URL only after the tagged source, setup
+instructions, assets, and detected MIT license are public and readable from an
+unauthenticated session.
+
+## Problem
 
 A solo builder working around a full-time job must carry coordination that a
 team would normally distribute: rules, next actions, decision history,
 interruption recovery, evidence review, and stops before irreversible actions.
 An AI answer may sound complete while required proof is still missing.
 
-## The solution
+## Solution
 
 VERROCCHIO turns a mission into a bounded workshop. `MANCA` counts required
 proof that remains unverified. The host may inspect state, call `FERMO`, propose
@@ -46,7 +49,7 @@ MANCA → unsigned plan → human FIRMA → bounded work → CLAIMED
       → human VERIFIED or CHANGES_REQUESTED
 ```
 
-## Why this matters
+## Why This Matters
 
 The product keeps MANCA, active work, receipts, and the next action together so
 an interrupted participant can return to an explicit state instead of trusting
@@ -97,7 +100,7 @@ what it checked, an evidence reference, and remaining risk. The human retains
 purpose, taste, scope vetoes, approval, evidence judgment, recovery, sensitive
 disclosure, publication, and final submission.
 
-## Key features
+## Key Features
 
 - `MANCA`, a proof-based view of what is still missing;
 - strict unsigned plans with human FIRMA before adoption;
@@ -106,7 +109,7 @@ disclosure, publication, and final submission.
 - state-version and idempotency checks for agent mutations;
 - deterministic evaluation receipts for adversarial and WebMCP-versus-DOM cases.
 
-## Implementation
+## Architecture
 
 VERROCCHIO is a React and Vite application with browser-local persistence. The
 page registers tools through `document.modelContext.registerTool`; availability
@@ -125,15 +128,21 @@ ChatGPT / Codex host
   → Human UI: FIRMA | verify/reject | resume | publish | submit
 ```
 
-## How Codex and other AI assistance were used
+## How We Used AI
+
+The ChatGPT or Codex host supplies reasoning without an application-owned API
+key, while WebMCP carries bounded inspections and state transitions into the
+workshop. Claude provided an independent architecture and rule-fit critique.
+Gemini 3.1 Pro reviewed product experience and the demo's first sixty seconds.
+Their outputs were treated as review candidates, not as approval or proof.
+
+## How We Used Codex
 
 Codex helped design schemas and state transitions, implement the React and
-WebMCP paths, add tests, and investigate hosted evaluation failures. Claude
-independently reviewed architecture and rule fit. Gemini 3.1 Pro independently
-reviewed product experience and the demo's first sixty seconds. Both returned
-direction GO and current submission NO-GO for different stated reasons. AI
-output remained a candidate; source inspection, tests, browser behavior, and
-entrant approval remained separate evidence.
+WebMCP paths, add tests, investigate hosted evaluation failures, and harden the
+release checks. Codex also produced bounded test and build evidence, while
+source inspection, browser behavior, independent review, and entrant approval
+remained separate acceptance signals.
 
 ## New work added during the submission period
 
@@ -154,7 +163,7 @@ also added bounded evaluation receipts and a local Chrome WebMCP smoke path.
 Full statistics, limitations, and dated evidence are in
 `docs/CHALLENGE_EXTENSION.md`.
 
-## Testing instructions for judges
+## Testing Instructions
 
 > TODO — rehearse these instructions against the frozen public build.
 
@@ -177,8 +186,9 @@ Devpost—never in the repository.
 
 - Local candidate evidence: **99 passing tests** and a real Chrome WebMCP smoke
   at `6bb60b9`.
-- Clean-clone dependency install, tests, and production build: **TODO** for the
-  final tagged revision; prior-candidate evidence is not carried forward.
+- Untagged release-packet HEAD `9fcd6bc` passed a clean-clone dependency
+  install, all 99 tests, and a production build on 2026-08-30. This does not
+  replace the required repeat on the final annotated submission tag.
 - Judge-accessible unauthenticated live smoke: **TODO**.
 - Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
 - WebMCP-versus-DOM comparison: **TODO**; publish no improvement percentage.
@@ -196,7 +206,7 @@ understand is translated by the visible interface, these testing instructions,
 or the demo narration/captions. Decorative or nonessential Japanese text may
 remain only when it does not block the documented judge path.
 
-## Suggested screenshots
+## Screenshot Shot List
 
 1. Real hosted `inspect_workshop` cold open with MANCA and NEXT readable.
 2. Unsigned plan stopped at `FIRMA REQUIRED`.
@@ -206,7 +216,12 @@ remain only when it does not block the documented judge path.
 TODO — capture only from the final public revision and remove personal browser
 data, credentials, unrelated tabs, and unsupported pass claims.
 
-## 2:40 demo video outline
+## Demo Video
+
+Public YouTube URL: TODO — insert one public video under three minutes with
+audible English narration.
+
+### 2:40 outline
 
 - **0:00–0:15 — Real inspection:** identify the interrupted solo builder, send
   the real request, show `inspect_workshop`, MANCA, NEXT, and the human-only
@@ -227,7 +242,7 @@ The public video must be under three minutes, include audible English narration,
 show the functioning product in the first 10–15 seconds, and use authorized
 assets only. The detailed capture script is `docs/DEMO_SCRIPT_EN.md`.
 
-## Known limitations
+## Known Limitations
 
 - Persistence is browser-local rather than synchronized across devices.
 - Human-only DOM controls are a workflow boundary, not actor authentication.
@@ -235,45 +250,48 @@ assets only. The detailed capture script is `docs/DEMO_SCRIPT_EN.md`.
 - Automated rule provenance, the fresh hosted evaluation, and broad usability
   evidence remain incomplete.
 
-## Readiness notes
+## Submission Readiness Notes
 
-Local tests are not submission readiness. The entrant must still register,
-review secrets off-screen, freeze one revision, publish the same repository and
-live build, verify judge access, record the video, read back every form field,
-and manually submit. The exact sequence is in `docs/OWNER_RELEASE_GATE.md`.
+Local tests are not submission readiness. Registration is complete; the entrant
+must still review secrets off-screen, freeze one revision, publish the same
+repository and live build, verify judge access, record the video, read back
+every form field, and manually submit. The exact sequence is in
+`docs/OWNER_RELEASE_GATE.md`.
 
-## Registration gate — owner action required
+## Registration Status
 
-The latest official readback reports the account is not yet registered. The
-Owner must choose a team state; answer work category, Codex frequency, prior
-WebMCP familiarity, and in-app-browser usage; confirm eligibility; and accept
-the [official rules](https://webmcp.devpost.com/rules) and
-[Devpost terms](https://info.devpost.com/terms). These personal answers must not
-be inferred or copied into this repository. The optional source survey may be
-skipped. Registration requires an exact readback and an explicit `登録して`.
+Registration was confirmed live through the authenticated Devpost flow on
+2026-08-30. The entrant explicitly agreed to the official rules, Devpost terms,
+and eligibility statement before registration. Personal registration answers
+remain off-repository.
 
-## Official Devpost form field checklist
+## TODO Official Form Fields
 
 Labels were read from the official form on 2026-08-30 JST and must be re-read
 before submission. Identity and self-assessment answers remain Owner-only.
 
-- [ ] **28249 — Submitter Type** (required): Owner selects the actual status.
+- [ ] **28249 — Submitter Type** (required): Owner selects the actual status;
+  proposed value is `Individual`, pending readback.
 - [ ] **28250 — Country of residence** (required): Owner enters it in Devpost.
 - [ ] **28251 — Organization name** (optional): blank unless applicable.
 - [x] **28252 — App Status** (required draft answer): `Existing`.
 - [ ] **28253 — Submission-period updates** (required for this Existing entry):
-  summarize the eligible extension and link its public dated comparison.
+  use the dated summary in **New work added during the submission period** and
+  add the public comparison link after publication.
 - [ ] **28254 — Judge-accessible live URL** (required): TODO verified URL.
 - [ ] **28255 — Testing instructions / credentials** (optional): use the tested
   path above; keep any judge-only credentials only in the official form.
 - [ ] **28256 — Public code repository URL** (required): TODO tagged public URL
   with detected MIT license.
-- [ ] **28257 — Agents or clients used to test WebMCP** (required): TODO list
-  only clients actually verified on the frozen revision.
-- [ ] **28258 — AI tools leveraged** (required): retained evidence currently
-  supports Codex, Claude, and Gemini; Owner reads back the final field.
-- [ ] **28259 — Learning level** (required): Owner selects the actual option.
-- [ ] **28260 — Career-reusable AI value** (required): Owner selects `Yes` or `No`.
+- [ ] **28257 — Agents or clients used to test WebMCP** (required draft):
+  `Google Chrome 151 with WebMCP testing enabled`; add ChatGPT's in-app browser
+  only after the final hosted judge-path verification.
+- [ ] **28258 — AI tools leveraged** (required draft): `Codex, Claude, and
+  Gemini`; Owner reads back the final field against retained review evidence.
+- [ ] **28259 — Learning level** (required): Owner selects `None`, `Moderate`,
+  or `Significant`.
+- [ ] **28260 — Career-reusable AI value** (required): Owner selects `Yes` or
+  `No`.
 
 ## Final pre-submission gate
 

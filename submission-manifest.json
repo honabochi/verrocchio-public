@@ -35,8 +35,8 @@
     "28260": false
   },
   "ownerAttestations": {
-    "registered": false,
-    "rulesAndTermsAccepted": false,
+    "registered": true,
+    "rulesAndTermsAccepted": true,
     "secretsReviewedOffScreen": false,
     "cleanCloneCiTestBuildPassed": false,
     "videoUnderThreeMinutesWithAudibleEnglishNarration": false,
