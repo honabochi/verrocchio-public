@@ -11,7 +11,8 @@ No Owner action is required while away from the computer.
   production build.
 - Registration is complete. Personal registration answers remain
   off-repository.
-- The English demo script and timed subtitle file are ready.
+- The English demo script, timed subtitle file, and YouTube upload packet are
+  ready.
 
 ## Intentionally incomplete
 
@@ -36,3 +37,8 @@ Codex then verifies anonymous access and the deployed revision, runs the hosted
 evaluation and clean judge smoke, and hands back the recording-ready build.
 After the public video URL is known, the release packet can be frozen, tagged,
 read back, and submitted by the Owner.
+
+For the account-safe upload sequence, title, description, and settings, use
+[`YOUTUBE_UPLOAD_PACKET.md`](YOUTUBE_UPLOAD_PACKET.md). The existing Google
+Account may be reused with a separate public YouTube channel identity; account
+creation, channel selection, upload, and publication remain Owner-only.
