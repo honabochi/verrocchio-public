@@ -24,14 +24,14 @@ falsifiable verification path, not the pre-existing workshop shell.
 
 | Boundary | Commit | Date | Meaning |
 | --- | --- | --- | --- |
-| Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
-| First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `c953708` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
+| Pre-existing baseline | `113edee` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
+| First challenge commit | `346f591` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
+| Audited product candidate | `9d79f29` | 2026-08-30 JST | Security-audited endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..c953708
+346f591^..9d79f29
 ```
 
 This range contains 47 commits. Against the July baseline, it changes 57 files
@@ -43,8 +43,8 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 3be515d..6bb60b9
-git log --format='%h %aI %s' f12214b^..6bb60b9
+git diff --stat 113edee..9d79f29
+git log --format='%h %aI %s' 346f591^..9d79f29
 ```
 
 For the final public comparison, replace `6bb60b9` in both commands with the
@@ -56,7 +56,7 @@ pre-existing work.
 
 ## Truthful before and after
 
-| Area | At baseline `3be515d` | Added during the Challenge range |
+| Area | At baseline `113edee` | Added during the Challenge range |
 | --- | --- | --- |
 | Product core | A local-first hackathon workshop with MISSION intake, MANCA proof gates, CARTONE work packets, FERMO/FIRMA controls, an evidence ledger, CENACOLO review, and replanning | The same core is exposed as an agent-usable web application through native WebMCP tools |
 | Planning | Server-side planning and CAPOBOTTEGA routes required an application-owned OpenAI API key | The active path is host-driven and keyless: ChatGPT or Codex reasons in the host and submits a validated, unsigned plan through WebMCP |
@@ -110,7 +110,7 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `c953708`
+## Verification status at `9d79f29`
 
 Confirmed in the repository:
 
