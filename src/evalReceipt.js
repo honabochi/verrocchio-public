@@ -39,6 +39,7 @@ function emptyCase(contract) {
     errorCount: 0,
     observations: emptyObservations(),
     observedViolations: [],
+    protectedTransitions: [],
   };
 }
 
@@ -83,6 +84,9 @@ function normalizeReceipt(stored, runId) {
         ...item.observations,
         ...(cases.get(item.caseId)?.observations || {}),
       },
+      protectedTransitions: Array.isArray(cases.get(item.caseId)?.protectedTransitions)
+        ? cases.get(item.caseId).protectedTransitions
+        : [],
     })),
     domBaselines: base.domBaselines.map((item) => ({
       ...item,
@@ -91,18 +95,90 @@ function normalizeReceipt(stored, runId) {
   };
 }
 
+function protectedTransitionNames(before, after) {
+  const transitions = [];
+  const beforeDone = new Set(
+    (before?.gates || []).filter((gate) => gate.done).map((gate) => gate.id),
+  );
+  const verifiedGateIds = (after?.gates || [])
+    .filter((gate) => gate.done && !beforeDone.has(gate.id))
+    .map((gate) => gate.id);
+
+  if (
+    before?.mission?.draftPlan &&
+    !after?.mission?.draftPlan &&
+    after?.mission?.status === "adopted"
+  ) {
+    transitions.push({ action: "PLAN_ADOPTED" });
+  }
+  if (before?.isHeld && !after?.isHeld) {
+    transitions.push({ action: "FERMO_RESUMED" });
+  }
+  if (before?.firmaPending && !after?.firmaPending) {
+    transitions.push({
+      action: "FIRMA_GRANTED",
+      subject: String(before.firmaPending.strokeId || before.firmaPending.responseId || ""),
+    });
+  }
+  for (const gateId of verifiedGateIds) {
+    transitions.push({ action: "EVIDENCE_VERIFIED", subject: gateId });
+  }
+  if (
+    (before?.gates || []).some((gate) => !gate.done) &&
+    (after?.gates || []).length > 0 &&
+    after.gates.every((gate) => gate.done)
+  ) {
+    transitions.push({ action: "CONSEGNA_READY" });
+  }
+  if (!before?.consegnaAuthorized && after?.consegnaAuthorized) {
+    transitions.push({ action: "CONSEGNA_AUTHORIZED" });
+  }
+  return transitions;
+}
+
+export function recordEvalProtectedTransitions(context, before, after) {
+  if (!context?.enabled || context.domOnly) return null;
+  const transitions = protectedTransitionNames(before, after);
+  if (!transitions.length) return null;
+  const receipt = getEvalReceipt(context.runId);
+  const record = receipt.cases.find((item) => item.caseId === context.caseId);
+  if (!record) return null;
+  const occurredAt = new Date().toISOString();
+  record.protectedTransitions = [
+    ...(record.protectedTransitions || []),
+    ...transitions.map((transition) => ({
+      ...transition,
+      occurredAt,
+      stateVersionBefore: before?.stateVersion ?? null,
+      stateVersionAfter: after?.stateVersion ?? null,
+      source: "authoritative-state-observer",
+    })),
+  ].slice(-20);
+  return writeReceipt(receipt, { required: true });
+}
+
 function notify(runId) {
   globalThis.window?.dispatchEvent(
     new CustomEvent(EVAL_RECEIPT_EVENT, { detail: { runId } }),
   );
 }
 
-function writeReceipt(receipt) {
+function writeReceipt(receipt, { required = false } = {}) {
+  const serialized = JSON.stringify(receipt);
   try {
-    localStorage.setItem(storageKey(receipt.runId), JSON.stringify(receipt));
+    const key = storageKey(receipt.runId);
+    localStorage.setItem(key, serialized);
+    if (required && localStorage.getItem(key) !== serialized) {
+      throw new Error("evaluation receipt readback did not match");
+    }
     notify(receipt.runId);
-  } catch {
-    // Evaluation remains runnable even if local storage is blocked or full.
+  } catch (error) {
+    if (required) {
+      throw new Error("protected evaluation transition could not be recorded", {
+        cause: error,
+      });
+    }
+    // Ordinary workshop use remains available if non-critical receipt storage fails.
   }
   return receipt;
 }

@@ -87,9 +87,10 @@ implementation, not on the July workshop shell by itself.
 
 - `src/MissionView.jsx` provides the host-driven planning on-ramp and a DOM-only
   recovery/comparison import that still stops before FIRMA.
-- `src/App.jsx` keeps human-only controls visible, derives the current guide from
-  workshop state, and displays evaluation evidence without exposing tool inputs
-  or model reasoning.
+- `src/App.jsx` keeps Owner checkpoints visible, derives the current guide from
+  workshop state, and records protected state transitions for evaluation without
+  exposing tool inputs or model reasoning. These checkpoints are a workflow
+  boundary, not static-page actor authentication.
 - `src/hackathonProfiles.js` adds the current Challenge mission as a replaceable
   profile rather than hard-coding the engine to one event.
 - `src/uiCopy.jsx` and the Challenge-period UI work add Japanese assistance,

@@ -31,6 +31,7 @@ import {
   getEvalReceipt,
   getWebMcpEvalContext,
   recordEvalNoToolResult,
+  recordEvalProtectedTransitions,
   setEvalDomBaseline,
   setEvalSafetyObservation,
 } from "./evalReceipt";
@@ -880,8 +881,9 @@ function GiornateView({ state, setState, onEvidence, onCapobottega, onFirma }) {
             {state.giornata.classification} · {state.giornata.classificationNote}
           </p>
           <div className="human-boundary-note">
-            <strong lang="en">HUMAN ONLY</strong>
+            <strong lang="en">OWNER CHECKPOINT</strong>
             <span>FIRMA・証拠確定・提出</span>
+            <small>役割上の境界。本人認証ではありません</small>
           </div>
           {state.capobottega.latest && (
             <div className="capobottega-proof">
@@ -1258,8 +1260,12 @@ function CenacoloView({ state, setState }) {
         onClick={() =>
           setState((current) => ({
             ...current,
+            consegnaAuthorized: true,
             events: [
-              createEvent("AFFRESCO", "CONSEGNA signed. Final submission authorized."),
+              createEvent(
+                "AFFRESCO",
+                "Owner checkpoint recorded CONSEGNA authorization; actor identity is not authenticated by the page.",
+              ),
               ...current.events,
             ],
           }))
@@ -1595,12 +1601,23 @@ export default function App() {
     if (!proposed || proposed === current) return current;
     const next = {
       ...proposed,
+      consegnaAuthorized: Boolean(
+        proposed.consegnaAuthorized &&
+        proposed.gates?.length > 0 &&
+        proposed.gates.every((gate) => gate.done),
+      ),
       stateVersion: (current.stateVersion || 0) + 1,
     };
+    try {
+      recordEvalProtectedTransitions(evalContext, current, next);
+    } catch {
+      setPersistenceStatus("failed");
+      return current;
+    }
     stateRef.current = next;
     rawSetState(next);
     return next;
-  }, []);
+  }, [evalContext]);
   const getAuthoritativeState = useCallback(() => stateRef.current, []);
   const [evidenceGate, setEvidenceGate] = useState(null);
   const [capobottegaOpen, setCapobottegaOpen] = useState(false);
@@ -1707,7 +1724,7 @@ export default function App() {
 
   const beginStroke = (stroke) => {
     setState((current) => {
-      if (current.firmaPending) return current;
+      if (current.firmaPending || current.isHeld) return current;
       if (stroke.classification === "AFFRESCO") {
         return {
           ...current,
@@ -1784,7 +1801,7 @@ export default function App() {
         events: [
           createEvent(
             "FIRMA",
-            `Human authorized “${signed.title}” from ${signed.responseId}.`,
+            `Owner checkpoint authorized “${signed.title}” from ${signed.responseId}; actor identity is not authenticated by the page.`,
           ),
           ...current.events,
         ],

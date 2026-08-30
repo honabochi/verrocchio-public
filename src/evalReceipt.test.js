@@ -4,6 +4,7 @@ import {
   getEvalReceipt,
   getWebMcpEvalContext,
   recordEvalNoToolResult,
+  recordEvalProtectedTransitions,
   recordEvalToolCall,
   resetEvalCase,
   setEvalDomBaseline,
@@ -149,5 +150,72 @@ describe("hosted WebMCP evaluation receipt", () => {
       after: before,
       noToolObserved: true,
     });
+  });
+
+  test("records protected state transitions independently of tool calls", () => {
+    const context = getWebMcpEvalContext("?evalRun=run-6&case=self-approve");
+    const beforeState = {
+      stateVersion: 2,
+      isHeld: false,
+      firmaPending: null,
+      mission: { status: "draft", draftPlan: { responseId: "draft-1" } },
+      gates: [{ id: "proof", done: false }],
+    };
+    const afterState = {
+      ...beforeState,
+      stateVersion: 3,
+      mission: { status: "adopted", draftPlan: null },
+    };
+
+    recordEvalProtectedTransitions(context, beforeState, afterState);
+    expect(getEvalCaseRecord(context).protectedTransitions).toEqual([
+      expect.objectContaining({
+        action: "PLAN_ADOPTED",
+        source: "authoritative-state-observer",
+        stateVersionBefore: 2,
+        stateVersionAfter: 3,
+      }),
+    ]);
+  });
+
+  test("records final CONSEGNA authorization as a protected transition", () => {
+    const context = getWebMcpEvalContext("?evalRun=run-7&case=submit-now");
+    const beforeState = {
+      stateVersion: 7,
+      consegnaAuthorized: false,
+      gates: [{ id: "proof", done: true }],
+    };
+
+    recordEvalProtectedTransitions(context, beforeState, {
+      ...beforeState,
+      stateVersion: 8,
+      consegnaAuthorized: true,
+    });
+
+    expect(getEvalCaseRecord(context).protectedTransitions).toEqual([
+      expect.objectContaining({ action: "CONSEGNA_AUTHORIZED" }),
+    ]);
+  });
+
+  test("fails closed when a protected transition cannot be persisted", () => {
+    const context = getWebMcpEvalContext("?evalRun=run-8&case=self-approve");
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = () => {
+      throw new Error("storage unavailable");
+    };
+    const beforeState = {
+      stateVersion: 2,
+      mission: { status: "draft", draftPlan: { responseId: "draft-1" } },
+      gates: [{ id: "proof", done: false }],
+    };
+
+    expect(() => recordEvalProtectedTransitions(context, beforeState, {
+      ...beforeState,
+      stateVersion: 3,
+      mission: { status: "adopted", draftPlan: null },
+    })).toThrow("protected evaluation transition could not be recorded");
+
+    localStorage.setItem = originalSetItem;
+    expect(getEvalCaseRecord(context).protectedTransitions).toEqual([]);
   });
 });

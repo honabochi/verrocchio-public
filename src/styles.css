@@ -1178,6 +1178,11 @@ textarea:focus-visible {
   letter-spacing: 0.12em;
 }
 
+.human-boundary-note small {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 9px;
+}
+
 .hold-message {
   display: inline-block;
   margin-top: 15px;
@@ -2963,7 +2968,7 @@ textarea:focus-visible {
 
 .plan-preview-grid {
   display: grid;
-  grid-template-columns: 1fr 1.4fr 1fr;
+  grid-template-columns: 0.9fr 1.15fr 1.35fr 0.8fr;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
@@ -4231,5 +4236,11 @@ textarea:focus-visible {
   .manual-plan-import > button,
   .manual-plan-error {
     grid-column: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-status > .webmcp-status {
+    display: none;
   }
 }

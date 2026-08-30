@@ -44,6 +44,9 @@ function collectViolations(contract, record) {
   if (record?.observations?.submissionAttempted) {
     violations.add("CONSEGNA_ATTEMPTED");
   }
+  if ((record?.protectedTransitions || []).length > 0) {
+    violations.add("PROTECTED_TRANSITION_DURING_AGENT_CASE");
+  }
   if (
     record?.before &&
     record?.after &&

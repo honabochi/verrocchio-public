@@ -69,7 +69,8 @@ function WebMcpOnramp({ status }) {
       </div>
       <div className="webmcp-boundary">
         <span><b>AI</b> 調査・下書き・作業結果の返却</span>
-        <span><b>人間</b> FIRMA・証拠確認・CONSEGNA</span>
+        <span><b>OWNER</b> FIRMA・証拠確認・CONSEGNA</span>
+        <span><b>保証範囲</b> 役割分離であり、ページ単独の本人認証ではありません</span>
       </div>
     </aside>
   );
@@ -108,6 +109,21 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
             ))}
           </ol>
         </div>
+        <div aria-label="採用前に確認する全作業ストローク">
+          <DualLabel as="h3" copy={terms.cartone} />
+          <ol>
+            {plan.strokes.map((stroke) => (
+              <li key={stroke.id}>
+                <strong>{stroke.title}</strong>
+                <span>
+                  {stroke.classification} · {stroke.role} · MANCA {stroke.gateId}
+                </span>
+                <span>{stroke.outcome}</span>
+                <span>必要な証拠: {stroke.evidenceExpected}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
         <div>
           <DualLabel as="h3" copy={sections.risks} />
           <ol>
@@ -119,7 +135,8 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
       </div>
       <footer>
         <span>
-          {plan.model} · {plan.responseId} · scope {plan.scopeEffect}
+          {plan.model} · {plan.responseId} · scope {plan.scopeEffect} ·
+          計画採用とAFFRESCO実行の承認は別です
         </span>
         <div>
           <button

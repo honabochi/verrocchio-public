@@ -81,6 +81,7 @@ export const initialState = {
   attentionCeiling: 120,
   isRunning: false,
   isHeld: false,
+  consegnaAuthorized: false,
   startedAt: null,
   deadline: DEFAULT_MISSION.deadline,
   contract: {
@@ -297,6 +298,39 @@ export function createEvent(kind, message) {
   };
 }
 
+function contractSemanticFingerprint(contract) {
+  return JSON.stringify([
+    contract.objective,
+    contract.track,
+    contract.deadline,
+    contract.humanRule,
+    contract.irreversibleRule,
+  ]);
+}
+
+function gateSemanticFingerprint(gate, contractFingerprint) {
+  return JSON.stringify([
+    contractFingerprint,
+    gate.id,
+    gate.title,
+    gate.detail,
+    gate.proofRequired,
+  ]);
+}
+
+function strokeSemanticFingerprint(stroke, contractFingerprint) {
+  return JSON.stringify([
+    contractFingerprint,
+    stroke.id,
+    stroke.title,
+    stroke.outcome,
+    stroke.gateId,
+    stroke.role,
+    stroke.classification,
+    stroke.evidenceExpected,
+  ]);
+}
+
 export function remainingTime(deadline, now = new Date()) {
   const parsedDeadline = new Date(deadline).getTime();
   if (Number.isNaN(parsedDeadline)) return { days: 0, hours: 0, minutes: 0 };
@@ -451,9 +485,13 @@ export function adoptWorkshopPlan(state, plan) {
   const previousStrokes = new Map(
     (state.cartone?.strokes || []).map((stroke) => [stroke.id, stroke]),
   );
+  const contractFingerprint = contractSemanticFingerprint(plan.contract);
   const planProof = `${plan.model} · ${plan.responseId} · ${plan.createdAt}`;
   const plannedGates = plan.gates.map((gate) => {
     const previous = previousGates.get(gate.id);
+    const semanticFingerprint = gateSemanticFingerprint(gate, contractFingerprint);
+    const canCarryVerifiedState =
+      previous?.semanticFingerprint === semanticFingerprint;
     const normalizedTitle = gate.title.toLowerCase();
     const isModelGate =
       gate.id.includes("model") ||
@@ -465,28 +503,50 @@ export function adoptWorkshopPlan(state, plan) {
     return {
       ...gate,
       detail: `${gate.detail} Proof: ${gate.proofRequired}`,
-      done: previous?.done || false,
-      evidence: previous?.evidence || (isModelGate ? planProof : ""),
+      semanticFingerprint,
+      done: canCarryVerifiedState ? Boolean(previous.done) : false,
+      evidence: canCarryVerifiedState
+        ? previous.evidence || ""
+        : isModelGate
+          ? planProof
+          : "",
+      claims: canCarryVerifiedState && Array.isArray(previous.claims)
+        ? previous.claims
+        : [],
     };
   });
-  const plannedGateIds = new Set(plannedGates.map((gate) => gate.id));
-  const gates = [
-    ...plannedGates,
-    ...state.gates.filter(
-      (gate) => gate.done && !plannedGateIds.has(gate.id),
-    ),
-  ];
-  const strokes = plan.strokes.map((stroke, index) => {
+  const gates = plannedGates;
+  const carriedStrokes = plan.strokes.map((stroke, index) => {
     const previous = previousStrokes.get(stroke.id);
+    const semanticFingerprint = strokeSemanticFingerprint(stroke, contractFingerprint);
+    const canCarryState = previous?.semanticFingerprint === semanticFingerprint;
+    const status = canCarryState
+      ? previous.status
+      : index === 0
+        ? "active"
+        : "queued";
     return {
       ...stroke,
-      status: previous?.status || (index === 0 ? "active" : "queued"),
-      result: previous?.result || null,
+      semanticFingerprint,
+      status,
+      result: canCarryState ? previous.result || null : null,
+    };
+  });
+  const firstRunnableIndex = carriedStrokes.findIndex(
+    (stroke) => stroke.status === "active" || stroke.status === "queued",
+  );
+  const strokes = carriedStrokes.map((stroke, index) => {
+    if (stroke.status !== "active" && stroke.status !== "queued") return stroke;
+    if (index !== firstRunnableIndex) return { ...stroke, status: "queued" };
+    return {
+      ...stroke,
+      status: stroke.classification === "AFFRESCO" ? "queued" : "active",
     };
   });
   const firstOpen =
     strokes.find((stroke) => stroke.status === "active") ||
     strokes.find((stroke) => stroke.status === "queued");
+  const requiresStrokeFirma = firstOpen?.classification === "AFFRESCO";
 
   return {
     ...state,
@@ -522,12 +582,21 @@ export function adoptWorkshopPlan(state, plan) {
           classificationNote: firstOpen.outcome,
         }
       : state.giornata,
-    isHeld: false,
-    isRunning: Boolean(firstOpen),
+    isHeld: requiresStrokeFirma,
+    isRunning: Boolean(firstOpen) && !requiresStrokeFirma,
+    consegnaAuthorized: false,
+    firmaPending: requiresStrokeFirma
+      ? {
+          responseId: `cartone-${firstOpen.id}`,
+          strokeId: firstOpen.id,
+          title: firstOpen.title,
+          reason: `${firstOpen.evidenceExpected} CARTONE classified this stroke as irreversible. Plan adoption does not authorize execution.`,
+        }
+      : null,
     events: [
       createEvent(
         "FIRMA",
-        `Human adopted workshop revision ${(state.cartone?.revision || 0) + 1} from ${plan.responseId}.`,
+        `Owner checkpoint adopted workshop revision ${(state.cartone?.revision || 0) + 1} from ${plan.responseId}; actor identity is not authenticated by the page.`,
       ),
       createEvent(
         "CARTONE",

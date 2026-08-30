@@ -90,6 +90,11 @@ export function inspectWorkshop(state, view = "summary") {
       "DEPLOY",
       "CONSEGNA",
     ],
+    boundaryAssurance: {
+      kind: "WORKFLOW_POLICY",
+      actorAuthentication: false,
+      note: "The page records and evaluates protected transitions, but a static DOM cannot authenticate that the operator is human. Publishing, deployment, and submission remain outside this page.",
+    },
   };
 
   if (view === "manca") {

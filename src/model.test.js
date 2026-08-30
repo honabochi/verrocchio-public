@@ -202,17 +202,14 @@ test("adoptWorkshopPlan replaces static gates and records model proof", () => {
 });
 
 test("adoptWorkshopPlan preserves completed proof during replanning", () => {
+  const adopted = adoptWorkshopPlan(initialState, dynamicPlan);
   const state = {
-    ...initialState,
-    gates: [
-      {
-        id: "result-loop",
-        title: "Old result loop",
-        detail: "Old detail",
-        done: true,
-        evidence: "verified result",
-      },
-    ],
+    ...adopted,
+    gates: adopted.gates.map((gate) =>
+      gate.id === "result-loop"
+        ? { ...gate, done: true, evidence: "verified result" }
+        : gate,
+    ),
   };
   const next = adoptWorkshopPlan(state, dynamicPlan);
   const preserved = next.gates.find((gate) => gate.id === "result-loop");
@@ -220,5 +217,125 @@ test("adoptWorkshopPlan preserves completed proof during replanning", () => {
   expect(preserved).toMatchObject({
     done: true,
     evidence: "verified result",
+  });
+});
+
+test("adoptWorkshopPlan invalidates proof when a reused gate id changes meaning", () => {
+  const adopted = adoptWorkshopPlan(initialState, dynamicPlan);
+  const state = {
+    ...adopted,
+    gates: adopted.gates.map((gate) =>
+      gate.id === "result-loop"
+        ? { ...gate, done: true, evidence: "verified old result" }
+        : gate,
+    ),
+  };
+  const changedPlan = {
+    ...dynamicPlan,
+    gates: dynamicPlan.gates.map((gate) =>
+      gate.id === "result-loop"
+        ? { ...gate, proofRequired: "A different security-relevant proof" }
+        : gate,
+    ),
+  };
+
+  const next = adoptWorkshopPlan(state, changedPlan);
+  expect(next.gates.find((gate) => gate.id === "result-loop")).toMatchObject({
+    done: false,
+    evidence: "",
+    claims: [],
+  });
+});
+
+test("adoptWorkshopPlan invalidates work state when a reused stroke id changes meaning", () => {
+  const adopted = adoptWorkshopPlan(initialState, dynamicPlan);
+  const completed = {
+    ...adopted,
+    cartone: {
+      ...adopted.cartone,
+      strokes: adopted.cartone.strokes.map((stroke) =>
+        stroke.id === "forge-plan"
+          ? { ...stroke, status: "done", result: { evidence: "old result" } }
+          : stroke,
+      ),
+    },
+  };
+  const changedPlan = {
+    ...dynamicPlan,
+    strokes: dynamicPlan.strokes.map((stroke) =>
+      stroke.id === "forge-plan"
+        ? { ...stroke, outcome: "A materially different result is required." }
+        : stroke,
+    ),
+  };
+
+  const next = adoptWorkshopPlan(completed, changedPlan);
+  expect(next.cartone.strokes.find((stroke) => stroke.id === "forge-plan"))
+    .toMatchObject({ status: "active", result: null });
+});
+
+test("adoptWorkshopPlan invalidates carried proof when only the mission contract changes", () => {
+  const adopted = adoptWorkshopPlan(initialState, dynamicPlan);
+  const completed = {
+    ...adopted,
+    gates: adopted.gates.map((gate) =>
+      gate.id === "result-loop"
+        ? { ...gate, done: true, evidence: "verified old mission" }
+        : gate,
+    ),
+    cartone: {
+      ...adopted.cartone,
+      strokes: adopted.cartone.strokes.map((stroke) =>
+        stroke.id === "forge-plan"
+          ? { ...stroke, status: "done", result: { evidence: "old mission result" } }
+          : stroke,
+      ),
+    },
+  };
+  const changedPlan = {
+    ...dynamicPlan,
+    contract: {
+      ...dynamicPlan.contract,
+      objective: "A materially different mission objective.",
+    },
+  };
+
+  const next = adoptWorkshopPlan(completed, changedPlan);
+  expect(next.gates.find((gate) => gate.id === "result-loop")).toMatchObject({
+    done: false,
+    evidence: "",
+    claims: [],
+  });
+  expect(next.cartone.strokes.find((stroke) => stroke.id === "forge-plan"))
+    .toMatchObject({ status: "active", result: null });
+});
+
+test("adoptWorkshopPlan excludes completed gates omitted by the new plan", () => {
+  const state = {
+    ...initialState,
+    gates: [
+      ...initialState.gates,
+      { id: "retired-gate", title: "Retired", detail: "Old", done: true, evidence: "old" },
+    ],
+  };
+
+  const next = adoptWorkshopPlan(state, dynamicPlan);
+  expect(next.gates.some((gate) => gate.id === "retired-gate")).toBe(false);
+});
+
+test("adoptWorkshopPlan holds an AFFRESCO first stroke for a separate FIRMA", () => {
+  const affrescoPlan = {
+    ...dynamicPlan,
+    strokes: dynamicPlan.strokes.map((stroke, index) =>
+      index === 0 ? { ...stroke, classification: "AFFRESCO" } : stroke,
+    ),
+  };
+
+  const next = adoptWorkshopPlan(initialState, affrescoPlan);
+  expect(next.cartone.strokes[0]).toMatchObject({ status: "queued" });
+  expect(next).toMatchObject({ isHeld: true, isRunning: false });
+  expect(next.firmaPending).toMatchObject({
+    strokeId: "forge-plan",
+    title: "Forge the plan",
   });
 });

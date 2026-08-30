@@ -1,6 +1,7 @@
 {
   "schema": "verrocchio.webmcp.eval-run.v1",
   "runId": "replace-with-run-id",
+  "sourceRevision": "replace-with-full-git-revision",
   "host": "ChatGPT WebMCP host",
   "origin": "https://verrocchio-workshop.honabochi.chatgpt.site",
   "cases": [

@@ -1,6 +1,6 @@
-import { readFile, readdir, stat } from "node:fs/promises";
+import { lstat, readFile, readdir, realpath, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { dirname, resolve } from "node:path";
+import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   arePostCandidateChangesMetadataOnly,
@@ -26,6 +26,7 @@ import {
   verifyBuildArtifactCopies,
   worktreeStatusUnchanged,
 } from "./lib/submission-readiness.mjs";
+import { evaluateWebMcpReceipt } from "./lib/webmcp-eval.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const rawManifest = await readFile(resolve(root, "submission-manifest.json"), "utf8");
@@ -539,19 +540,64 @@ add(
   { priority: 43, actor: "OWNER", action: "公開GitHubでannotated tag・default branch・ローカルHEADを同じSHAにし、そのtag上のMIT LICENSEと全必須fileを検証する。", source: manifest.urls?.repository },
 );
 
-for (const id of [...REQUIRED_EVIDENCE_REFS, "hostedEvaluation"]) {
+let hostedEvaluation = {
+  status: "MISSING",
+  evidence: "Hosted WebMCP evaluation receipt is unset",
+};
+const hostedEvaluationRefValue = manifest.evidenceRefs?.hostedEvaluation;
+if (String(hostedEvaluationRefValue || "").trim()) {
+  try {
+    const candidatePath = resolve(root, hostedEvaluationRefValue);
+    const [realRoot, realCandidate, candidateStat] = await Promise.all([
+      realpath(root),
+      realpath(candidatePath),
+      lstat(candidatePath),
+    ]);
+    const withinRoot = (() => {
+      const rel = relative(realRoot, realCandidate);
+      return rel !== "" && !rel.startsWith("..") && !isAbsolute(rel);
+    })();
+    if (!withinRoot || candidateStat.isSymbolicLink() || !candidateStat.isFile()) {
+      throw new Error("receipt must be a non-symlink regular file beneath the repository root");
+    }
+    const receipt = JSON.parse(await readFile(realCandidate, "utf8"));
+    const summary = evaluateWebMcpReceipt(receipt);
+    const expectedOrigin = new URL(manifest.urls.live).origin;
+    const revisionMatches = receipt.sourceRevision === head;
+    const originMatches = receipt.origin === expectedOrigin;
+    const pass = summary.verdict === "PASS" &&
+      summary.safety?.violations?.length === 0 &&
+      revisionMatches &&
+      originMatches;
+    hostedEvaluation = {
+      status: pass ? "PASS" : "FAIL",
+      evidence: `verdict=${summary.verdict}; violations=${summary.safety?.violations?.length ?? "unknown"}; revision=${revisionMatches ? "match" : "mismatch"}; origin=${originMatches ? "match" : "mismatch"}; receipt=${hostedEvaluationRefValue}`,
+    };
+  } catch (error) {
+    hostedEvaluation = {
+      status: "FAIL",
+      evidence: `Hosted evaluation receipt rejected: ${error.message}`,
+    };
+  }
+}
+add(
+  "evidence-hostedEvaluation",
+  hostedEvaluation.status,
+  hostedEvaluation.evidence,
+  { priority: 44, actor: "OWNER", action: "現在の凍結revisionを配信した実サイトでWebMCP評価を実行し、PASS控えをevals/へ保存する。", source: "submission-manifest.json / hosted evaluation receipt" },
+);
+
+for (const id of REQUIRED_EVIDENCE_REFS.filter((item) => item !== "hostedEvaluation")) {
   const value = manifest.evidenceRefs?.[id];
   const required = REQUIRED_EVIDENCE_REFS.includes(id);
   const meaningful = isMeaningfulEvidenceRef(value);
   add(
     `evidence-${id}`,
-    meaningful || (!required && !value) ? "PASS" : required && !String(value || "").trim() ? "MISSING" : "FAIL",
+    meaningful ? "PASS" : required && !String(value || "").trim() ? "MISSING" : "FAIL",
     meaningful ? value : (
-      required
-        ? "Evidence reference is unset or not meaningful"
-        : "Optional until a numeric performance claim is made"
+      "Evidence reference is unset or not meaningful"
     ),
-    { priority: id === "cleanJudgeSmoke" ? 45 : id === "demoRecording" ? 51 : 46, actor: "OWNER", action: id === "cleanJudgeSmoke" ? "OwnerとAIがclean judge smokeを実行し、凍結revisionに結び付く参照を記録する。" : id === "demoRecording" ? "Ownerが同じ凍結buildの公開デモ動画参照を記録する。" : "数値性能主張を削除するか、検証済みhosted evaluation参照を記録する。", source: "submission-manifest.json" },
+    { priority: id === "cleanJudgeSmoke" ? 45 : 51, actor: "OWNER", action: id === "cleanJudgeSmoke" ? "OwnerとAIがclean judge smokeを実行し、凍結revisionに結び付く参照を記録する。" : "Ownerが同じ凍結buildの公開デモ動画参照を記録する。", source: "submission-manifest.json" },
   );
 }
 

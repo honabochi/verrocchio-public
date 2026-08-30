@@ -493,6 +493,8 @@ describe("VERROCCHIO core path", () => {
 
     expect(await screen.findByText("計画はまだ乾いていない。")).toBeVisible();
     expect(screen.getByText("Complete the operational Phase 1 execution loop.")).toBeVisible();
+    expect(screen.getByText(/Complete return contract/)).toBeVisible();
+    expect(screen.getByText(/GESSO · prima-mano · MANCA execution-proof/)).toBeVisible();
     expect(screen.getByText("MANCA 06")).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: /署名して計画を採用/ }));

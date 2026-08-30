@@ -61,7 +61,7 @@ export const webMcpChallengeProfile = {
   candidateIdeas:
     "VERROCCHIO：忙しい一人の参加者が、調査・実装・検証・提出を通じて『規律ある一人チーム』として動くための、人間統治つき工房。",
   humanBoundary:
-    "エージェントは点検、下書き、停止、証拠主張の返却まで行える。FERMOからの再開、FIRMA、証拠確定、公開、デプロイ、データ開示、提出は人間だけが行う。",
+    "エージェントは点検、下書き、停止、証拠主張の返却まで行える。FERMOからの再開、FIRMA、証拠確定はOwnerの役割として記録する。これはページ単独の本人認証ではなく、公開、デプロイ、データ開示、提出はページ外のOwner操作で確定する。",
 };
 
 export const hackathonProfiles = {
