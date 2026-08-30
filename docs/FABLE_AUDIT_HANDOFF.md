@@ -17,9 +17,9 @@ outcomes.
 ## Live and source references
 
 - Production: https://verrocchio.vercel.app
-- GitHub: https://github.com/honabochi/verrocchio
+- GitHub: https://github.com/honabochi/verrocchio-public
 - Production commit: `70136207ec200741ad15d08abf3905c51c6a3eb3`
-- Repository visibility: private; use the supplied audit archive if direct
+- Repository visibility: public; use the supplied audit archive if direct
   GitHub access is unavailable.
 
 Never request, inspect, reproduce, or infer API keys, environment-variable
