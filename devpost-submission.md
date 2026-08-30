@@ -12,7 +12,8 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-local evidence at candidate `4cc674d` recorded 95 passing tests, while the
+local evidence at candidate `6bb60b9` recorded 99 passing tests and a real
+Chrome WebMCP smoke, while the
 final tagged clean-clone proof, public judge access, and fresh hosted evaluation
 remain incomplete.
 
@@ -57,7 +58,7 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** local evidence at candidate `4cc674d` recorded 95 passing tests
+- **Execution:** local evidence at candidate `6bb60b9` recorded 99 passing tests
   and a real Chrome WebMCP smoke; the final tagged clean-clone test/build proof
   and public judge access remain release gates.
 - **Potential Impact:** the target is a time-constrained solo builder who needs
@@ -174,13 +175,26 @@ Devpost—never in the repository.
 
 ## Verification and evaluation status
 
-- Local candidate evidence: **95 passing tests** and a real Chrome WebMCP smoke
-  at `4cc674d`.
+- Local candidate evidence: **99 passing tests** and a real Chrome WebMCP smoke
+  at `6bb60b9`.
 - Clean-clone dependency install, tests, and production build: **TODO** for the
   final tagged revision; prior-candidate evidence is not carried forward.
 - Judge-accessible unauthenticated live smoke: **TODO**.
 - Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
 - WebMCP-versus-DOM comparison: **TODO**; publish no improvement percentage.
+
+## Language and judge accessibility
+
+The submission description, testing instructions, demo narration, and captions
+will be in English. The product keeps its Japanese visual identity, while core
+actions and states use visible English labels such as `WEBMCP READY`, `MANCA`,
+`NEXT`, `FIRMA REQUIRED`, `CLAIMED`, `VERIFY CLAIM`, and `REQUEST CHANGES`.
+
+A full application language switch is not part of the submission scope. Before
+submission, the Owner must verify that every non-English item a judge needs to
+understand is translated by the visible interface, these testing instructions,
+or the demo narration/captions. Decorative or nonessential Japanese text may
+remain only when it does not block the documented judge path.
 
 ## Suggested screenshots
 

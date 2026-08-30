@@ -6,9 +6,9 @@
   "deadlineUtc": "2026-09-03T20:00:00Z",
   "challengeBaseline": "3be515d",
   "challengeStart": "f12214b",
-  "productCandidate": "4cc674d",
+  "productCandidate": "6bb60b9",
   "submissionTag": "",
-  "expectedTestCount": 95,
+  "expectedTestCount": 99,
   "entryContext": {
     "appStatus": "Existing"
   },
@@ -40,6 +40,7 @@
     "secretsReviewedOffScreen": false,
     "cleanCloneCiTestBuildPassed": false,
     "videoUnderThreeMinutesWithAudibleEnglishNarration": false,
+    "englishSubmissionMaterialsOrTranslationsVerified": false,
     "videoAssetsAndRightsConfirmed": false,
     "numericClaimsVerifiedOrRemoved": false,
     "frozenRevisionMatchesAllPublicArtifacts": false,

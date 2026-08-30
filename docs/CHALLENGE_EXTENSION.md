@@ -26,16 +26,16 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `3be515d` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `f12214b` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `4cc674d` | 2026-08-30 JST | Tested endpoint for the implementation, judge packet, and browser-smoke evidence below |
+| Audited product candidate | `6bb60b9` | 2026-08-30 JST | Tested endpoint for the implementation, judge packet, persistence warning, and browser-smoke evidence below |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-f12214b^..4cc674d
+f12214b^..6bb60b9
 ```
 
-This range contains 38 commits. Against the July baseline, it changes 49 files
-with 9,161 insertions and 1,036 deletions. The metadata-only commits after the
+This range contains 43 commits. Against the July baseline, it changes 50 files
+with 9,603 insertions and 1,045 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. That tag is not yet assigned in this draft.
 
@@ -43,11 +43,11 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 3be515d..4cc674d
-git log --format='%h %aI %s' f12214b^..4cc674d
+git diff --stat 3be515d..6bb60b9
+git log --format='%h %aI %s' f12214b^..6bb60b9
 ```
 
-For the final public comparison, replace `4cc674d` in both commands with the
+For the final public comparison, replace `6bb60b9` in both commands with the
 annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
@@ -110,11 +110,11 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `4cc674d`
+## Verification status at `6bb60b9`
 
 Confirmed in the repository:
 
-- The automated suite passes: 95 tests across state, commands, WebMCP tools,
+- The automated suite passes: 99 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - A local Google Chrome WebMCP smoke on the candidate registered all four
   initial tools, reduced the surface to inspection during FERMO and evidence
