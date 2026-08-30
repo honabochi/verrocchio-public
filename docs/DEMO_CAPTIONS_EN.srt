@@ -1,0 +1,103 @@
+1
+00:00:00,000 --> 00:00:07,000
+For solo builders working through interruptions,
+VERROCCHIO exposes live work as structured WebMCP state.
+
+2
+00:00:07,000 --> 00:00:15,000
+The agent sees missing proof and the next action.
+Approval and verification remain in the human workflow.
+
+3
+00:00:15,000 --> 00:00:22,000
+The host sends a bounded plan through WebMCP.
+VERROCCHIO checks the live state and gate references.
+
+4
+00:00:22,000 --> 00:00:28,000
+It also checks plan size and the retry key.
+The result is deliberately unsigned.
+
+5
+00:00:28,000 --> 00:00:36,000
+An interrupted solo builder must track rules,
+handoffs, and unfinished proof.
+
+6
+00:00:36,000 --> 00:00:43,000
+VERROCCHIO preserves the next bounded action,
+but a confident AI answer is still not verified progress.
+
+7
+00:00:43,000 --> 00:00:49,000
+That is why this plan waits for me.
+
+8
+00:00:49,000 --> 00:00:56,000
+I inspect the scope and risks,
+and only then give FIRMA.
+
+9
+00:00:56,000 --> 00:01:03,000
+Approval is not a hidden prompt instruction.
+There is no approval tool for the agent to call.
+
+10
+00:01:03,000 --> 00:01:08,000
+This governed decision stays visible
+in the human interface.
+
+11
+00:01:08,000 --> 00:01:16,000
+The active work packet says what to change,
+what evidence to return, and when to stop.
+
+12
+00:01:16,000 --> 00:01:25,000
+The agent returns a structured claim with verification,
+an evidence reference, and remaining risk.
+
+13
+00:01:25,000 --> 00:01:34,000
+MANCA does not decrease,
+because an AI claim is still not proof.
+
+14
+00:01:34,000 --> 00:01:43,000
+The human checks whether the result is current,
+reproducible, and honest about risk.
+
+15
+00:01:43,000 --> 00:01:51,000
+If the evidence is stale or incomplete,
+the human sends it back with a reason.
+
+16
+00:01:51,000 --> 00:01:58,000
+The claim stays in history,
+and the gate stays open.
+
+17
+00:01:58,000 --> 00:02:06,000
+A rejected claim is not erased
+or called complete.
+
+18
+00:02:06,000 --> 00:02:14,000
+Its reason remains in history,
+and the next attempt starts from an explicit return point.
+
+19
+00:02:14,000 --> 00:02:23,000
+A DOM agent may rediscover controls and guess
+whether text is a claim or a decision.
+
+20
+00:02:23,000 --> 00:02:31,000
+WebMCP replaces that guess with bounded, state-aware calls:
+inspect, stop, propose, and return a claim.
+
+21
+00:02:31,000 --> 00:02:40,000
+Approval and verification remain human-facing.
+A disciplined workshop for a team of one.

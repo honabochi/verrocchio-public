@@ -223,6 +223,9 @@ data, credentials, unrelated tabs, and unsupported pass claims.
 Public YouTube URL: TODO — insert one public video under three minutes with
 audible English narration.
 
+The final English narration and timed subtitle file are prepared in
+`docs/DEMO_SCRIPT_EN.md` and `docs/DEMO_CAPTIONS_EN.srt`.
+
 ### 2:40 outline
 
 - **0:00–0:15 — Real inspection:** identify the interrupted solo builder, send

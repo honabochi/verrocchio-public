@@ -4,6 +4,8 @@ Target runtime: **2:35–2:45**
 Primary target: public YouTube demo  
 Format: screen recording with English narration, restrained captions, and no background music
 
+Timed English captions: `docs/DEMO_CAPTIONS_EN.srt`
+
 ## Truth boundary
 
 - Record the WebMCP calls and resulting UI states from the deployed hosted app. Do not recreate tool receipts in an editor.
