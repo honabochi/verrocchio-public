@@ -20,14 +20,23 @@ browser and are never copied into this repository or an AI transcript.
 
 ## Current exact next action
 
-Gate 1 completed through the authenticated Devpost flow on 2026-08-30. Devpost
-returned a registration receipt after the Owner reviewed the exact answers and
-explicitly authorized `登録して`; only the completion boolean is retained here.
+Gate 1 completed through the authenticated Devpost flow on 2026-08-30. The
+public repository is also reachable without authentication, and the current
+public working copy passes all 111 automated tests and a production build.
+These facts do not complete the release: the repository remains untagged, the
+Site still presents a login wall to anonymous judges, and no public video is
+recorded.
 
-The exact next action is gate 2: the Owner reviews tracked and public-bound
-files for secrets and private data off-screen, without showing values, paths, or
-screenshots to AI. A general `GO` does not authorize publication, tag creation,
-deployment, video upload, or final submission.
+When the Owner is next at a computer, the exact return action is to open the
+VERROCCHIO Site management screen and authorize the latest audited source to be
+published with public judge access. Stop before any credential value is shown
+to AI. After publication, AI verifies anonymous access and the deployed
+revision before hosted evaluation or recording begins.
+
+Gate 2 still requires the Owner's separate off-screen confirmation that the
+public-bound files contain no secret or protected data. Gate 4 remains deferred
+until Site evidence and video metadata are stable; a general `GO` does not
+authorize the final tag, video upload, or Devpost submission.
 
 ## Registration readback template — completed; answers stay off-repository
 

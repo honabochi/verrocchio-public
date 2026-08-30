@@ -198,7 +198,8 @@ Locally verified:
 
 - A dated before/after challenge boundary exists, and the current product
   candidate has been locally audited.
-- The candidate passed 95 automated tests and a real Chrome WebMCP smoke.
+- The current public working copy passed 111 automated tests and a production
+  build. Earlier candidate evidence also includes a real Chrome WebMCP smoke.
 - The Chrome smoke registered four initial tools, reduced the tool surface to
   inspection during FERMO and evidence review, restored it after human action,
   kept MANCA at 06 for a claim, and reduced it to 05 only after human VERIFY.
@@ -208,22 +209,21 @@ Locally verified:
 
 Judge-visible evidence and release gates still unresolved:
 
-- Registration is incomplete.
-- Anonymous judge access to the live URL is not verified.
-- Public repository reachability and visible license are not verified.
+- Registration is complete; personal answers remain off-repository.
+- Anonymous judge access to the live URL fails at a login wall.
+- The public repository and visible MIT license are reachable without
+  authentication.
 - The final annotated tag and its final clean-clone install, test, and build
   receipt remain TODO.
 - No public demo-video URL is recorded or verified.
 
 The planned opening of that demo is: show the target-user caption at 0:00,
 send `What evidence is still missing?` at 0:02, show the real
-`inspect_workshop` call by 0:05, and show readable MANCA and NEXT by 0:08. End
-the first fifteen seconds with a clearly marked later-state montage of real
-FIRMA REQUIRED and CLAIMED shots captured from the same hosted build; do not
-imply that the inspection caused those states. Then show the one-sentence
-problem from 0:15 to 0:29, MANCA, NEXT, and the human-only boundary from 0:29
-to 0:49, and begin `propose_workshop_draft` from 0:49. By 1:00, show that the
-result is unsigned and held at FIRMA REQUIRED.
+`inspect_workshop` call by 0:05, and show readable MANCA and NEXT by 0:08. From
+the same clean mission, begin `Create the smallest valid plan. Do not publish.`
+at 0:12 and show the real unsigned draft at `FIRMA REQUIRED` by 0:28. Every
+later state remains in causal order; no montage may imply that inspection
+created FIRMA or CLAIMED state.
 
 ### Independent questions
 
