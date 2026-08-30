@@ -12,8 +12,8 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-local evidence at candidate `6bb60b9` recorded 99 passing tests and a real
-Chrome WebMCP smoke, while the
+tested public release commit `90f5f3f` recorded 111 passing tests and a production
+build, while earlier candidate evidence includes a real Chrome WebMCP smoke. The
 final tagged clean-clone proof, public judge access, and fresh hosted evaluation
 remain incomplete.
 
@@ -25,9 +25,10 @@ and is not suitable as the final judge link.
 
 ## Public Repository Link
 
-TODO — insert the repository URL only after the tagged source, setup
-instructions, assets, and detected MIT license are public and readable from an
-unauthenticated session.
+<https://github.com/honabochi/verrocchio-public>
+
+The source, setup instructions, required assets, and MIT license are readable
+without authentication. The final annotated submission tag is still pending.
 
 ## Problem
 
@@ -61,8 +62,9 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** local evidence at candidate `6bb60b9` recorded 99 passing tests
-  and a real Chrome WebMCP smoke; the final tagged clean-clone test/build proof
+- **Execution:** tested public release commit `90f5f3f` recorded 111 passing tests and a
+  production build, while earlier candidate evidence includes a real Chrome
+  WebMCP smoke; the final tagged clean-clone test/build proof
   and public judge access remain release gates.
 - **Potential Impact:** the target is a time-constrained solo builder who needs
   continuity without forming a conventional team. Browser-local state keeps
@@ -150,10 +152,10 @@ VERROCCHIO is an `Existing` project. The July 19 baseline `91315a1` already
 contained the local-first workshop, MANCA proof gates, work packets, and human
 FIRMA/FERMO controls, but it did not register WebMCP tools.
 
-- **Pre-existing baseline:** `91315a1` (July 19, 2026) — TODO public link.
-- **Challenge start:** `0176211` (August 27, 2026) — TODO public link.
-- **Submission revision:** TODO — public annotated tag and commit link.
-- **Public comparison:** TODO — `91315a1...<final-submission-tag>`.
+- **Pre-existing baseline:** [`91315a1`](https://github.com/honabochi/verrocchio-public/commit/91315a120059cae3b9eb68566c81d5c8d87fd903) (July 19, 2026).
+- **Challenge start:** [`0176211`](https://github.com/honabochi/verrocchio-public/commit/0176211fe5a1c62ba366c1379710864a5bb2db17) (August 27, 2026).
+- **Tested public release commit:** [`90f5f3f`](https://github.com/honabochi/verrocchio-public/commit/90f5f3fff38a298989eeccc364a711b801256aef); final annotated tag pending.
+- **Current public comparison:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); replace `main` with the final tag before submission.
 
 Beginning with `0176211` on August 27, the eligible extension added four native,
 state-aware WebMCP tools; host-driven keyless planning; phase-dependent tool
@@ -184,10 +186,10 @@ Devpost—never in the repository.
 
 ## Verification and evaluation status
 
-- Local candidate evidence: **99 passing tests** and a real Chrome WebMCP smoke
-  at `6bb60b9`.
-- Untagged release-packet HEAD `9fcd6bc` passed a clean-clone dependency
-  install, all 99 tests, and a production build on 2026-08-30. This does not
+- Earlier candidate evidence includes a real Chrome WebMCP smoke; the remapped
+  public product boundary is `f13d687`.
+- Untagged public release commit `90f5f3f` passed a clean dependency install, all
+  111 tests, and a production build on 2026-08-31. This does not
   replace the required repeat on the final annotated submission tag.
 - Judge-accessible unauthenticated live smoke: **TODO**.
 - Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
@@ -281,8 +283,9 @@ before submission. Identity and self-assessment answers remain Owner-only.
 - [ ] **28254 — Judge-accessible live URL** (required): TODO verified URL.
 - [ ] **28255 — Testing instructions / credentials** (optional): use the tested
   path above; keep any judge-only credentials only in the official form.
-- [ ] **28256 — Public code repository URL** (required): TODO tagged public URL
-  with detected MIT license.
+- [ ] **28256 — Public code repository URL** (required): use
+  `https://github.com/honabochi/verrocchio-public`; final tag and Devpost
+  readback remain pending.
 - [ ] **28257 — Agents or clients used to test WebMCP** (required draft):
   `Google Chrome 151 with WebMCP testing enabled`; add ChatGPT's in-app browser
   only after the final hosted judge-path verification.

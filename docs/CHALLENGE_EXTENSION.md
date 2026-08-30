@@ -47,7 +47,7 @@ git diff --stat 91315a1..f13d687
 git log --format='%h %aI %s' 0176211^..f13d687
 ```
 
-For the final public comparison, replace `6bb60b9` in both commands with the
+For the final public comparison, replace `f13d687` in both commands with the
 annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
