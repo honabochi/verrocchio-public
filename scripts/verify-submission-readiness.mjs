@@ -4,6 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   arePostCandidateChangesMetadataOnly,
+  canProbePublicUrl,
   countDraftPlaceholders,
   findPositiveNumericPerformanceClaims,
   inspectDraftSections,
@@ -15,10 +16,12 @@ import {
   isMeaningfulEvidenceRef,
   missingDraftHeadings,
   missingOfficialFields,
+  readResponseTextLimited,
   MINIMUM_SUBMISSION_TEST_COUNT,
   REQUIRED_EVIDENCE_REFS,
   REQUIRED_OWNER_ATTESTATIONS,
   summarizeSubmissionChecks,
+  fetchPublicUrlSafely,
   validatePublicUrlKinds,
   verifyBuildArtifactCopies,
   worktreeStatusUnchanged,
@@ -387,17 +390,16 @@ const riskyFiles = trackedRiskNames.status === 0
       .filter((file) =>
         /(^|\/)(\.env($|\.)|.*(secret|token|credential|private[-_]?key).*)/i.test(file),
       )
-      .filter((file) => file !== ".env.example")
   : ["could-not-list-tracked-files"];
 add(
   "secret-bearing-filenames",
   riskyFiles.length ? "FAIL" : "PASS",
   riskyFiles.length
     ? `Review tracked filenames: ${riskyFiles.join(", ")}`
-    : "No tracked secret-bearing filenames; .env.example allowed",
+    : "No tracked secret-bearing filenames",
 );
 
-async function checkPublicUrl(id, value, priority) {
+async function checkPublicUrl(id, kind, value, priority, canProbe) {
   if (!value) {
     add(id, "MISSING", "URL is unset", { priority, actor: "OWNER", action: "Ownerが公開先を作成し、AIが未認証アクセスを検証する。", source: "submission-manifest.json" });
     return { accessible: false, body: "", finalUrl: null };
@@ -413,26 +415,26 @@ async function checkPublicUrl(id, value, priority) {
     add(id, "FAIL", "Public URL must use HTTPS");
     return { accessible: false, body: "", finalUrl: null };
   }
+  if (!canProbe) {
+    add(id, "FAIL", "Network probe skipped because public URL validation failed", {
+      priority,
+      action: "URLの役割と公開先を修正してから再検査する。",
+      source: value,
+    });
+    return { accessible: false, body: "", finalUrl: null };
+  }
   try {
-    const response = await fetch(url, {
-      redirect: "follow",
-      headers: { "User-Agent": "VERROCCHIO-submission-preflight" },
+    const { response, body, finalUrl } = await fetchPublicUrlSafely(url, {
+      kind,
       signal: AbortSignal.timeout(15_000),
     });
-    const body = await response.text();
     const loginWall = /<(?:title|h1)[^>]*>\s*(?:sign in|log in|unauthorized|authentication required)/i.test(body);
-    const finalUrl = new URL(response.url);
-    const youtubeHosts = new Set(["youtube.com", "www.youtube.com", "youtu.be"]);
-    const youtubeAliasRedirect = id === "public-video-url" &&
-      youtubeHosts.has(url.hostname.toLowerCase()) &&
-      youtubeHosts.has(finalUrl.hostname.toLowerCase());
-    const unexpectedRedirect = finalUrl.hostname.toLowerCase() !== url.hostname.toLowerCase() && !youtubeAliasRedirect;
     const authenticationPath = isAuthenticationPath(finalUrl.pathname);
-    const accessible = response.ok && !loginWall && !unexpectedRedirect && !authenticationPath;
+    const accessible = response.ok && !loginWall && !authenticationPath;
     add(
       id,
       accessible ? "PASS" : "FAIL",
-      `Unauthenticated GET returned ${response.status}${loginWall ? " and a login wall" : ""}${unexpectedRedirect ? ` and redirected to ${finalUrl.hostname}` : ""}${authenticationPath ? ` and ended at authentication path ${finalUrl.pathname}` : ""}`,
+      `Unauthenticated GET returned ${response.status}${loginWall ? " and a login wall" : ""}${finalUrl.href !== url.href ? ` and safely redirected to ${finalUrl.hostname}` : ""}${authenticationPath ? ` and ended at authentication path ${finalUrl.pathname}` : ""}`,
       { priority, actor: "OWNER", action: "Ownerが対象を公開し、AIがログインなしのjudgeアクセスを再検査する。", source: value },
     );
     return { accessible, body, finalUrl };
@@ -442,9 +444,9 @@ async function checkPublicUrl(id, value, priority) {
   }
 }
 
-const liveProbe = await checkPublicUrl("public-live-url", manifest.urls?.live, 40);
-const repositoryProbe = await checkPublicUrl("public-repository-url", manifest.urls?.repository, 41);
-const videoProbe = await checkPublicUrl("public-video-url", manifest.urls?.video, 50);
+const liveProbe = await checkPublicUrl("public-live-url", "live", manifest.urls?.live, 40, canProbePublicUrl(manifest.urls, "live"));
+const repositoryProbe = await checkPublicUrl("public-repository-url", "repository", manifest.urls?.repository, 41, canProbePublicUrl(manifest.urls, "repository"));
+const videoProbe = await checkPublicUrl("public-video-url", "video", manifest.urls?.video, 50, canProbePublicUrl(manifest.urls, "video"));
 
 const liveRevisionMarker = `<meta name="verrocchio-revision" content="${head}"`;
 const liveRevisionMatches = liveProbe.accessible && liveProbe.body.includes(liveRevisionMarker);
@@ -463,9 +465,11 @@ let publicVideoResolved = false;
 if (videoProbe.accessible && manifest.urls?.video) {
   try {
     const oembed = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(manifest.urls.video)}&format=json`, {
+      redirect: "error",
       headers: { "User-Agent": "VERROCCHIO-submission-preflight" },
       signal: AbortSignal.timeout(15_000),
     });
+    if (oembed.ok) await readResponseTextLimited(oembed);
     publicVideoResolved = oembed.ok;
   } catch {
     publicVideoResolved = false;
@@ -485,24 +489,25 @@ if (repositoryProbe.accessible) {
     const repositoryUrl = new URL(manifest.urls.repository);
     const [owner, repository] = repositoryUrl.pathname.split("/").filter(Boolean);
     const metadataResponse = await fetch(`https://api.github.com/repos/${owner}/${repository}`, {
+      redirect: "error",
       headers: { Accept: "application/vnd.github+json", "User-Agent": "VERROCCHIO-submission-preflight" },
     });
-    const metadata = metadataResponse.ok ? await metadataResponse.json() : null;
+    const metadata = metadataResponse.ok ? JSON.parse(await readResponseTextLimited(metadataResponse)) : null;
     if (metadata && metadata.private === false && metadata.default_branch && tag) {
       const apiHeaders = { Accept: "application/vnd.github+json", "User-Agent": "VERROCCHIO-submission-preflight" };
       const [branchResponse, tagRefResponse] = await Promise.all([
-        fetch(`https://api.github.com/repos/${owner}/${repository}/commits/${encodeURIComponent(metadata.default_branch)}`, { headers: apiHeaders }),
-        fetch(`https://api.github.com/repos/${owner}/${repository}/git/ref/tags/${encodeURIComponent(tag)}`, { headers: apiHeaders }),
+        fetch(`https://api.github.com/repos/${owner}/${repository}/commits/${encodeURIComponent(metadata.default_branch)}`, { redirect: "error", headers: apiHeaders }),
+        fetch(`https://api.github.com/repos/${owner}/${repository}/git/ref/tags/${encodeURIComponent(tag)}`, { redirect: "error", headers: apiHeaders }),
       ]);
-      const branchCommit = branchResponse.ok ? await branchResponse.json() : null;
-      const tagRef = tagRefResponse.ok ? await tagRefResponse.json() : null;
+      const branchCommit = branchResponse.ok ? JSON.parse(await readResponseTextLimited(branchResponse)) : null;
+      const tagRef = tagRefResponse.ok ? JSON.parse(await readResponseTextLimited(tagRefResponse)) : null;
       let peeledTagCommit = "";
       if (tagRef?.object?.type === "tag" && tagRef.object.sha) {
         const tagObjectResponse = await fetch(
           `https://api.github.com/repos/${owner}/${repository}/git/tags/${tagRef.object.sha}`,
-          { headers: apiHeaders },
+          { redirect: "error", headers: apiHeaders },
         );
-        const tagObject = tagObjectResponse.ok ? await tagObjectResponse.json() : null;
+        const tagObject = tagObjectResponse.ok ? JSON.parse(await readResponseTextLimited(tagObjectResponse)) : null;
         if (tagObject?.object?.type === "commit") peeledTagCommit = tagObject.object.sha;
       }
       const remoteRevisionAligned = Boolean(head) &&
@@ -510,8 +515,8 @@ if (repositoryProbe.accessible) {
         peeledTagCommit === head;
       const artifactFiles = ["README.md", "LICENSE", "package.json", "package-lock.json", "src/webmcp.js"];
       const artifacts = await Promise.all(artifactFiles.map(async (file) => {
-        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(tag)}/${file}`);
-        return { file, status: response.status, body: response.ok ? await response.text() : "" };
+        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(tag)}/${file}`, { redirect: "error" });
+        return { file, status: response.status, body: response.ok ? await readResponseTextLimited(response) : "" };
       }));
       const licenseBody = artifacts.find(({ file }) => file === "LICENSE")?.body || "";
       const licenseMatches = metadata.license?.spdx_id === "MIT" && licenseBody === license;

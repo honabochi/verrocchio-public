@@ -1,8 +1,10 @@
 import { describe, expect, test } from "vitest";
 import {
   arePostCandidateChangesMetadataOnly,
+  canProbePublicUrl,
   countDraftPlaceholders,
   findPositiveNumericPerformanceClaims,
+  fetchPublicUrlSafely,
   inspectDraftSections,
   inspectEventContract,
   inspectOfficialFieldChecklist,
@@ -13,6 +15,7 @@ import {
   MINIMUM_SUBMISSION_TEST_COUNT,
   missingDraftHeadings,
   missingOfficialFields,
+  readResponseTextLimited,
   summarizeSubmissionChecks,
   validatePublicUrlKinds,
   verifyBuildArtifactCopies,
@@ -116,9 +119,54 @@ describe("submission readiness", () => {
     ]));
     expect(validatePublicUrlKinds({ live: "https://127.0.0.1/app" }))
       .toContain("live URL cannot target a private or local host");
+    expect(validatePublicUrlKinds({ live: "https://attacker.example/app" }))
+      .toContain("live URL uses an unexpected host");
     expect(validatePublicUrlKinds({ video: "https://www.youtube.com/" }))
       .toContain("video URL must identify one YouTube video");
     expect(youtubeVideoId("https://youtu.be/dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
+  });
+
+  test("keeps each public probe independent from invalid sibling URLs", () => {
+    const urls = {
+      live: "https://verrocchio-workshop.honabochi.chatgpt.site/",
+      video: "https://attacker.example/video",
+    };
+    expect(canProbePublicUrl(urls, "live")).toBe(true);
+    expect(canProbePublicUrl(urls, "video")).toBe(false);
+  });
+
+  test("validates every redirect before the next public URL request", async () => {
+    const calls = [];
+    const fetchImpl = async (url) => {
+      calls.push(String(url));
+      return new Response(null, {
+        status: 302,
+        headers: { Location: "http://127.0.0.1/private" },
+      });
+    };
+
+    await expect(fetchPublicUrlSafely(
+      "https://verrocchio-workshop.honabochi.chatgpt.site/",
+      { kind: "live", fetchImpl },
+    )).rejects.toThrow("Public URL must use HTTPS");
+    expect(calls).toHaveLength(1);
+  });
+
+  test("allows only bounded response bodies", async () => {
+    await expect(readResponseTextLimited(
+      new Response("12345", { headers: { "Content-Length": "5" } }),
+      4,
+    )).rejects.toThrow("4-byte limit");
+
+    const chunked = new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("123"));
+        controller.enqueue(new TextEncoder().encode("45"));
+        controller.close();
+      },
+    }));
+    await expect(readResponseTextLimited(chunked, 4)).rejects.toThrow("4-byte limit");
+    await expect(readResponseTextLimited(new Response("1234"), 4)).resolves.toBe("1234");
   });
 
   test("pins the canonical WebMCP event instead of relying on fuzzy names", () => {

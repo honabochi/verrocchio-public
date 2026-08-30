@@ -114,7 +114,7 @@ implementation, not on the July workshop shell by itself.
 
 Confirmed in the repository:
 
-- The automated suite passes: 99 tests across state, commands, WebMCP tools,
+- The automated suite passes: 102 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - A local Google Chrome WebMCP smoke on the candidate registered all four
   initial tools, reduced the surface to inspection during FERMO and evidence

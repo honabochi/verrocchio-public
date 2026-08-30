@@ -59,10 +59,96 @@ export const EXPECTED_EVENT_CONTRACT = {
   deadlineUtc: "2026-09-03T20:00:00Z",
 };
 
-const URL_KIND_HOSTS = {
+export const URL_KIND_HOSTS = {
+  live: new Set(["verrocchio-workshop.honabochi.chatgpt.site"]),
   repository: new Set(["github.com"]),
   video: new Set(["youtube.com", "www.youtube.com", "youtu.be"]),
 };
+
+export const MAX_PUBLIC_RESPONSE_BYTES = 2 * 1024 * 1024;
+export const MAX_PUBLIC_REDIRECTS = 3;
+
+function validateProbeUrl(value, kind) {
+  const url = value instanceof URL ? value : new URL(value);
+  const host = url.hostname.toLowerCase();
+  if (url.protocol !== "https:") throw new Error("Public URL must use HTTPS");
+  if (url.username || url.password) throw new Error("Public URL cannot contain credentials");
+  if (url.port && url.port !== "443") throw new Error("Public URL cannot use a nonstandard port");
+  if (!URL_KIND_HOSTS[kind]?.has(host)) {
+    throw new Error(`Public ${kind} URL uses an unexpected host`);
+  }
+  return url;
+}
+
+export async function readResponseTextLimited(
+  response,
+  maxBytes = MAX_PUBLIC_RESPONSE_BYTES,
+) {
+  const declaredLength = Number(response.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    await response.body?.cancel();
+    throw new Error(`Response exceeds the ${maxBytes}-byte limit`);
+  }
+  if (!response.body) return "";
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let total = 0;
+  let text = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > maxBytes) {
+      await reader.cancel();
+      throw new Error(`Response exceeds the ${maxBytes}-byte limit`);
+    }
+    text += decoder.decode(value, { stream: true });
+  }
+  return text + decoder.decode();
+}
+
+export async function fetchPublicUrlSafely(
+  value,
+  {
+    kind,
+    fetchImpl = fetch,
+    signal,
+    maxBytes = MAX_PUBLIC_RESPONSE_BYTES,
+    maxRedirects = MAX_PUBLIC_REDIRECTS,
+  } = {},
+) {
+  let current = validateProbeUrl(value, kind);
+  const seen = new Set();
+
+  for (let redirects = 0; redirects <= maxRedirects; redirects += 1) {
+    const key = current.href;
+    if (seen.has(key)) throw new Error("Public URL redirect loop detected");
+    seen.add(key);
+
+    const response = await fetchImpl(current, {
+      redirect: "manual",
+      headers: { "User-Agent": "VERROCCHIO-submission-preflight" },
+      signal,
+    });
+    const location = response.headers.get("location");
+    if (response.status >= 300 && response.status < 400 && location) {
+      await response.body?.cancel();
+      if (redirects === maxRedirects) {
+        throw new Error(`Public URL exceeded ${maxRedirects} redirects`);
+      }
+      current = validateProbeUrl(new URL(location, current), kind);
+      continue;
+    }
+
+    return {
+      response,
+      body: await readResponseTextLimited(response, maxBytes),
+      finalUrl: current,
+    };
+  }
+  throw new Error("Public URL redirect validation failed");
+}
 
 export function inspectEventContract(manifest = {}) {
   const actual = {
@@ -219,6 +305,10 @@ export function validatePublicUrlKinds(urls = {}) {
   const values = normalized.map(([, value]) => value);
   if (new Set(values).size !== values.length) issues.push("public URLs must be distinct");
   return issues;
+}
+
+export function canProbePublicUrl(urls = {}, kind) {
+  return validatePublicUrlKinds({ [kind]: urls[kind] }).length === 0;
 }
 
 export function isMeaningfulEvidenceRef(value) {

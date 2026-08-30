@@ -9,7 +9,7 @@ its own construction before any separate submission workpiece is selected.
 
 ### Codex evidence
 
-- Primary Codex task: `[public-id-removed]`
+- Primary Codex task: `[private-task-id-removed]`
 - Codex read the original handoff and converted it into the six-gate state machine.
 - Codex verified current OpenAI Build Week requirements against the official OpenAI page, Devpost overview, FAQ, and rules.
 - Codex generated the primary screen concept, extracted the design system, wrote the React implementation, authored the contract and plan, added tests, and produced the deployment build.

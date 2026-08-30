@@ -12,13 +12,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "api/capobottega.js": {
-      "maxDuration": 60
-    },
-    "api/workshop-plan.js": {
-      "maxDuration": 120
-    }
-  }
+  ]
 }

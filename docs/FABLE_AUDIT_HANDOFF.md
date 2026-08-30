@@ -65,14 +65,14 @@ authorize publishing, or sign CONSEGNA by itself.
 
 ### 5. Inspect deployment and proof
 
-1. `api/capobottega.js`
-2. `api/workshop-plan.js`
-3. `worker/vercel-adapter.js`
-4. `vercel.json`
-5. `src/App.test.jsx`
-6. `src/model.test.js`
-7. `worker/capobottega.test.js`
-8. `worker/workshop-plan.test.js`
+1. `vercel.json` — confirm no legacy model function is publicly wired
+2. `worker/index.js` — confirm the Sites runtime serves static assets only
+3. `worker/capobottega.js` and `worker/workshop-plan.js` — historical contracts,
+   retained for local evidence rather than deployment
+4. `src/App.test.jsx`
+5. `src/model.test.js`
+6. `worker/capobottega.test.js`
+7. `worker/workshop-plan.test.js`
 
 Use the tests as claims to challenge, not as proof to trust automatically.
 
