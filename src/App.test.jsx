@@ -63,7 +63,7 @@ describe("VERROCCHIO core path", () => {
     expect(guide).toHaveTextContent("まず、対象ハッカソンを工房へ入れる");
     expect(guide).toHaveTextContent("HUMAN");
     expect(
-      screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }),
+      screen.getByRole("button", { name: /チャットへの依頼手順を表示/ }),
     ).toBeEnabled();
   });
 
@@ -183,7 +183,7 @@ describe("VERROCCHIO core path", () => {
       screen.getAllByText("The WebMCP Challenge", { selector: "dd" })[0],
     ).toBeVisible();
     expect(screen.getByText(/規律あるチームのように動ける/)).toBeVisible();
-    expect(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ })).toBeVisible();
+    expect(screen.getByRole("button", { name: /チャットへの依頼手順を表示/ })).toBeVisible();
     expect(screen.getByText("LIVE GUIDE").closest("aside")).toHaveTextContent(
       "WebMCPが使える場所で工房を開く",
     );
@@ -310,7 +310,7 @@ describe("VERROCCHIO core path", () => {
     );
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }));
+    await user.click(screen.getByRole("button", { name: /チャットへの依頼手順を表示/ }));
     fireEvent.change(screen.getByLabelText("未署名計画JSON"), {
       target: { value: JSON.stringify(makeValidPlan()) },
     });
@@ -332,8 +332,9 @@ describe("VERROCCHIO core path", () => {
     await user.click(screen.getByRole("button", { name: /実行工程を開く/ }));
     await user.click(screen.getByRole("button", { name: /計画役に相談する/ }));
 
-    expect(screen.getByText(/判断はサイトのAPIではなく/)).toBeVisible();
-    expect(screen.getByText(/APIキー不要 · WebMCP経由/)).toBeVisible();
+    expect(screen.getByText(/この画面だけではAIを呼び出さない/)).toBeVisible();
+    expect(screen.getByText(/利用条件と上限はそのサービスに従い/)).toBeVisible();
+    expect(screen.getByText(/工房状態はこのブラウザに保存する/)).toBeVisible();
     expect(screen.queryByRole("button", { name: /次の作業を分類する/ })).not.toBeInTheDocument();
   });
 
@@ -343,9 +344,11 @@ describe("VERROCCHIO core path", () => {
     vi.stubGlobal("fetch", fetchSpy);
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: /GPT\/Codexに計画を頼む/ }));
+    await user.click(screen.getByRole("button", { name: /チャットへの依頼手順を表示/ }));
 
-    expect(screen.getByText("このチャットで計画案を依頼してください")).toBeVisible();
+    expect(screen.getByText(/上の依頼文をこのチャットへ送る/)).toBeVisible();
+    expect(screen.getByRole("button", { name: /依頼準備済み（未送信）/ })).toBeDisabled();
+    expect(screen.queryByText("計画はまだ乾いていない。")).not.toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 

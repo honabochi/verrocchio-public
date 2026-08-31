@@ -56,8 +56,9 @@ export const fields = {
 export const actions = {
   startBlank: { primary: "START BLANK", assist: "空で始める", lang: "en" },
   loadMission: { primary: "LOAD WEBMCP MISSION", assist: "ミッションを読み込む", lang: "en" },
-  forgeWorkshop: { primary: "ASK HOST AI", assist: "GPT/Codexに計画を頼む", lang: "en" },
-  replanWorkshop: { primary: "ASK HOST TO REPLAN", assist: "GPT/Codexに再計画を頼む", lang: "en" },
+  forgeWorkshop: { primary: "SHOW HOST REQUEST", assist: "チャットへの依頼手順を表示", lang: "en" },
+  replanWorkshop: { primary: "SHOW REPLAN REQUEST", assist: "再計画の依頼手順を表示", lang: "en" },
+  hostRequestReady: { primary: "REQUEST READY", assist: "依頼準備済み（未送信）", lang: "en" },
   discard: { primary: "DISCARD", assist: "下書きを破棄", lang: "en" },
   adoptPlan: { primary: "GIVE FIRMA & ADOPT", assist: "署名して計画を採用", lang: "en" },
   beginWork: { primary: "BEGIN GIORNATA", assist: "作業を開始する", lang: "en" },

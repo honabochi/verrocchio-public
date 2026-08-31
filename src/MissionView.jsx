@@ -48,7 +48,7 @@ function MissionSummaryItem({ copy, value, featured = false }) {
 
 const webMcpStatusCopy = {
   detecting: "AI向けの道具を確認中",
-  ready: "AIが使える4つの道具を公開中",
+  ready: "ホストから利用できるWebMCP道具を公開中（AIは未実行）",
   unavailable: "通常表示中。ChatGPT内ブラウザかWebMCP対応ChromeでAI操作できます",
   error: "AI向けの道具を登録できませんでした",
 };
@@ -68,6 +68,9 @@ function WebMcpOnramp({ status }) {
         </p>
       </div>
       <div className="webmcp-boundary">
+        <span>
+          <b>AI利用</b> 現在のChatGPT/Codex側で実行。利用条件・上限はそのサービスに従う
+        </span>
         <span><b>AI</b> 調査・下書き・作業結果の返却</span>
         <span><b>OWNER</b> FIRMA・証拠確認・CONSEGNA</span>
         <span><b>保証範囲</b> 役割分離であり、ページ単独の本人認証ではありません</span>
@@ -174,6 +177,12 @@ export default function MissionView({
   const [manualPlanText, setManualPlanText] = useState("");
   const [manualPlanError, setManualPlanError] = useState("");
   const { mission } = state;
+  const hostRequestPrepared = mission.planningStatus === "awaiting_host";
+  const hostRequestAction = hostRequestPrepared
+    ? actions.hostRequestReady
+    : mission.status === "adopted"
+      ? actions.replanWorkshop
+      : actions.forgeWorkshop;
   const hasLoadedProfile =
     mission.profileId && mission.profileId !== "blank";
   const updateMission = (field, value) =>
@@ -398,31 +407,22 @@ export default function MissionView({
             </button>
           )}
           <button
-            aria-label={actionAria(
-              mission.status === "adopted"
-                ? actions.replanWorkshop
-                : actions.forgeWorkshop,
-            )}
+            aria-label={actionAria(hostRequestAction)}
             className="mission-submit"
             disabled={
               mission.planningStatus === "loading" ||
+              hostRequestPrepared ||
               state.firmaPending !== null
             }
             type="submit"
           >
-            <ActionLabel
-              copy={
-                mission.status === "adopted"
-                  ? actions.replanWorkshop
-                  : actions.forgeWorkshop
-              }
-            />
+            <ActionLabel copy={hostRequestAction} />
             <small>
-              {mission.planningStatus === "awaiting_host"
-                ? "このチャットで計画案を依頼してください"
+              {hostRequestPrepared
+                ? "上の依頼文をこのチャットへ送る。計画案はまだありません"
                 : state.firmaPending
                   ? "人間の承認を先に完了"
-                  : "APIキー不要・計画は未署名で受領"}
+                  : "依頼手順を表示。まだAIには送信しません"}
             </small>
           </button>
         </div>

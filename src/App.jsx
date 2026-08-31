@@ -1516,8 +1516,10 @@ function CapobottegaDialog({ state, onClose }) {
           <DualLabel className="section-caption" copy={terms.capobottega} />
           <h2 id="capobottega-title">ひとつのストロークに、ひとつの素材。</h2>
           <p>
-            判断はサイトのAPIではなく、いま会話しているChatGPT/Codexに頼む。
-            サイトは結果と人間の承認境界だけを保持する。
+            この画面だけではAIを呼び出さない。表示した依頼文を、いま利用中の
+            ChatGPT/Codexへ送る。利用条件と上限はそのサービスに従い、
+            工房状態はこのブラウザに保存する。WebMCP実行時は必要な範囲を
+            利用中のChatGPT/Codexが処理する。
           </p>
         </header>
         <div className="capobottega-decision" aria-live="polite">
@@ -1527,7 +1529,7 @@ function CapobottegaDialog({ state, onClose }) {
               「工房を点検し、次の最小計画を日本語で作って、未署名案として提出して。
               FIRMAは私に残して」
             </p>
-            <small>APIキー不要 · WebMCP経由 · 自動承認なし</small>
+            <small>利用中のCHATGPT / CODEXへ送信 · 自動承認なし</small>
           </div>
         </div>
         {decision && (
@@ -1652,21 +1654,24 @@ export default function App() {
   };
 
   const requestHostPlan = () =>
-    setState((current) => ({
-      ...current,
-      mission: {
-        ...current.mission,
-        planningStatus: "awaiting_host",
-        planningError: "",
-      },
-      events: [
-        createEvent(
-          "CAPOBOTTEGA",
-          "Host plan requested; ask ChatGPT/Codex to inspect and propose an unsigned draft.",
-        ),
-        ...current.events,
-      ],
-    }));
+    setState((current) => {
+      if (current.mission.planningStatus === "awaiting_host") return current;
+      return {
+        ...current,
+        mission: {
+          ...current.mission,
+          planningStatus: "awaiting_host",
+          planningError: "",
+        },
+        events: [
+          createEvent(
+            "CAPOBOTTEGA",
+            "Host request prepared but not sent; Owner must ask ChatGPT/Codex for an unsigned draft.",
+          ),
+          ...current.events,
+        ],
+      };
+    });
 
   const importHostPlanFromDom = (plan) => {
     const current = stateRef.current;
