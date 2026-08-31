@@ -214,6 +214,7 @@ test also remains open.
 - [`devpost-submission.md`](devpost-submission.md) — English submission and testing draft;
 - [`docs/DEMO_SCRIPT_EN.md`](docs/DEMO_SCRIPT_EN.md) — sub-three-minute public demo plan.
 - [`docs/YOUTUBE_CHANNEL_PROFILE.md`](docs/YOUTUBE_CHANNEL_PROFILE.md) — public NoBu Builds profile copy and privacy checklist.
+- [`docs/nobu-builds-youtube-banner.png`](docs/nobu-builds-youtube-banner.png) — upload-ready 2560×1440 NoBu Builds channel banner.
 - [`docs/YOUTUBE_UPLOAD_PACKET.md`](docs/YOUTUBE_UPLOAD_PACKET.md) — account-safe title, description, settings, captions, and publication checklist.
 
 These are drafts until their public URLs and hosted evidence placeholders are

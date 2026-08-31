@@ -46,6 +46,17 @@ no Google Account identifier or private Studio information.
 - Banner copy: `BUILD · VERIFY · RETURN`
 - Optional small line: `AI tools for a disciplined team of one`
 
+## Prepared banner
+
+- Upload-ready PNG: [`nobu-builds-youtube-banner.png`](nobu-builds-youtube-banner.png)
+- Canvas: **2560×1440**
+- File size: under YouTube's **6 MB** banner limit
+- Text placement: centered inside the cross-device safe region
+
+The banner uses the exact text `NoBu Builds`, `BUILD · VERIFY · RETURN`, and
+`AI tools for a disciplined team of one`. It contains no personal photo,
+third-party logo, award mark, or external asset.
+
 ## Public profile check
 
 Before publishing the first video, the Owner confirms:
