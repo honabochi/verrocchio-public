@@ -1,20 +1,17 @@
 import { createHackathonProfile } from "./hackathonProfiles";
+import { parseEvalPart, SOURCE_REVISION } from "./buildIdentity";
 
 export const STORAGE_KEY = "verrocchio-workshop-v2";
 
-function compactStoragePart(value) {
-  return String(value || "")
-    .trim()
-    .replace(/[^a-zA-Z0-9_-]/g, "_")
-    .slice(0, 48);
-}
-
-export function workshopStorageKey(search = globalThis.location?.search || "") {
+export function workshopStorageKey(
+  search = globalThis.location?.search || "",
+  sourceRevision = SOURCE_REVISION,
+) {
   const params = new URLSearchParams(search);
-  const evalRun = compactStoragePart(params.get("evalRun"));
-  const evalCase = compactStoragePart(params.get("case"));
-  return evalRun && evalCase
-    ? `${STORAGE_KEY}:eval:${evalRun}:${evalCase}`
+  const evalRun = parseEvalPart(params.get("evalRun"));
+  const evalCase = parseEvalPart(params.get("case"));
+  return sourceRevision && evalRun && evalCase
+    ? `${STORAGE_KEY}:eval:${sourceRevision}:${evalRun}:${evalCase}`
     : STORAGE_KEY;
 }
 

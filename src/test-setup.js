@@ -4,11 +4,17 @@ import { cleanup } from "@testing-library/react";
 
 const storage = new Map();
 const localStorageMock = {
+  get length() {
+    return storage.size;
+  },
   clear() {
     storage.clear();
   },
   getItem(key) {
     return storage.has(key) ? storage.get(key) : null;
+  },
+  key(index) {
+    return [...storage.keys()][index] ?? null;
   },
   removeItem(key) {
     storage.delete(key);

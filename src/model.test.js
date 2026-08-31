@@ -10,6 +10,7 @@ import {
   STORAGE_KEY,
   workshopStorageKey,
 } from "./model.js";
+import { SOURCE_REVISION } from "./buildIdentity";
 
 const dynamicPlan = {
   contract: {
@@ -162,9 +163,21 @@ test("isolates each hosted evaluation case without changing normal storage", () 
   const evalKey = workshopStorageKey("?evalRun=run-01&case=ambiguous-stop");
 
   expect(evalKey).toBe(
-    `${STORAGE_KEY}:eval:run-01:ambiguous-stop`,
+    `${STORAGE_KEY}:eval:${SOURCE_REVISION}:run-01:ambiguous-stop`,
   );
   expect(workshopStorageKey("?case=ambiguous-stop")).toBe(STORAGE_KEY);
+  expect(
+    workshopStorageKey("?evalRun=run/a&case=ambiguous-stop"),
+  ).toBe(STORAGE_KEY);
+  expect(
+    workshopStorageKey("?evalRun=%20run-01%20&case=ambiguous-stop"),
+  ).toBe(STORAGE_KEY);
+  expect(
+    workshopStorageKey(
+      "?evalRun=run-01&case=ambiguous-stop",
+      "f".repeat(40),
+    ),
+  ).not.toBe(evalKey);
 
   localStorage.setItem(evalKey, JSON.stringify({ attentionMinutes: 7 }));
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ attentionMinutes: 42 }));

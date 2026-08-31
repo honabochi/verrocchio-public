@@ -2,6 +2,7 @@ import {
   findWebMcpEvalCase,
   WEBMCP_EVAL_CASES,
 } from "./webmcpEvalContract";
+import { parseEvalPart, SOURCE_REVISION } from "./buildIdentity";
 
 const EVAL_RECEIPT_PREFIX = "verrocchio-webmcp-eval-v1";
 export const EVAL_RECEIPT_EVENT = "verrocchio:eval-receipt-updated";
@@ -11,13 +12,6 @@ const SAFETY_KEYS = new Set([
   "humanControlUsedByAgent",
   "submissionAttempted",
 ]);
-
-function compactPart(value) {
-  return String(value || "")
-    .trim()
-    .replace(/[^a-zA-Z0-9_-]/g, "_")
-    .slice(0, 48);
-}
 
 function emptyObservations() {
   return {
@@ -49,6 +43,7 @@ function emptyReceipt(runId, origin = globalThis.location?.origin || "") {
     runId,
     host: "ChatGPT WebMCP host",
     origin,
+    sourceRevision: SOURCE_REVISION,
     cases: WEBMCP_EVAL_CASES.map(emptyCase),
     domBaselines: WEBMCP_EVAL_CASES.filter((item) => item.productive).map(
       (item) => ({
@@ -63,12 +58,19 @@ function emptyReceipt(runId, origin = globalThis.location?.origin || "") {
 }
 
 function storageKey(runId) {
-  return `${EVAL_RECEIPT_PREFIX}:${compactPart(runId)}`;
+  return `${EVAL_RECEIPT_PREFIX}:${SOURCE_REVISION}:${parseEvalPart(runId)}`;
 }
 
 function normalizeReceipt(stored, runId) {
   const base = emptyReceipt(runId);
-  if (!stored || stored.runId !== runId) return base;
+  if (
+    !stored ||
+    stored.runId !== runId ||
+    stored.sourceRevision !== base.sourceRevision ||
+    stored.origin !== base.origin
+  ) {
+    return base;
+  }
   const cases = new Map((stored.cases || []).map((item) => [item.caseId, item]));
   const baselines = new Map(
     (stored.domBaselines || []).map((item) => [item.caseId, item]),
@@ -77,6 +79,8 @@ function normalizeReceipt(stored, runId) {
     ...base,
     ...stored,
     runId,
+    origin: base.origin,
+    sourceRevision: base.sourceRevision,
     cases: base.cases.map((item) => ({
       ...item,
       ...(cases.get(item.caseId) || {}),
@@ -185,13 +189,13 @@ function writeReceipt(receipt, { required = false } = {}) {
 
 export function getWebMcpEvalContext(search = globalThis.location?.search || "") {
   const params = new URLSearchParams(search);
-  const runId = compactPart(params.get("evalRun"));
-  const rawCaseId = compactPart(params.get("case"));
+  const runId = parseEvalPart(params.get("evalRun"));
+  const rawCaseId = parseEvalPart(params.get("case"));
   const domOnly = params.get("webmcp") === "off" || rawCaseId.endsWith("-dom");
   const caseId = rawCaseId.replace(/-dom$/, "");
   const contract = findWebMcpEvalCase(caseId);
   return {
-    enabled: Boolean(runId && rawCaseId && contract),
+    enabled: Boolean(SOURCE_REVISION && runId && rawCaseId && contract),
     runId,
     rawCaseId,
     caseId,
@@ -201,7 +205,7 @@ export function getWebMcpEvalContext(search = globalThis.location?.search || "")
 }
 
 export function getEvalReceipt(runId) {
-  const safeRunId = compactPart(runId);
+  const safeRunId = parseEvalPart(runId);
   if (!safeRunId) return emptyReceipt("");
   try {
     const stored = JSON.parse(localStorage.getItem(storageKey(safeRunId)) || "null");

@@ -10,6 +10,7 @@ import {
   setEvalDomBaseline,
   setEvalSafetyObservation,
 } from "./evalReceipt";
+import { SOURCE_REVISION } from "./buildIdentity";
 
 const before = {
   stateVersion: 0,
@@ -40,6 +41,60 @@ describe("hosted WebMCP evaluation receipt", () => {
       domOnly: true,
     });
     expect(getWebMcpEvalContext("?case=manca-read").enabled).toBe(false);
+  });
+
+  test("binds new receipts to the exact build revision and origin", () => {
+    const receipt = getEvalReceipt("revision-bound-run");
+
+    expect(receipt.sourceRevision).toBe(SOURCE_REVISION);
+    expect(receipt.origin).toBe(window.location.origin);
+    expect(receipt.cases.every((item) => item.status === "not_run")).toBe(true);
+  });
+
+  test("rejects invalid or collision-prone evaluation identifiers", () => {
+    expect(
+      getWebMcpEvalContext("?evalRun=run/a&case=manca-read").enabled,
+    ).toBe(false);
+    expect(
+      getWebMcpEvalContext("?evalRun=run_a&case=manca-read").enabled,
+    ).toBe(true);
+    expect(
+      getWebMcpEvalContext("?evalRun=%20run_a%20&case=manca-read").enabled,
+    ).toBe(false);
+    expect(
+      getWebMcpEvalContext(
+        `?evalRun=${"a".repeat(49)}&case=manca-read`,
+      ).enabled,
+    ).toBe(false);
+  });
+
+  test.each([
+    ["missing revision", (receipt) => delete receipt.sourceRevision],
+    ["other revision", (receipt) => { receipt.sourceRevision = "f".repeat(40); }],
+    ["other origin", (receipt) => { receipt.origin = "https://example.invalid"; }],
+  ])("does not merge stored evidence from %s", (_label, mutate) => {
+    const context = getWebMcpEvalContext(
+      "?evalRun=stale-evidence&case=manca-read",
+    );
+    recordEvalToolCall(context, {
+      name: "inspect_workshop",
+      before,
+      after: before,
+      startedAtMs: 1_000,
+      completedAtMs: 1_010,
+    });
+    const key = localStorage.key(0);
+    const stored = JSON.parse(localStorage.getItem(key));
+    mutate(stored);
+    localStorage.setItem(key, JSON.stringify(stored));
+
+    const receipt = getEvalReceipt("stale-evidence");
+    expect(receipt.sourceRevision).toBe(SOURCE_REVISION);
+    expect(receipt.origin).toBe(window.location.origin);
+    expect(receipt.cases.every((item) => item.status === "not_run")).toBe(true);
+    expect(
+      receipt.domBaselines.every((item) => item.agentActions === null),
+    ).toBe(true);
   });
 
   test("records only tool names and bounded state snapshots", () => {

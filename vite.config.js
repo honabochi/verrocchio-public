@@ -7,6 +7,9 @@ const buildRevision = execFileSync("git", ["rev-parse", "HEAD"], {
 }).trim();
 
 export default defineConfig({
+  define: {
+    __VERROCCHIO_SOURCE_REVISION__: JSON.stringify(buildRevision),
+  },
   plugins: [
     react(),
     {
