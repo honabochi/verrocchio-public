@@ -34,9 +34,10 @@ the account email or private Studio identity in this repository.
 - Narration may be the Owner's voice or a synthetic voice whose license permits
   this public use. Confirm the selected voice service's terms before export.
 
-Do not record until the public judge URL is unauthenticated and the hosted
-WebMCP path has been verified. The current authentication-gated Site is not the
-final recording target.
+Do not record until the synchronized frozen revision is anonymously reachable
+and its hosted WebMCP path has been verified. The current Site is public, but
+Version 25 precedes the latest local release packet and is not yet the final
+recording target.
 
 ## Proposed YouTube title
 
@@ -53,7 +54,7 @@ final recording target.
 > human keeps approval, evidence verification, publication, and final
 > submission.
 >
-> Live demo: [ADD ONLY AFTER PUBLIC ACCESS IS VERIFIED]
+> Live demo: https://verrocchio-workshop.honabochi.chatgpt.site/
 >
 > Source code: https://github.com/honabochi/verrocchio-public
 >
@@ -68,8 +69,8 @@ final recording target.
 > 01:56 Preserve evidence and the exact return point
 > 02:18 Why WebMCP instead of DOM guessing
 
-Replace the live-demo placeholder only after unauthenticated access, the
-deployed revision, and the recorded path have been read back successfully.
+Recheck the live-demo URL after the frozen revision and recorded path have been
+read back successfully.
 
 ## Proposed upload settings
 
