@@ -30,6 +30,11 @@ describe("submission readiness", () => {
     ).toBe(4);
   });
 
+  test("does not count the required official-fields heading as a placeholder", () => {
+    expect(countDraftPlaceholders("## TODO Official Form Fields\n\nOwner review pending."))
+      .toBe(0);
+  });
+
   test("requires every draft heading", () => {
     expect(missingDraftHeadings("## One-line Summary\n## Problem")).toContain(
       "## Solution",

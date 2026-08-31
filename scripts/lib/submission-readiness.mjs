@@ -182,6 +182,10 @@ export function youtubeVideoId(value) {
 }
 
 export function countDraftPlaceholders(text) {
+  const publicationText = String(text || "").replace(
+    /^## TODO Official Form Fields\s*$/gmi,
+    "## Official Form Fields",
+  );
   const markers = [
     /\b(?:TODO|TBD|TK|FIXME|XXX)\b/gi,
     /<final-submission-tag>/g,
@@ -192,7 +196,7 @@ export function countDraftPlaceholders(text) {
     /\]\(\s*\)/g,
   ];
   return markers.reduce(
-    (count, pattern) => count + (text.match(pattern)?.length || 0),
+    (count, pattern) => count + (publicationText.match(pattern)?.length || 0),
     0,
   );
 }
