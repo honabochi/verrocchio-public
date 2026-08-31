@@ -24,8 +24,9 @@ Gate 1 completed through the authenticated Devpost flow on 2026-08-30. The
 public repository is also reachable without authentication, and the current
 public working copy passes all 111 automated tests and a production build.
 These facts do not complete the release: the repository remains untagged, the
-Site still presents a login wall to anonymous judges, and no public video is
-recorded.
+Site access is now public and an unauthenticated HTTP request returned the
+expected VERROCCHIO page on 2026-08-31. The exact final deployed revision and
+WebMCP judge path remain unverified, and no public video is recorded.
 
 When the Owner is next at a computer, the exact return action is to open the
 VERROCCHIO Site management screen and authorize the latest audited source to be

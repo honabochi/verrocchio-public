@@ -210,7 +210,9 @@ Locally verified:
 Judge-visible evidence and release gates still unresolved:
 
 - Registration is complete; personal answers remain off-repository.
-- Anonymous judge access to the live URL fails at a login wall.
+- The login wall was resolved on 2026-08-31: an unauthenticated HTTP request
+  reached the expected VERROCCHIO page. The final deployed revision identity
+  and hosted WebMCP judge path remain unresolved.
 - The public repository and visible MIT license are reachable without
   authentication.
 - The final annotated tag and its final clean-clone install, test, and build

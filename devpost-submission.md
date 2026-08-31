@@ -14,14 +14,16 @@ guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
 tested public release commit `90f5f3f` recorded 111 passing tests and a production
 build, while earlier candidate evidence includes a real Chrome WebMCP smoke. The
-final tagged clean-clone proof, public judge access, and fresh hosted evaluation
-remain incomplete.
+final tagged clean-clone proof, final deployed-revision readback, and fresh
+hosted evaluation remain incomplete.
 
 ## Public Demo Link
 
-TODO — insert the judge-accessible URL only after its revision marker and
-WebMCP path are verified. The current hosted URL still requires authentication
-and is not suitable as the final judge link.
+<https://verrocchio-workshop.honabochi.chatgpt.site/>
+
+Unauthenticated HTTP access returned the expected VERROCCHIO page on
+2026-08-31. The final deployed revision marker and WebMCP judge path still need
+verification before this URL is frozen for submission.
 
 ## Public Repository Link
 
@@ -191,7 +193,9 @@ Devpost—never in the repository.
 - Untagged public release commit `90f5f3f` passed a clean dependency install, all
   111 tests, and a production build on 2026-08-31. This does not
   replace the required repeat on the final annotated submission tag.
-- Judge-accessible unauthenticated live smoke: **TODO**.
+- Judge-accessible unauthenticated HTTP smoke: **PASS** on 2026-08-31 for the
+  current deployment; final revision identity and WebMCP judge smoke remain
+  **INCOMPLETE**.
 - Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
 - WebMCP-versus-DOM comparison: **TODO**; publish no improvement percentage.
 
