@@ -13,6 +13,8 @@ No Owner action is required while away from the computer.
   off-repository.
 - The English demo script, timed subtitle file, and YouTube upload packet are
   ready.
+- The Owner reports that the `NoBu Builds` channel, prepared banner, and
+  bilingual About text are configured. No channel setup needs to be repeated.
 
 ## Intentionally incomplete
 

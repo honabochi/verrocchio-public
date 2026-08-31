@@ -72,6 +72,12 @@ Before publishing the first video, the Owner confirms:
 
 ## Current boundary
 
-The channel is reported created, but the public handle, profile appearance, and
-signed-out view have not been independently read back. Do not mark the channel
-profile verified until the Owner checks those public surfaces.
+Owner-reported setup completed on 2026-08-31:
+
+- the `NoBu Builds` channel was created;
+- the prepared banner was applied;
+- the prepared bilingual About text was applied.
+
+This is an Owner receipt, not an independent signed-out readback. The selected
+public handle and complete signed-out appearance have not been independently
+verified. No VERROCCHIO video has been uploaded or published.
