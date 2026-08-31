@@ -213,6 +213,7 @@ test also remains open.
 - [`docs/CHALLENGE_EXTENSION.md`](docs/CHALLENGE_EXTENSION.md) — dated before/after evidence;
 - [`devpost-submission.md`](devpost-submission.md) — English submission and testing draft;
 - [`docs/DEMO_SCRIPT_EN.md`](docs/DEMO_SCRIPT_EN.md) — sub-three-minute public demo plan.
+- [`docs/YOUTUBE_CHANNEL_PROFILE.md`](docs/YOUTUBE_CHANNEL_PROFILE.md) — public NoBu Builds profile copy and privacy checklist.
 - [`docs/YOUTUBE_UPLOAD_PACKET.md`](docs/YOUTUBE_UPLOAD_PACKET.md) — account-safe title, description, settings, captions, and publication checklist.
 
 These are drafts until their public URLs and hosted evidence placeholders are

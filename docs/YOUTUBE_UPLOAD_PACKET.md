@@ -8,18 +8,19 @@ and publication step.
 
 - Reuse the Owner's existing Google Account; a second Google Account is not
   required.
-- Create or select a separate YouTube channel named **VERROCCHIO Workshop** so
+- Create or select a separate YouTube channel named **NoBu Builds** so
   the public channel identity does not need to match the Google Account name.
 - Suggested handles, subject to live availability:
-  - `@verrocchio-workshop`
-  - `@verrocchio-webmcp`
-  - `@verrocchio-lab`
+  - `@nobubuilds`
+  - `@nobu-builds`
+  - `@nobuildslab`
 - Before upload, inspect the channel name, handle, profile picture, About page,
   and visible links. Remove personal names, photos, email addresses, and
   unrelated links.
 
-Channel creation and the final identity choice are Owner-only because they
-create a public account presence.
+The Owner reports that the channel has been created. The selected handle and
+public profile still require an Owner readback before publication; do not store
+the account email or private Studio identity in this repository.
 
 ## Prepared video package
 
@@ -106,7 +107,7 @@ is frozen. It is optional for eligibility but useful for judge recognition.
 ## Owner upload sequence
 
 1. Sign in to YouTube with the intended existing Google Account.
-2. Create or select the separate **VERROCCHIO Workshop** channel.
+2. Select the **NoBu Builds** channel.
 3. Confirm its public identity exposes no personal name, photo, email, or
    unrelated links.
 4. Upload the final MP4 as **Private**.
