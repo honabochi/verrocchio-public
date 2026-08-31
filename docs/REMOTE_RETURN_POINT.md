@@ -17,21 +17,24 @@ No Owner action is required while away from the computer.
   bilingual About text are configured. No channel setup needs to be repeated.
 - The VERROCCHIO Site access mode is public. An unauthenticated request returned
   HTTP 200 and the expected VERROCCHIO title and description on 2026-08-31.
+- The public Site serves the exact JavaScript and CSS assets produced by public
+  source commit `170e0f4`. A deployed Chrome smoke passed the four-tool surface,
+  FERMO/resume, CLAIMED/VERIFY boundary, mobile overflow, 404, and runtime-error
+  checks. See `evals/hosted-smoke-2026-08-31.json`.
 
 ## Intentionally incomplete
 
-- The latest audited source has not been deployed publicly on Sites.
-- The hosted WebMCP evaluation and clean judge smoke have not been run against
-  the final public revision.
+- Natural-language host selection across the fixed seven cases and the two DOM
+  comparisons have not been rerun against the final public revision.
 - No public YouTube video is recorded.
 - No final annotated submission tag exists.
 - Owner-only Devpost answers and final submission remain pending.
 
 ## Exact next action
 
-1. Build and publish the exact latest audited source as a new Sites version.
-2. Verify its revision marker from an unauthenticated request.
-3. Run the hosted WebMCP evaluation and clean judge smoke against that version.
+1. Run the fixed seven natural-language host cases on the public Site.
+2. Record the two required DOM comparisons.
+3. Export and machine-check the resulting evaluation receipt.
 
 Codex then hands back the recording-ready build.
 After the public video URL is known, the release packet can be frozen, tagged,

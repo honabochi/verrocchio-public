@@ -1,0 +1,42 @@
+{
+  "schema": "verrocchio.hosted-smoke.v1",
+  "runId": "2026-08-31-public-170e0f4",
+  "checkedAt": "2026-08-31T20:57:21+09:00",
+  "publicSourceCommit": "170e0f46c58d1df052298edbc3fdca3f27e1668f",
+  "url": "https://verrocchio-workshop.honabochi.chatgpt.site/",
+  "httpStatus": 200,
+  "deployedAssets": {
+    "javascript": "assets/index-CaI4gnGn.js",
+    "stylesheet": "assets/index-CDT2xPKN.css",
+    "matchedLocalBuild": true
+  },
+  "initialTools": [
+    "call_fermo",
+    "inspect_workshop",
+    "propose_workshop_draft",
+    "return_work_result"
+  ],
+  "fermoTools": [
+    "inspect_workshop"
+  ],
+  "toolsRestoredAfterHumanResume": true,
+  "claim": {
+    "transition": "RESULT_CLAIMED",
+    "phase": "EVIDENCE_REVIEW",
+    "mancaBefore": 6,
+    "mancaAfterClaim": 6,
+    "nextActor": "human",
+    "nextAction": "VERIFY_EVIDENCE_IN_UI"
+  },
+  "humanVerification": {
+    "mancaAfterVerify": 5,
+    "toolsRestored": true
+  },
+  "mobileHorizontalOverflow": false,
+  "notFoundCount": 0,
+  "runtimeErrorCount": 0,
+  "warnings": [
+    "navigator.modelContext is deprecated; the product uses document.modelContext"
+  ],
+  "scope": "Deterministic Chrome smoke of the deployed page contract and human boundary. This does not prove natural-language host tool selection, the seven-case evaluation, or the WebMCP-versus-DOM comparison."
+}
