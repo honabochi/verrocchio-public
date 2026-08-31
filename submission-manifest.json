@@ -6,9 +6,9 @@
   "deadlineUtc": "2026-09-03T20:00:00Z",
   "challengeBaseline": "91315a1",
   "challengeStart": "0176211",
-  "productCandidate": "f13d687",
+  "productCandidate": "c5decb6",
   "submissionTag": "",
-  "expectedTestCount": 111,
+  "expectedTestCount": 117,
   "entryContext": {
     "appStatus": "Existing"
   },

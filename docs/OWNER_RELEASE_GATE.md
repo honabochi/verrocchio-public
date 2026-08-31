@@ -22,17 +22,17 @@ browser and are never copied into this repository or an AI transcript.
 
 Gate 1 completed through the authenticated Devpost flow on 2026-08-30. The
 public repository is also reachable without authentication, and the current
-public working copy passes all 111 automated tests and a production build.
+public working copy passed 117 automated tests and a production build.
 These facts do not complete the release: the repository remains untagged, the
 Site access is now public and an unauthenticated HTTP request returned the
 expected VERROCCHIO page on 2026-08-31. The exact final deployed revision and
 WebMCP judge path remain unverified, and no public video is recorded.
 
-When the Owner is next at a computer, the exact return action is to open the
-VERROCCHIO Site management screen and authorize the latest audited source to be
-published with public judge access. Stop before any credential value is shown
-to AI. After publication, AI verifies anonymous access and the deployed
-revision before hosted evaluation or recording begins.
+Public Site Version 25 is now anonymously reachable and identifies deployed
+source `cbca8ad`. The exact return action is to run the seven hosted WebMCP cases
+and two DOM baselines against a new evaluation run, then record the clean judge
+path used for the demo. Stop before any credential value or protected browser
+data is shown to AI.
 
 Gate 2 still requires the Owner's separate off-screen confirmation that the
 public-bound files contain no secret or protected data. Gate 4 remains deferred

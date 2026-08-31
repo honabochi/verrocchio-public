@@ -26,28 +26,28 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `91315a1` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `0176211` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Audited product candidate | `f13d687` | 2026-08-31 JST | Security-audited endpoint for the implementation, Owner-boundary remediation, fail-closed evaluation evidence, browser-smoke evidence, and public-release metadata below |
+| Current tested product candidate | `c5decb6` | 2026-09-01 JST | Current implementation endpoint, including Owner-boundary remediation, fail-closed evaluation evidence, host-request disclosure, browser-smoke evidence, and submission-preflight correction |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-0176211^..f13d687
+0176211^..c5decb6
 ```
 
-This range contains 54 commits. Against the July baseline, it changes 56 files
-with 10,284 insertions and 1,124 deletions. The metadata-only commits after the
+This range contains 68 commits. Against the July baseline, it changes 64 files
+with 10,857 insertions and 1,120 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
-the public comparison. That tag is not yet assigned in this draft.
+the public comparison. The tag remains an explicit Owner approval gate.
 
 For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 91315a1..f13d687
-git log --format='%h %aI %s' 0176211^..f13d687
+git diff --stat 91315a1..c5decb6
+git log --format='%h %aI %s' 0176211^..c5decb6
 ```
 
-For the final public comparison, replace `f13d687` in both commands with the
+For the final public comparison, replace `c5decb6` in both commands with the
 annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
@@ -111,11 +111,11 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `2ee0a68`
+## Verification status at `c5decb6`
 
 Confirmed in the repository:
 
-- The automated suite passes: 102 tests across state, commands, WebMCP tools,
+- The automated suite passes: 117 tests across state, commands, WebMCP tools,
   planning contracts, UI interaction, and evaluation logic.
 - A local Google Chrome WebMCP smoke on the candidate registered all four
   initial tools, reduced the surface to inspection during FERMO and evidence
@@ -139,12 +139,13 @@ Confirmed in the repository:
 
 The following must not be presented as completed evidence:
 
-- A new post-fix hosted run has not yet produced a formal passing seven-case
+- A new post-fix hosted run has not produced a formal passing seven-case
   evaluation receipt. The earlier `2026-08-28-c` run was diagnostic.
 - Fresh-participant comprehension and the first useful loop without external
   coaching have not yet passed a user test.
-- Judge access to the final submitted live URL has not yet been proven from a
-  clean judge-equivalent session.
+- Public Site Version 25 is anonymously reachable and identifies deployed
+  source `cbca8ad`, but final tagged judge access and the complete WebMCP path
+  have not been proven from a clean judge-equivalent session.
 - The final public repository, visible repository license metadata, English
   submission description, testing instructions, public YouTube demo, and Devpost
   receipt are submission deliverables, not completed evidence in this commit.

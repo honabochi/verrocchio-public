@@ -1,8 +1,8 @@
 # VERROCCHIO — A Disciplined Team of One
 
-> Submission draft only. Nothing has been submitted to Devpost. Replace every
-> `TODO`, verify the frozen public artifacts, and read the actual form back to
-> the entrant before publication or submission.
+> Submission draft only. Nothing has been submitted to Devpost. Final hosted
+> evidence, video, frozen public artifacts, and Owner-only form answers remain
+> explicitly pending and must be read back before submission.
 
 ## One-line Summary
 
@@ -12,28 +12,29 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-tested public release commit `90f5f3f` recorded 111 passing tests and a production
-build, while earlier candidate evidence includes a real Chrome WebMCP smoke. The
-final tagged clean-clone proof and fresh natural-language hosted evaluation
-remain incomplete.
+current local candidate `c5decb6` recorded 117 passing tests, while the public
+Site Version 25 identifies deployed source `cbca8ad` and earlier candidate
+evidence includes a real Chrome WebMCP smoke. Final tagged clean-clone proof,
+fresh natural-language hosted evaluation, and video evidence remain incomplete.
 
 ## Public Demo Link
 
 <https://verrocchio-workshop.honabochi.chatgpt.site/>
 
 Unauthenticated HTTP access returned the expected VERROCCHIO page on
-2026-08-31. Its JavaScript and CSS asset names match the production build from
-public source commit `170e0f4`, and a deployed deterministic Chrome smoke passed
-the WebMCP tool-surface and human-boundary checks. Natural-language host
-selection and the WebMCP-versus-DOM comparison still need verification before
-this URL is frozen for submission.
+2026-09-01. Version 25 identifies deployed source `cbca8ad`; its client bundle
+contains the current host-request handoff and browser-storage disclosure. An
+earlier deployed deterministic Chrome smoke passed the WebMCP tool-surface and
+human-boundary checks. Fresh natural-language host selection and the
+WebMCP-versus-DOM comparison still need verification before final freeze.
 
 ## Public Repository Link
 
 <https://github.com/honabochi/verrocchio-public>
 
-The source, setup instructions, required assets, and MIT license are readable
-without authentication. The final annotated submission tag is still pending.
+The source, setup instructions, required assets, and MIT license are intended
+for public judge access. The default branch still needs the latest candidate,
+the final annotated submission tag, and an unauthenticated artifact readback.
 
 ## Problem
 
@@ -67,10 +68,10 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** tested public release commit `90f5f3f` recorded 111 passing tests and a
-  production build, while earlier candidate evidence includes a real Chrome
-  WebMCP smoke; the final tagged clean-clone test/build proof
-  and public judge access remain release gates.
+- **Execution:** current local candidate `c5decb6` recorded 117 passing tests,
+  and public Site Version 25 identifies deployed source `cbca8ad`; the final
+  tagged clean-clone test/build proof, hosted evaluation, and repository
+  synchronization remain release gates.
 - **Potential Impact:** the target is a time-constrained solo builder who needs
   continuity without forming a conventional team. Browser-local state keeps
   MANCA, the active packet, receipts, and the next action together after an
@@ -159,8 +160,8 @@ FIRMA/FERMO controls, but it did not register WebMCP tools.
 
 - **Pre-existing baseline:** [`91315a1`](https://github.com/honabochi/verrocchio-public/commit/91315a120059cae3b9eb68566c81d5c8d87fd903) (July 19, 2026).
 - **Challenge start:** [`0176211`](https://github.com/honabochi/verrocchio-public/commit/0176211fe5a1c62ba366c1379710864a5bb2db17) (August 27, 2026).
-- **Tested public release commit:** [`90f5f3f`](https://github.com/honabochi/verrocchio-public/commit/90f5f3fff38a298989eeccc364a711b801256aef); final annotated tag pending.
-- **Current public comparison:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); replace `main` with the final tag before submission.
+- **Current tested candidate:** `c5decb6` with 117 passing tests; public synchronization and final annotated tag remain pending.
+- **Current comparison route:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); the final draft will point to the frozen tag after Owner approval.
 
 Beginning with `0176211` on August 27, the eligible extension added four native,
 state-aware WebMCP tools; host-driven keyless planning; phase-dependent tool
@@ -172,9 +173,10 @@ Full statistics, limitations, and dated evidence are in
 
 ## Testing Instructions
 
-> TODO — rehearse these instructions against the frozen public build.
+> Rehearse these instructions once more against the frozen public build before
+> copying them into Devpost.
 
-1. Open the final live URL in ChatGPT's in-app browser or a supported WebMCP
+1. Open the frozen public URL in ChatGPT's in-app browser or a supported WebMCP
    host and load **The WebMCP Challenge** mission.
 2. Ask: `What evidence is still missing?` Confirm `inspect_workshop` returns
    MANCA, the next bounded step, and human-only decisions without changing state.
@@ -191,16 +193,15 @@ Devpost—never in the repository.
 
 ## Verification and evaluation status
 
-- Earlier candidate evidence includes a real Chrome WebMCP smoke; the remapped
-  public product boundary is `f13d687`.
-- Untagged public release commit `90f5f3f` passed a clean dependency install, all
-  111 tests, and a production build on 2026-08-31. This does not
-  replace the required repeat on the final annotated submission tag.
-- Judge-accessible unauthenticated HTTP and deployed deterministic Chrome
-  smoke: **PASS** on 2026-08-31 for public source commit `170e0f4`; see
-  `evals/hosted-smoke-2026-08-31.json`.
+- Earlier candidate evidence includes a real Chrome WebMCP smoke. The current
+  tested local product boundary is `c5decb6`.
+- Candidate `c5decb6` passed all 117 tests on 2026-09-01. This does not replace
+  the required clean-clone test and build on the final annotated submission tag.
+- Judge-accessible unauthenticated HTTP: **PASS** on 2026-09-01 for public Site
+  Version 25 identifying source `cbca8ad`. The deterministic Chrome smoke in
+  `evals/hosted-smoke-2026-08-31.json` belongs to an earlier deployed revision.
 - Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
-- WebMCP-versus-DOM comparison: **TODO**; publish no improvement percentage.
+- WebMCP-versus-DOM comparison: **INCOMPLETE**; publish no improvement percentage.
 
 ## Language and judge accessibility
 
@@ -222,13 +223,13 @@ remain only when it does not block the documented judge path.
 3. `CLAIMED` card showing verification, evidence reference, risk, and review.
 4. Final receipt or limitations view from the frozen public build.
 
-TODO — capture only from the final public revision and remove personal browser
+Capture these only from the final public revision and remove personal browser
 data, credentials, unrelated tabs, and unsupported pass claims.
 
 ## Demo Video
 
-Public YouTube URL: TODO — insert one public video under three minutes with
-audible English narration.
+Public YouTube URL: pending Owner recording and public upload. The final video
+must be under three minutes with audible English narration.
 
 The final English narration and timed subtitle file are prepared in
 `docs/DEMO_SCRIPT_EN.md` and `docs/DEMO_CAPTIONS_EN.srt`.
@@ -290,7 +291,9 @@ before submission. Identity and self-assessment answers remain Owner-only.
 - [ ] **28253 — Submission-period updates** (required for this Existing entry):
   use the dated summary in **New work added during the submission period** and
   add the public comparison link after publication.
-- [ ] **28254 — Judge-accessible live URL** (required): TODO verified URL.
+- [ ] **28254 — Judge-accessible live URL** (required draft):
+  `https://verrocchio-workshop.honabochi.chatgpt.site/`; Owner must read it back
+  in the live form after final freeze.
 - [ ] **28255 — Testing instructions / credentials** (optional): use the tested
   path above; keep any judge-only credentials only in the official form.
 - [ ] **28256 — Public code repository URL** (required): use
