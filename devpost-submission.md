@@ -12,7 +12,7 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-current local candidate `c5decb6` recorded 117 passing tests, while the public
+current local candidate `aefc38d` recorded 117 passing tests, while the public
 Site Version 25 identifies deployed source `cbca8ad` and earlier candidate
 evidence includes a real Chrome WebMCP smoke. Final tagged clean-clone proof,
 fresh natural-language hosted evaluation, and video evidence remain incomplete.
@@ -68,7 +68,7 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** current local candidate `c5decb6` recorded 117 passing tests,
+- **Execution:** current local candidate `aefc38d` recorded 117 passing tests,
   and public Site Version 25 identifies deployed source `cbca8ad`; the final
   tagged clean-clone test/build proof, hosted evaluation, and repository
   synchronization remain release gates.
@@ -160,7 +160,7 @@ FIRMA/FERMO controls, but it did not register WebMCP tools.
 
 - **Pre-existing baseline:** [`91315a1`](https://github.com/honabochi/verrocchio-public/commit/91315a120059cae3b9eb68566c81d5c8d87fd903) (July 19, 2026).
 - **Challenge start:** [`0176211`](https://github.com/honabochi/verrocchio-public/commit/0176211fe5a1c62ba366c1379710864a5bb2db17) (August 27, 2026).
-- **Current tested candidate:** `c5decb6` with 117 passing tests; public synchronization and final annotated tag remain pending.
+- **Current tested candidate:** `aefc38d` with 117 passing tests; public synchronization and final annotated tag remain pending.
 - **Current comparison route:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); the final draft will point to the frozen tag after Owner approval.
 
 Beginning with `0176211` on August 27, the eligible extension added four native,
@@ -194,8 +194,8 @@ Devpost—never in the repository.
 ## Verification and evaluation status
 
 - Earlier candidate evidence includes a real Chrome WebMCP smoke. The current
-  tested local product boundary is `c5decb6`.
-- Candidate `c5decb6` passed all 117 tests on 2026-09-01. This does not replace
+  tested local product boundary is `aefc38d`.
+- Candidate `aefc38d` passed all 117 tests on 2026-09-01. This does not replace
   the required clean-clone test and build on the final annotated submission tag.
 - Judge-accessible unauthenticated HTTP: **PASS** on 2026-09-01 for public Site
   Version 25 identifying source `cbca8ad`. The deterministic Chrome smoke in
