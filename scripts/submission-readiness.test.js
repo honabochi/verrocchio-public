@@ -244,6 +244,12 @@ describe("submission readiness", () => {
     expect(arePostCandidateChangesMetadataOnly([
       "scripts/verify-submission-readiness.mjs",
     ])).toBe(true);
+    expect(arePostCandidateChangesMetadataOnly([
+      "docs/DEMO_CAPTIONS_EN.srt",
+      "docs/REMOTE_RETURN_POINT.md",
+      "docs/TONIGHT_RECORDING_HANDOFF.md",
+      "docs/YOUTUBE_UPLOAD_PACKET.md",
+    ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly(["src/App.jsx"])).toBe(false);
     expect(arePostCandidateChangesMetadataOnly(["package.json"])).toBe(false);
     expect(arePostCandidateChangesMetadataOnly(["docs/WEBMCP_EVALS.md"])).toBe(true);
