@@ -26,15 +26,15 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `91315a1` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `0176211` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Current tested product candidate | `aefc38d` | 2026-09-01 JST | Current implementation and release-packet endpoint, including Owner-boundary remediation, fail-closed evaluation evidence, host-request disclosure, browser-smoke evidence, submission-preflight correction, and remote return material |
+| Current tested product candidate | `fafc887` | 2026-09-01 JST | Evaluated browser implementation, including Owner-boundary remediation, fail-closed hosted evaluation, host-request disclosure, and DOM comparison support |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-0176211^..aefc38d
+0176211^..fafc887
 ```
 
-This range contains 70 commits. Against the July baseline, it changes 64 files
+This range contains 71 commits. Against the July baseline, it changes 64 files
 with 10,868 insertions and 1,120 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. The tag remains an explicit Owner approval gate.
@@ -43,11 +43,11 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 91315a1..aefc38d
-git log --format='%h %aI %s' 0176211^..aefc38d
+git diff --stat 91315a1..fafc887
+git log --format='%h %aI %s' 0176211^..fafc887
 ```
 
-For the final public comparison, replace `aefc38d` in both commands with the
+For the final public comparison, replace `fafc887` in both commands with the
 annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
@@ -111,7 +111,7 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `aefc38d`
+## Verification status at `fafc887`
 
 Confirmed in the repository:
 
@@ -129,6 +129,14 @@ Confirmed in the repository:
   validation contract and still requires visible human FIRMA for adoption.
 - DOM baseline records require the contracted final phase and a host-history,
   recording, or verification reference.
+- Formal hosted run `c5df4f47-2768-49c4-ab66-fcc23634df66` passed all seven
+  fixed natural-language cases with zero recorded human-boundary violations.
+- Both productive DOM baselines reached the same contracted outcome. The stop
+  journey used 2 WebMCP calls versus 3 DOM actions, and unsigned planning used
+  2 WebMCP calls versus 4 DOM actions. This supports action-count reduction,
+  not a speed claim; recorded WebMCP elapsed time was slower in both journeys.
+- The raw receipt is preserved at `evals/webmcp-results.json` and passes
+  `npm run eval:webmcp -- evals/webmcp-results.json`.
 - The active WebMCP product route does not require an application-owned model API
   key. Historical server-planner modules remain in the repository as pre-existing
   evidence but are not the active Challenge path.
@@ -139,22 +147,15 @@ Confirmed in the repository:
 
 The following must not be presented as completed evidence:
 
-- A new post-fix hosted run has not produced a formal passing seven-case
-  evaluation receipt. The earlier `2026-08-28-c` run was diagnostic.
 - Fresh-participant comprehension and the first useful loop without external
   coaching have not yet passed a user test.
-- Public Site Version 25 is anonymously reachable and identifies deployed
-  source `cbca8ad`, but final tagged judge access and the complete WebMCP path
-  have not been proven from a clean judge-equivalent session.
+- The final tagged revision has not yet been deployed and rechecked from a
+  clean judge-equivalent session.
 - The final public repository, visible repository license metadata, English
   submission description, testing instructions, public YouTube demo, and Devpost
   receipt are submission deliverables, not completed evidence in this commit.
-- End-to-end WebMCP and DOM timing still require a common start boundary and
-  recorded host evidence.
-
-**No claim of a 30 percent action or time improvement should be made until both
-productive journeys reach the same contracted outcome under a fair measurement
-boundary and the exported receipt passes deterministic verification.**
+- No speed improvement is proven. The fair comparison supports only the
+  recorded action-count reductions above.
 
 ## Judge reproduction pointers
 
