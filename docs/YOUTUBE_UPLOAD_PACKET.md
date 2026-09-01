@@ -26,18 +26,17 @@ the account email or private Studio identity in this repository.
 
 - Storyboard and final narration: `docs/DEMO_SCRIPT_EN.md`
 - Timed English captions: `docs/DEMO_CAPTIONS_EN.srt`
-- Target runtime: **2:35–2:45**
+- Tonight's step-by-step handoff: `docs/TONIGHT_RECORDING_HANDOFF.md`
+- Target runtime: **2:05–2:15**
 - Capture: **2560×1440** recommended
 - Export: **1920×1080 MP4**
 - Visuals: product and host screen only; no face is required
-- Audio: clear English narration; no background music
-- Narration may be the Owner's voice or a synthetic voice whose license permits
-  this public use. Confirm the selected voice service's terms before export.
+- Audio: clear Owner-spoken English narration; no background music
 
-Do not record until the synchronized frozen revision is anonymously reachable
-and its hosted WebMCP path has been verified. The current Site is public, but
-Version 25 precedes the latest local release packet and is not yet the final
-recording target.
+The current public Site and repository are reachable, and the formal hosted
+evaluation has passed. Record the real public interaction without changing the
+product first. Final tagging and the frozen-artifact readback happen after the
+video is accepted; they do not need to be repeated before tonight's first take.
 
 ## Proposed YouTube title
 
@@ -54,6 +53,10 @@ recording target.
 > human keeps approval, evidence verification, publication, and final
 > submission.
 >
+> The demo shows a real hosted interaction. `inspect_workshop` reveals MANCA
+> and the next action; a plan waits for human FIRMA; and an agent result remains
+> CLAIMED until human review.
+>
 > Live demo: https://verrocchio-workshop.honabochi.chatgpt.site/
 >
 > Source code: https://github.com/honabochi/verrocchio-public
@@ -61,16 +64,13 @@ recording target.
 > Built for The WebMCP Challenge.
 >
 > Demo flow:
-> 00:00 Inspect missing evidence and the next action
-> 00:15 Create an unsigned plan through WebMCP
-> 00:49 Human FIRMA adopts the plan
-> 01:08 Return a CLAIMED result without closing proof
-> 01:34 Human verification or request changes
-> 01:56 Preserve evidence and the exact return point
-> 02:18 Why WebMCP instead of DOM guessing
+> 00:00 Inspect missing proof and the next action
+> 00:30 Create an unsigned plan through WebMCP
+> 01:03 Human FIRMA adopts the plan
+> 01:15 Return a CLAIMED result without closing proof
+> 01:50 Human review and the WebMCP boundary
 
-Recheck the live-demo URL after the frozen revision and recorded path have been
-read back successfully.
+Recheck the live-demo URL and every chapter time after the final edit.
 
 ## Proposed upload settings
 

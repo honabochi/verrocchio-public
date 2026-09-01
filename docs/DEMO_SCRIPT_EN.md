@@ -1,216 +1,194 @@
-# VERROCCHIO Public Demo Script
+# VERROCCHIO — final demo script
 
-Target runtime: **2:35–2:45**  
-Primary target: public YouTube demo  
-Format: screen recording with English narration, restrained captions, and no background music
+Target runtime: **2:05–2:15**
 
-Timed English captions: `docs/DEMO_CAPTIONS_EN.srt`
+Recording route: **four short screen clips with live Owner narration**
 
-## Truth boundary
+Final format: public YouTube, 1080p, audible English, no background music
 
-- Record the WebMCP calls and resulting UI states from the deployed hosted app. Do not recreate tool receipts in an editor.
-- Scenes marked **HOSTED EVIDENCE REQUIRED** are not complete until the recorded host visibly performs the stated call and the app shows the resulting state.
-- Do not claim that WebMCP is 30% faster or requires 30% fewer actions until a passing hosted WebMCP-versus-DOM receipt exists.
-- Do not show secrets, private task names, personal notifications, account details, browser history, or unrelated tabs.
-- Use no third-party music, logos, stock media, or trademarked visual lockups. Crop incidental host chrome to the minimum needed to establish the functional WebMCP interaction.
+Timed captions: `docs/DEMO_CAPTIONS_EN.srt`
 
-## Storyboard and narration
+Tonight's exact handoff: `docs/TONIGHT_RECORDING_HANDOFF.md`
 
-### 0:00–0:15 — Real inspection: user, WebMCP, and human boundary
+## What this video proves
 
-**Shot**
+The video follows one real hosted journey:
 
-- Open on the deployed VERROCCHIO workshop with the caption:
-  `For solo builders working in interrupted sessions`.
-- By 0:02, send `What evidence is still missing?` in the host conversation.
-- Show the real `inspect_workshop` call by 0:05, with a restrained caption:
-  `Structured live state — not DOM guessing`.
-- By 0:08, show readable `MANCA`, `NEXT`, and the returned human-only decisions
-  together. Keep the real host result and corresponding app state in causal
-  order.
-- At 0:12, send `Create the smallest valid plan. Do not publish.` from the same
-  mission state. Do not show FIRMA or CLAIMED before the actions that create
-  those states.
-- **HOSTED EVIDENCE REQUIRED**
+```text
+inspect_workshop
+  → propose_workshop_draft (unsigned)
+  → human FIRMA
+  → return_work_result (CLAIMED)
+  → visible human review boundary
+```
 
-**Narration**
+The WebMCP calls and resulting UI states must be real. A later-state screenshot,
+designed receipt, or generated reenactment cannot replace the hosted interaction.
+Approval, evidence verification, publishing, and final submission are not
+performed by the agent.
 
-> For solo builders working through interruptions, VERROCCHIO exposes live work as structured WebMCP state, not DOM guessing. The agent sees missing proof and the next action; approval and verification have no agent tool and remain in the human-facing workflow.
+## Prepare these three prompts
 
-**Production note / 制作メモ**
+Paste the relevant prompt into the host composer **before** starting each clip.
+During recording, only click Send; do not type the prompt live.
 
-- 最初の8秒以内に、静止画ではなく実際の送信、tool call、MANCA/NEXTを見せる。
-- Keep the cursor visible and avoid a title card before the functioning product.
-- All product states must appear in causal order from one clean mission.
-  Straight cuts may remove latency only; never insert a later FIRMA or CLAIMED
-  state before the action that created it.
+### Prompt 1 — inspect
 
-### 0:15–0:28 — Create an unsigned plan through WebMCP
+```text
+Inspect the workshop. Tell me what proof is missing and the smallest next step. Leave approval, proof checks, and submission to me.
+```
 
-**Shot**
+Expected real call: `inspect_workshop`. The result must show `MANCA`, `NEXT`,
+and the human-only boundary.
 
-- Continue the request sent at 0:12 and show the real
-  `propose_workshop_draft` call. If the host performs a fresh inspection first,
-  keep that call in sequence; do not recreate or skip it deceptively.
-- Leave one genuine pending moment, then use a visible straight cut if latency
-  would make the result unreadable within the segment.
-- Show the validated draft and hold on `FIRMA REQUIRED` by 0:28. The stroke
-  bodies must not appear in CARTONE before human adoption.
-- **HOSTED EVIDENCE REQUIRED**
+### Prompt 2 — unsigned plan
 
-**Narration**
+```text
+Using the current mission, create the smallest valid plan in Japanese. Do not publish. Leave FIRMA to me.
+```
 
-> The host sends a bounded plan through WebMCP. VERROCCHIO checks the live state, gate references, plan size, and retry key. The result is deliberately unsigned; no agent approval tool exists.
+Expected real path: `inspect_workshop` if needed, then
+`propose_workshop_draft`. The plan must stop at `FIRMA REQUIRED`.
 
-### 0:28–0:49 — The problem, while FIRMA is visibly pending
+### Prompt 3 — claimed result
 
-**Shot**
+```text
+Inspect the active work. Do the smallest local task. Return the result with what changed, the check performed, an evidence reference, and the remaining risk. Do not approve it, publish it, or submit it.
+```
 
-- Keep the unsigned draft and `FIRMA REQUIRED` state visible.
-- Reveal only the mission, risks, and first evidence gate. Do not read every
-  rule or dashboard field.
-- Do not click the human control during this segment.
+Expected real path: `inspect_workshop`, then `return_work_result`. The result
+must be `CLAIMED`, and `MANCA` must not decrease before human review.
 
-**Narration**
+## Four-clip storyboard and exact narration
 
-> An interrupted solo builder must track rules, handoffs, and unfinished proof. VERROCCHIO preserves the next bounded action, but a confident AI answer is still not verified progress. That is why this plan waits for me.
+Speak naturally. A short pause while a real tool runs is fine. If a run takes
+too long, stop the clip after confirming the real result and trim only the idle
+wait; never cut between the visible tool call and its resulting state.
 
-### 0:49–1:08 — Human FIRMA
+### Clip 1 — 0:00–0:30 — Real inspection
 
-**Shot**
+**Before recording**
 
-- Pause long enough to show that the draft is waiting for a human.
-- Briefly reveal the risks and first evidence gate.
-- Click the large Japanese `署名して計画を採用` control with its smaller `GIVE FIRMA & ADOPT` label.
-- Show the adopted plan and active CARTONE stroke.
+- Public workshop is open in a WebMCP-capable host.
+- The page says `WEBMCP READY`.
+- Prompt 1 is already in the composer but not sent.
+- No notifications, unrelated tabs, profile details, or private task names are visible.
 
-**Narration**
+**Screen action**
 
-> I inspect the scope and risks, and only then give FIRMA. Approval is not a hidden prompt instruction and there is no approval tool for the agent to call. This governed decision stays visible in the human interface.
+1. Start recording on the working product, not a title card.
+2. Click Send within two seconds.
+3. Keep the real `inspect_workshop` call visible.
+4. Show the returned `MANCA`, `NEXT`, and human-only actions at readable size.
 
-**Production note / 制作メモ**
+**Say**
 
-- FIRMA前に0.5〜1秒止め、AIが自動承認していないことを視覚的に伝える。
-- For a deterministic take, request exactly four gates and three short strokes;
-  make the first stroke `SECCO`, keep every action local, and forbid publishing.
-- After FIRMA, move to CARTONE explicitly. Adoption does not navigate there by
-  itself.
+> VERROCCHIO helps a solo builder return after an interruption. The host uses
+> WebMCP to inspect live workshop state, not guess from the page layout. It
+> finds missing proof, the smallest next step, and the decisions that must stay
+> with me.
 
-### 1:08–1:34 — Return work as a CLAIMED result
+### Clip 2 — 0:30–1:15 — Unsigned plan and human FIRMA
 
-**Shot**
+**Before recording**
 
-- Start or select the active stroke.
-- In the host, ask it to inspect the active work, perform the bounded task, and return its result without approving it.
-- Show `return_work_result` execute.
-- In VERROCCHIO, show the returned summary, verification performed, evidence reference, remaining risk, and `CLAIMED / 人間の確認待ち` badge.
-- Keep `MANCA` unchanged.
-- **HOSTED EVIDENCE REQUIRED**
+- Continue from Clip 1's same mission state.
+- Prompt 2 is already in the composer but not sent.
 
-**Narration**
+**Screen action**
 
-> The active work packet says what to change, what evidence to return, and when to stop. The agent returns a structured claim with verification, an evidence reference, and remaining risk. MANCA does not decrease, because an AI claim is still not proof.
+1. Click Send immediately.
+2. Show the real `propose_workshop_draft` call and the resulting plan.
+3. Hold on `FIRMA REQUIRED` for at least one second.
+4. Briefly show scope and risks.
+5. Click `署名して計画を採用 / GIVE FIRMA & ADOPT` yourself.
+6. Show the adopted plan and active CARTONE work packet.
 
-### 1:34–1:56 — Human verification or return for changes
+**Say**
 
-**Shot**
+> Now the host proposes the smallest valid plan through WebMCP. VERROCCHIO
+> checks the live version, proof gates, plan size, and retry key. The plan is
+> still unsigned. A good AI answer is not approval, and the agent has no tool
+> to adopt it. I read the scope and risks, then give FIRMA in the human
+> interface. This is a visible decision, not a hidden prompt.
 
-- Show the three review checks: current, reproducible, and acceptable remaining risk.
-- Show both human choices with their current Japanese-first labels: `証拠主張を確認する / VERIFY CLAIM` and `差し戻す / REQUEST CHANGES`.
-- Primary take: verify only if the evidence shown in the recording is genuinely inspectable.
-- Safe fallback take: choose `Request changes`, enter a short concrete reason,
-  show the work return to the queue, then open EVIDENCE briefly to show the
-  preserved return reason and claim history.
+### Clip 3 — 1:15–1:50 — Return a claim without closing proof
 
-**Narration — verification take**
+**Before recording**
 
-> The human checks whether the result is current, reproducible, and honest about risk. Only this verification closes the evidence gate and reduces MANCA.
+- The adopted plan has an active work packet.
+- Prompt 3 is already in the composer but not sent.
 
-**Narration — request-changes take**
+**Screen action**
 
-> If the evidence is stale or incomplete, the human sends it back with a reason. The claim stays in the history, the gate stays open, and the next attempt starts from an explicit return point.
+1. Click Send immediately.
+2. Keep the real call sequence visible.
+3. Show the returned summary, check performed, evidence reference, and risk.
+4. Show `CLAIMED / 人間の確認待ち` and confirm that `MANCA` remains open.
 
-### 1:56–2:18 — Preserved evidence and exact return point
+**Say**
 
-**Shot**
+> The active packet says what to do, what to check, and when to stop. The agent
+> returns a structured claim with an evidence reference and remaining risk.
+> MANCA stays open. The result is CLAIMED, not VERIFIED, because an agent
+> response is not proof.
 
-- For the primary public take, use `REQUEST CHANGES` unless the returned
-  evidence is genuinely inspectable on camera.
-- Open EVIDENCE and show the preserved return reason, claim history, open gate,
-  and next action. Keep the text readable; do not scroll through the full log.
+### Clip 4 — 1:50–2:10 — Human review and close
 
-**Narration**
+**Screen action**
 
-> A rejected claim is not erased or called complete. Its reason remains in history, the proof gate stays open, and the next attempt starts from an explicit return point after interruption.
+1. Show the three human review checks.
+2. Show `VERIFY CLAIM` and `REQUEST CHANGES`, but click neither in the primary take.
+3. End on the workshop with the open proof gate and next action visible.
 
-### 2:18–2:40 — Why WebMCP, and close
+**Say**
 
-**Shot**
+> I can verify the evidence or send the work back. WebMCP gives the host four
+> bounded, state-aware calls: inspect, stop, propose, and return a claim.
+> Approval, proof checks, publishing, and submission stay human. VERROCCHIO is
+> a disciplined team of one.
 
-- Use a clean editing card built from the real host output; this comparison is not a product UI screen:
-  - left: `DOM — find controls, read labels, click fields`
-  - right: `WebMCP — inspect state, call a bounded transition, receive a bounded tool result`
-- End on VERROCCHIO with the next action and human boundary visible.
-- Caption: `A disciplined team of one. Evidence before completion.`
+## Maximum two takes
 
-**Narration**
+1. Record Clips 1–4 once from one clean mission in causal order.
+2. Retake only a clip that meets a retake condition below. If the mission state
+   changed, restart from a new clean mission and do not splice incompatible states.
+3. Join the accepted clips in QuickTime in the same order.
+4. Trim only dead air at clip edges. Do not reorder causal states.
 
-> A DOM agent may rediscover controls and guess whether text is a claim or a decision. WebMCP replaces that guess with bounded, state-aware calls: inspect, stop, propose, and return a claim. Approval and verification remain in the human-facing workflow. A disciplined workshop for a team of one.
+## Retake conditions
 
-**Production note / 制作メモ**
+Retake if any of these is true:
 
-- The comparison card may be edited for legibility, but every value must come from the real recorded host interaction.
-- Record at 2560×1440 and export at 1920×1080. Keep the app at least 1280px wide and show the host and app as separate full-width cuts rather than a narrow split screen.
+- the functioning product or real call is not visible in the first 10–15 seconds;
+- a WebMCP tool name, returned state, `FIRMA REQUIRED`, or `CLAIMED` is unreadable;
+- the host chooses another action or the app and host results disagree;
+- a cut obscures whether the tool call caused the result;
+- FIRMA appears to be performed by the agent;
+- `MANCA` decreases before genuine human evidence verification;
+- the narration claims a state that the screen does not show;
+- any personal information, secret, notification, unrelated tab, private URL,
+  file path, account identifier, browser history, or developer storage is visible;
+- final runtime is three minutes or longer, audio is missing, or captions do not match.
 
-## Shot checklist
+## Safe fallback
 
-### Product and evidence
+If Prompt 3 cannot produce a genuine, readable `CLAIMED` result after one
+clean retry, do not fabricate it. End after the human FIRMA and active work
+packet, use this truthful closing line, and keep the final video under three
+minutes:
 
-- [ ] The functioning deployed app appears within the first 10 seconds.
-- [ ] `inspect_workshop` is visible in a real hosted call.
-- [ ] The returned `MANCA` and next action are readable at normal playback speed.
-- [ ] `inspect_workshop → propose_workshop_draft` is captured from one clean mission state.
-- [ ] The unsigned draft visibly waits for human FIRMA.
-- [ ] The human FIRMA click and adopted state are both visible.
-- [ ] `return_work_result` is captured from a genuinely active stroke.
-- [ ] The result is visibly `CLAIMED`, with MANCA unchanged before human review.
-- [ ] Verification is shown only with inspectable evidence; otherwise use the honest request-changes take.
-- [ ] The final frame states the WebMCP-versus-DOM difference without an unproven numeric improvement.
+> The next bounded packet is now ready. An agent may return a claim, but it
+> cannot verify its own evidence, publish, or submit. Those decisions stay with
+> the human.
 
-### Legibility and privacy
+## Final Owner check
 
-- [ ] Use 1080p or higher capture and verify text at 100% YouTube playback size.
-- [ ] Crop unrelated host chrome, tabs, notifications, profile images, and account identifiers.
-- [ ] Use a clean seeded mission with no private repository names or personal data.
-- [ ] Keep zoom and cursor movement steady; do not scroll while the narration explains a key state.
-- [ ] English captions match the final narration exactly.
-- [ ] Japanese UI terms may remain visible, but important English meaning is supplied once in narration or caption.
-
-### Rights and audio
-
-- [ ] No third-party music, logos, stock footage, or decorative trademark assets.
-- [ ] Use narration and native interface sound only; mute notification and system sounds.
-- [ ] Confirm the final runtime is between 2:35 and 2:45.
-
-## Retake and fallback plan
-
-1. **WebMCP tool does not register**  
-   Stop the take. Confirm the deployed app shows WebMCP ready, reopen a clean mission, and record again. Do not substitute a fabricated tool list.
-
-2. **The host chooses the wrong tool or adds an unsafe action**  
-   Preserve the failed run as internal diagnostic evidence, reset to a new isolated run, and retry once. For the public edit, use a complete successful hosted take only if its receipt and UI state agree.
-
-3. **Latency makes the take too long**  
-   Use a visible straight cut after the request and before the result. Do not speed up the footage or describe the cut as evidence of performance. Keep at least one moment showing the genuine pending state.
-
-4. **The draft or result text is unreadable**  
-   Retake with a tighter crop or browser zoom. Do not replace the live UI with a designed mockup.
-
-5. **The evidence cannot be independently inspected on camera**  
-   Use the request-changes branch. This demonstrates the product boundary more truthfully than approving a weak claim.
-
-6. **The hosted comparison receipt is not yet passing**  
-   Keep the qualitative closing line about structured, state-aware calls. Remove any numeric speed, action-count, or reliability claim.
-
-7. **Runtime exceeds 2:45**  
-   First remove pauses from the mission summary and the final comparison frame. Do not cut the functioning first call, FIRMA boundary, or CLAIMED-to-human-review sequence.
+- [ ] Real product is working within the first 10–15 seconds.
+- [ ] Real WebMCP use is the center of the video.
+- [ ] The screen and narration explain both what was built and how WebMCP is used.
+- [ ] FIRMA and the evidence-review boundary are visibly human.
+- [ ] No unsupported speed or broad impact claim appears.
+- [ ] No secret, personal data, unrelated browser UI, or private material appears.
+- [ ] Audio is clear, captions match, and runtime is under three minutes.
+- [ ] The final public YouTube video is watched once while signed out.

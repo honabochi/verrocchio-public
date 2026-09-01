@@ -1,8 +1,11 @@
 # VERROCCHIO — A Disciplined Team of One
 
-> Submission draft only. Nothing has been submitted to Devpost. Final hosted
-> evidence, video, frozen public artifacts, and Owner-only form answers remain
-> explicitly pending and must be read back before submission.
+### ⏳ Not submitted yet
+
+No final submission has been sent. The authenticated Devpost project is a live
+draft (`state: draft`, `submitted_at: null`, read back 2026-09-02). The public
+video, final frozen-artifact readback, and Owner-only form answers remain
+pending.
 
 ## One-line Summary
 
@@ -80,10 +83,11 @@ unproven.
   agent claim cannot reduce MANCA, and approval and verification remain visible
   human actions rather than one generic AI workflow.
 
-The official readback lists these four five-point criteria and no tracks; it
-does not establish equal weighting. The deadline is September 3, 2026 at 1:00
-PM Pacific Time (`2026-09-03T20:00:00Z`, September 4 at 5:00 AM JST). Submitted
-artifacts must remain frozen after the deadline through judging.
+The official criteria readback lists these four five-point criteria and no
+tracks. The organizer's September 1 announcement states that all four are
+weighted equally. The deadline is September 3, 2026 at 1:00 PM Pacific Time
+(`2026-09-03T20:00:00Z`, September 4 at 5:00 AM JST). Submitted artifacts must
+remain frozen after the deadline through judging.
 
 ## Why WebMCP is a strong fit
 
@@ -233,25 +237,20 @@ data, credentials, unrelated tabs, and unsupported pass claims.
 Public YouTube URL: pending Owner recording and public upload. The final video
 must be under three minutes with audible English narration.
 
-The final English narration and timed subtitle file are prepared in
-`docs/DEMO_SCRIPT_EN.md` and `docs/DEMO_CAPTIONS_EN.srt`.
+The final English narration, timed subtitle file, and beginner-safe recording
+handoff are prepared in `docs/DEMO_SCRIPT_EN.md`,
+`docs/DEMO_CAPTIONS_EN.srt`, and `docs/TONIGHT_RECORDING_HANDOFF.md`.
 
-### 2:40 outline
+### 2:10 outline
 
-- **0:00–0:15 — Real inspection:** identify the interrupted solo builder, send
-  the real request, show `inspect_workshop`, MANCA, NEXT, and the human-only
-  boundary, then begin the plan request. No later-state montage.
-- **0:15–0:49 — Unsigned plan:** show the real proposal in causal order, stop at
-  `FIRMA REQUIRED` by 0:28, and explain the problem while the human gate remains
-  visibly pending.
-- **0:49–1:34 — FIRMA and CLAIMED:** show the human adoption click, active
-  CARTONE work, and a returned claim that leaves MANCA open.
-- **1:34–2:18 — Human review and return point:** request changes unless evidence
-  is inspectable, then show the preserved history, open gate, and exact next
-  action.
-- **2:18–2:40 — Why WebMCP:** close with the qualitative difference between DOM
-  inference and bounded state-aware calls. Use no unverified performance
-  numbers.
+- **0:00–0:30 — Real inspection:** send the real request immediately, show
+  `inspect_workshop`, MANCA, NEXT, and the human-only boundary.
+- **0:30–1:15 — Unsigned plan and FIRMA:** show the real proposal in causal
+  order, stop at `FIRMA REQUIRED`, then show the entrant's visible adoption.
+- **1:15–1:50 — CLAIMED:** return a structured claim through WebMCP and show
+  that MANCA remains open before human evidence review.
+- **1:50–2:10 — Human review and close:** show the two human review choices and
+  close on the four bounded tool types without numeric performance claims.
 
 The public video must be under three minutes, include audible English narration,
 show the functioning product in the first 10–15 seconds, and use authorized
@@ -282,8 +281,9 @@ remain off-repository.
 
 ## TODO Official Form Fields
 
-Labels were read from the official form on 2026-08-30 JST and must be re-read
-before submission. Identity and self-assessment answers remain Owner-only.
+Labels and options were read again from the official submission requirements on
+2026-09-02 JST. Identity and self-assessment answers remain Owner-only and every
+field must still be read back in the live form before final submission.
 
 - [ ] **28249 — Submitter Type** (required): Owner selects the actual status;
   proposed value is `Individual`, pending readback.
@@ -302,8 +302,9 @@ before submission. Identity and self-assessment answers remain Owner-only.
   `https://github.com/honabochi/verrocchio-public`; final tag and Devpost
   readback remain pending.
 - [ ] **28257 — Agents or clients used to test WebMCP** (required draft):
-  `Google Chrome 151 with WebMCP testing enabled`; add ChatGPT's in-app browser
-  only after the final hosted judge-path verification.
+  `ChatGPT/Codex host with an in-app WebMCP browser; Google Chrome with WebMCP
+  testing enabled for the browser smoke and DOM comparison.` Owner confirms the
+  exact final client wording after the recorded host path.
 - [ ] **28258 — AI tools leveraged** (required draft): `Codex, Claude, and
   Gemini`; Owner reads back the final field against retained review evidence.
 - [ ] **28259 — Learning level** (required): Owner selects `None`, `Moderate`,

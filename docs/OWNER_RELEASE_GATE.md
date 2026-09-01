@@ -28,14 +28,15 @@ Site access is now public and an unauthenticated HTTP request returned the
 expected VERROCCHIO page on 2026-08-31. The final tagged/deployed revision,
 clean demo judge path, and public video remain unverified.
 
-The public Site and checked-out repository identify source `fafc887`. Formal
-evaluation run `c5df4f47-2768-49c4-ab66-fcc23634df66` completed all seven
-hosted WebMCP cases and both DOM baselines; the deterministic verifier reports
-`PASS`, and `evals/webmcp-results.json` preserves the receipt. The exact return
-action is now to capture the clean judge path used for the demo, complete the
-fresh-participant comprehension check, and then freeze one candidate for the
-tagged clean-clone verification. Stop before any credential value or protected
-browser data is shown to AI.
+The public Site identifies product source `fafc887`. Formal evaluation run
+`c5df4f47-2768-49c4-ab66-fcc23634df66` completed all seven hosted WebMCP cases
+and both DOM baselines; the deterministic verifier reports `PASS`, and
+`evals/webmcp-results.json` preserves the receipt. The live Devpost project was
+read back on 2026-09-02 as `state: draft`, `submitted_at: null`, with no video
+URL. The exact return action is now to record the four short clips in
+`docs/TONIGHT_RECORDING_HANDOFF.md`, join them, and return for the pre-upload
+review. Stop before any credential value or protected browser data is shown to
+AI.
 
 Gate 2 still requires the Owner's separate off-screen confirmation that the
 public-bound files contain no secret or protected data. Gate 4 remains deferred
