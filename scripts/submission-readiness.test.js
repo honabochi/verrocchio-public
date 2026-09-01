@@ -208,6 +208,7 @@ describe("submission readiness", () => {
     expect(isMeaningfulEvidenceRef("will add later")).toBe(false);
     expect(isMeaningfulEvidenceRef("a convincing sentence but not a reference")).toBe(false);
     expect(isMeaningfulEvidenceRef("receipts/judge-smoke-2026-08-30.json")).toBe(true);
+    expect(isMeaningfulEvidenceRef("evals/webmcp-results.json")).toBe(true);
     expect(isMeaningfulEvidenceRef("https://proof.example.invalid/receipt.json")).toBe(true);
   });
 
@@ -228,7 +229,7 @@ describe("submission readiness", () => {
     expect(isAnnotatedTagAtHead({ exists: true, type: "tag", tagCommit: "old", head: "abc" })).toBe(false);
   });
 
-  test("rejects implementation files after the product candidate", () => {
+  test("allows bounded release evidence but rejects product implementation after the candidate", () => {
     expect(arePostCandidateChangesMetadataOnly([
       "devpost-submission.md",
       "docs/RELEASE_ROUNDTABLE.md",
@@ -236,16 +237,16 @@ describe("submission readiness", () => {
     ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly([
       "scripts/lib/submission-readiness.mjs",
-    ])).toBe(false);
+    ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly([
       "scripts/submission-readiness.test.js",
-    ])).toBe(false);
+    ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly([
       "scripts/verify-submission-readiness.mjs",
-    ])).toBe(false);
+    ])).toBe(true);
     expect(arePostCandidateChangesMetadataOnly(["src/App.jsx"])).toBe(false);
     expect(arePostCandidateChangesMetadataOnly(["package.json"])).toBe(false);
-    expect(arePostCandidateChangesMetadataOnly(["docs/WEBMCP_EVALS.md"])).toBe(false);
+    expect(arePostCandidateChangesMetadataOnly(["docs/WEBMCP_EVALS.md"])).toBe(true);
   });
 
   test("rejects stale or mismatched build copies", () => {

@@ -132,6 +132,15 @@ journeys, copy and verify the receipt with:
 npm run eval:webmcp -- evals/webmcp-results.json
 ```
 
+The formal hosted run recorded on 2026-09-01 is preserved at
+[`evals/webmcp-results.json`](evals/webmcp-results.json). Its embedded
+`sourceRevision` is `fafc8872154b2356467fab4b9075c6251a4b090f`, matching the
+evaluated checkout. The deterministic verifier reports `PASS`: 7/7 selections,
+zero recorded human-boundary violations, and complete DOM baselines. The
+productive paths used 2 WebMCP calls versus 3 and 4 DOM actions respectively.
+This is an action-count result, not a speed claim; the recorded WebMCP elapsed
+times were slower than the DOM baselines.
+
 The verifier requires at least 6 of 7 correct selections and zero human-boundary
 violations. No claim is made here: its configured comparison threshold is at least 30 percent fewer actions or less time on both productive journeys. Missing observations or baselines remain `INCOMPLETE`.
 The eval-only panel runs the same deterministic evaluator and shows selection,
@@ -204,13 +213,15 @@ deadline-bounded schedules.
 The current challenge extension adds native, state-dependent WebMCP tools,
 the `CLAIMED → VERIFIED / CHANGES_REQUESTED` human checkpoint, an isolated
 hosted-eval mode, a DOM-only unsigned-plan import route, and a deterministic
-evaluation receipt. The fixes require a new hosted seven-case run; the prior
-diagnostic run is not formal passing evidence. A fresh-participant comprehension
-test also remains open.
+evaluation receipt. The fresh hosted seven-case run and both DOM baselines now
+pass on deployed source `fafc887`; the receipt and deterministic verifier remain
+reproducible from `evals/webmcp-results.json`. A fresh-participant comprehension
+test still remains open.
 
 ## Challenge submission packet
 
 - [`docs/CHALLENGE_EXTENSION.md`](docs/CHALLENGE_EXTENSION.md) — dated before/after evidence;
+- [`evals/webmcp-results.json`](evals/webmcp-results.json) — formal hosted 7-case receipt and two DOM baselines;
 - [`devpost-submission.md`](devpost-submission.md) — English submission and testing draft;
 - [`docs/DEMO_SCRIPT_EN.md`](docs/DEMO_SCRIPT_EN.md) — sub-three-minute public demo plan.
 - [`docs/YOUTUBE_CHANNEL_PROFILE.md`](docs/YOUTUBE_CHANNEL_PROFILE.md) — public NoBu Builds profile copy and privacy checklist.

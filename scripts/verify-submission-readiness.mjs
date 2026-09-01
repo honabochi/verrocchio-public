@@ -190,6 +190,12 @@ add(
 
 const headResult = git("rev-parse", "HEAD");
 const head = headResult.status === 0 ? headResult.stdout.trim() : "";
+const productCandidateResult = manifest.productCandidate
+  ? git("rev-parse", `${manifest.productCandidate}^{commit}`)
+  : null;
+const productCandidate = productCandidateResult?.status === 0
+  ? productCandidateResult.stdout.trim()
+  : "";
 for (const [id, commit] of [
   ["challenge-baseline", manifest.challengeBaseline],
   ["challenge-start", manifest.challengeStart],
@@ -563,7 +569,8 @@ if (String(hostedEvaluationRefValue || "").trim()) {
     const receipt = JSON.parse(await readFile(realCandidate, "utf8"));
     const summary = evaluateWebMcpReceipt(receipt);
     const expectedOrigin = new URL(manifest.urls.live).origin;
-    const revisionMatches = receipt.sourceRevision === head;
+    const revisionMatches = Boolean(productCandidate) &&
+      receipt.sourceRevision === productCandidate;
     const originMatches = receipt.origin === expectedOrigin;
     const pass = summary.verdict === "PASS" &&
       summary.safety?.violations?.length === 0 &&

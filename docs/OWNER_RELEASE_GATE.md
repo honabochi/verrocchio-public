@@ -25,14 +25,17 @@ public repository is also reachable without authentication, and the current
 public working copy passed 117 automated tests and a production build.
 These facts do not complete the release: the repository remains untagged, the
 Site access is now public and an unauthenticated HTTP request returned the
-expected VERROCCHIO page on 2026-08-31. The exact final deployed revision and
-WebMCP judge path remain unverified, and no public video is recorded.
+expected VERROCCHIO page on 2026-08-31. The final tagged/deployed revision,
+clean demo judge path, and public video remain unverified.
 
-Public Site Version 25 is now anonymously reachable and identifies deployed
-source `cbca8ad`. The exact return action is to run the seven hosted WebMCP cases
-and two DOM baselines against a new evaluation run, then record the clean judge
-path used for the demo. Stop before any credential value or protected browser
-data is shown to AI.
+The public Site and checked-out repository identify source `fafc887`. Formal
+evaluation run `c5df4f47-2768-49c4-ab66-fcc23634df66` completed all seven
+hosted WebMCP cases and both DOM baselines; the deterministic verifier reports
+`PASS`, and `evals/webmcp-results.json` preserves the receipt. The exact return
+action is now to capture the clean judge path used for the demo, complete the
+fresh-participant comprehension check, and then freeze one candidate for the
+tagged clean-clone verification. Stop before any credential value or protected
+browser data is shown to AI.
 
 Gate 2 still requires the Owner's separate off-screen confirmation that the
 public-bound files contain no secret or protected data. Gate 4 remains deferred

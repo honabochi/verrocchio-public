@@ -12,21 +12,21 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-current local candidate `aefc38d` recorded 117 passing tests, while the public
-Site Version 25 identifies deployed source `cbca8ad` and earlier candidate
-evidence includes a real Chrome WebMCP smoke. Final tagged clean-clone proof,
-fresh natural-language hosted evaluation, and video evidence remain incomplete.
+the evaluated checkout and deployed Site identify source `fafc887`, and formal
+hosted run `c5df4f47-2768-49c4-ab66-fcc23634df66` passed all seven fixed
+natural-language cases plus both DOM baselines. Final tagged clean-clone proof,
+fresh-participant comprehension, and video evidence remain incomplete.
 
 ## Public Demo Link
 
 <https://verrocchio-workshop.honabochi.chatgpt.site/>
 
 Unauthenticated HTTP access returned the expected VERROCCHIO page on
-2026-09-01. Version 25 identifies deployed source `cbca8ad`; its client bundle
-contains the current host-request handoff and browser-storage disclosure. An
-earlier deployed deterministic Chrome smoke passed the WebMCP tool-surface and
-human-boundary checks. Fresh natural-language host selection and the
-WebMCP-versus-DOM comparison still need verification before final freeze.
+2026-09-01. The formal hosted receipt identifies deployed source `fafc887` and
+records 7/7 expected natural-language tool paths, zero recorded human-boundary
+violations, and both DOM baselines. The productive paths used two WebMCP calls
+versus three and four DOM actions; this is an action-count result, not a speed
+claim. Final frozen-tag and clean judge-path verification remain open.
 
 ## Public Repository Link
 
@@ -68,9 +68,9 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** current local candidate `aefc38d` recorded 117 passing tests,
-  and public Site Version 25 identifies deployed source `cbca8ad`; the final
-  tagged clean-clone test/build proof, hosted evaluation, and repository
+- **Execution:** deployed source `fafc887` completed the formal hosted 7-case
+  WebMCP evaluation and both DOM baselines with zero recorded boundary
+  violations. The final tagged clean-clone test/build proof and repository
   synchronization remain release gates.
 - **Potential Impact:** the target is a time-constrained solo builder who needs
   continuity without forming a conventional team. Browser-local state keeps
@@ -160,7 +160,7 @@ FIRMA/FERMO controls, but it did not register WebMCP tools.
 
 - **Pre-existing baseline:** [`91315a1`](https://github.com/honabochi/verrocchio-public/commit/91315a120059cae3b9eb68566c81d5c8d87fd903) (July 19, 2026).
 - **Challenge start:** [`0176211`](https://github.com/honabochi/verrocchio-public/commit/0176211fe5a1c62ba366c1379710864a5bb2db17) (August 27, 2026).
-- **Current tested candidate:** `aefc38d` with 117 passing tests; public synchronization and final annotated tag remain pending.
+- **Current evaluated candidate:** `fafc887`, matching the formal hosted receipt; final annotated tag remains pending.
 - **Current comparison route:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); the final draft will point to the frozen tag after Owner approval.
 
 Beginning with `0176211` on August 27, the eligible extension added four native,
@@ -193,15 +193,17 @@ Devpost—never in the repository.
 
 ## Verification and evaluation status
 
-- Earlier candidate evidence includes a real Chrome WebMCP smoke. The current
-  tested local product boundary is `aefc38d`.
-- Candidate `aefc38d` passed all 117 tests on 2026-09-01. This does not replace
+- Earlier candidate evidence includes a real Chrome WebMCP smoke. The formal
+  hosted product boundary is `fafc887`.
+- Candidate `fafc887` passed all 117 tests on 2026-09-01. This does not replace
   the required clean-clone test and build on the final annotated submission tag.
-- Judge-accessible unauthenticated HTTP: **PASS** on 2026-09-01 for public Site
-  Version 25 identifying source `cbca8ad`. The deterministic Chrome smoke in
-  `evals/hosted-smoke-2026-08-31.json` belongs to an earlier deployed revision.
-- Fresh hosted seven-case evaluation: **INCOMPLETE**; publish no pass claim.
-- WebMCP-versus-DOM comparison: **INCOMPLETE**; publish no improvement percentage.
+- Judge-accessible hosted evaluation: **PASS** on 2026-09-01 for source
+  `fafc887`, preserved in `evals/webmcp-results.json`.
+- Fresh hosted seven-case evaluation: **PASS**, 7/7 expected paths and zero
+  recorded human-boundary violations.
+- WebMCP-versus-DOM comparison: **PASS** by action count: 2 versus 3 actions
+  for stop (33.3% fewer), and 2 versus 4 for unsigned planning (50% fewer).
+  Recorded elapsed time was slower for WebMCP, so no speed improvement is claimed.
 
 ## Language and judge accessibility
 
@@ -260,8 +262,8 @@ assets only. The detailed capture script is `docs/DEMO_SCRIPT_EN.md`.
 - Persistence is browser-local rather than synchronized across devices.
 - Human-only DOM controls are a workflow boundary, not actor authentication.
 - The keyless path depends on a WebMCP-capable host.
-- Automated rule provenance, the fresh hosted evaluation, and broad usability
-  evidence remain incomplete.
+- Automated rule provenance, fresh-participant comprehension, and broad
+  usability evidence remain incomplete.
 
 ## Submission Readiness Notes
 

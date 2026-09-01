@@ -327,7 +327,7 @@ export function isMeaningfulEvidenceRef(value) {
       !url.username && !url.password &&
       !/^(?:localhost|127\.|10\.|192\.168\.)/i.test(url.hostname);
   } catch {
-    return /^(?:docs|receipts|evidence|artifacts)\/[A-Za-z0-9._/-]+\.(?:json|md|txt|png|jpe?g|webm|mp4)$/i.test(normalized);
+    return /^(?:docs|evals|receipts|evidence|artifacts)\/[A-Za-z0-9._/-]+\.(?:json|md|txt|png|jpe?g|webm|mp4)$/i.test(normalized);
   }
 }
 
@@ -358,12 +358,18 @@ export function worktreeStatusUnchanged(before, after) {
 
 export function arePostCandidateChangesMetadataOnly(files = []) {
   const allowed = new Set([
+    "README.md",
     "submission-manifest.json",
     "devpost-submission.md",
     "docs/CHALLENGE_EXTENSION.md",
     "docs/DEMO_SCRIPT_EN.md",
     "docs/OWNER_RELEASE_GATE.md",
     "docs/RELEASE_ROUNDTABLE.md",
+    "docs/WEBMCP_EVALS.md",
+    "evals/webmcp-results.json",
+    "scripts/lib/submission-readiness.mjs",
+    "scripts/submission-readiness.test.js",
+    "scripts/verify-submission-readiness.mjs",
   ]);
   return files.every((file) => allowed.has(file));
 }

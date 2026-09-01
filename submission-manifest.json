@@ -6,7 +6,7 @@
   "deadlineUtc": "2026-09-03T20:00:00Z",
   "challengeBaseline": "91315a1",
   "challengeStart": "0176211",
-  "productCandidate": "aefc38d",
+  "productCandidate": "fafc887",
   "submissionTag": "",
   "expectedTestCount": 117,
   "entryContext": {
@@ -20,7 +20,7 @@
   "evidenceRefs": {
     "cleanJudgeSmoke": "",
     "demoRecording": "",
-    "hostedEvaluation": ""
+    "hostedEvaluation": "evals/webmcp-results.json"
   },
   "officialFields": {
     "28249": false,
