@@ -1,14 +1,29 @@
-# 今夜の撮影ハンドオフ
+# VERROCCHIO 今夜の撮影ガイド
 
 このファイルが、帰宅後の開始地点です。上から順に進めてください。
 公開・YouTubeアップロード・Devpost提出は、この撮影では行いません。
+
+今夜行うのは、**日本語ナレーションで4本の実WebMCPクリップを撮影し、
+1本の動画へ結合するところまで**です。英語字幕は完成動画の長さと話す
+タイミングが確定してからAIが作るため、今は作成・調整しません。
+
+## 今夜の流れ
+
+1. 集中モードと録画環境を整える。
+2. ChatGPT/CodexのインアプリブラウザでChallenge missionを読み込む。
+3. Clip 1からClip 4を、同じミッションの因果が分かる順番で撮る。
+4. QuickTimeで4本を結合し、通常速度で一度確認する。
+5. 完成動画をこのタスクへ渡し、英語字幕とYouTube前チェックを依頼する。
+
+目安は2分10秒前後、絶対条件は**3分未満**です。
 
 ## 今の到達点
 
 - 公開サイトと公開リポジトリは到達可能です。
 - 正式評価ランは、固定7問とDOM比較2件を記録済みです。
 - Devpostには `VERROCCHIO` の**下書き**がありますが、最終提出はされていません。
-- 動画台本、3つの貼付プロンプト、英語字幕、YouTube説明文案は準備済みです。
+- 3つの貼付プロンプト、日本語ナレーション、YouTube説明文案は準備済みです。
+- 英語字幕は完成動画を受け取った後に作成します。
 - 今夜のOwner作業は、実WebMCP画面を4本の短いクリップとして撮ることです。
 
 ## 帰宅後、最初にやること
@@ -25,46 +40,63 @@
 2. メール、Slack、LINE、カレンダー、1Password、ターミナル、DevToolsを閉じる。
 3. ブラウザの不要なタブとブックマークバーを隠す。
 4. 新しい空のChatGPT/Codex会話を使う。サイドバーとタスク名は録画範囲に入れない。
-5. 公開サイトを開く。
+5. ChatGPT/Codexの**インアプリブラウザ**で公開サイトを開く。
    `https://verrocchio-workshop.honabochi.chatgpt.site/`
-6. Challenge missionを読み込み、画面上部の `WEBMCP READY` を確認する。
-7. 画面の文字が読める大きさにする。細い左右分割にせず、必要に応じて
+   VERROCCHIOは録画に使う1タブだけにし、同じサイトを開いている他のタブは閉じる。
+6. 画面右上に青字の `WEBMCP READY` と `AI操作可能` が見えることを確認する。
+7. 以前の `LIVE GUIDE 06/07`、`CLAIMED`、採用済み計画が残っている場合は、
+   `新しい工房を始める / START A FRESH WORKSHOP` を押す。確認画面を読み、
+   `初期化して始める / RESET & START FRESH` を押す。
+8. `WebMCPミッションへ切り替える / USE WEBMCP MISSION` を押し、Challenge
+   missionを表示する。これはミッション入力の切替であり、工房の進捗初期化ではない。
+9. 画面の文字が読める大きさにする。細い左右分割にせず、必要に応じて
    hostとproductを全幅で切り替える。
-8. `Shift + Command + 5` →「オプション」→ 使用するマイクを選び、5秒だけ
+10. `Shift + Command + 5` →「オプション」→ 使用するマイクを選び、5秒だけ
    テスト録画する。再生して声が聞こえれば削除してよい。
-9. 録画範囲は、必要なhost結果とVERROCCHIOだけに絞る。メニューバー、
+11. 録画範囲は、必要なhost結果とVERROCCHIOだけに絞る。メニューバー、
    Dock、プロフィール画像、他タブ、アカウント名を入れない。
+
+Safariは今回の撮影には使いません。ChromeはWebMCP testingを有効にした
+予備ルートです。本番はChatGPT/Codexのインアプリブラウザを使います。
 
 **開始してよい状態**
 
 - [ ] `WEBMCP READY` が見える
+- [ ] Challenge missionを読み込んだ
 - [ ] 合成・デモ用ミッションであり、個人情報がない
+- [ ] hostとVERROCCHIOの文字が読める
 - [ ] マイク音声が聞こえる
 - [ ] 画面に秘密、通知、他タブ、個人名、メールアドレスがない
 
 1つでもNoなら、録画を始めず直します。秘密らしき値は私へ見せないでください。
 
-## 1. Clip 1を撮る（目安30秒）
+## 1. Clip 1 — 現在地を調べる（目安30秒）
 
-録画開始前に、次をhostの入力欄へ貼り、**未送信**にします。
+### 録画前にhostへ貼る
+
+次をhostの入力欄へ貼り、**未送信**にします。プロンプトは声に出して読みません。
 
 ```text
 Inspect the workshop. Tell me what proof is missing and the smallest next step. Leave approval, proof checks, and submission to me.
 ```
 
+### 録画する
+
 1. `Shift + Command + 5`で録画開始。
 2. 2秒以内に送信。
 3. 実際の `inspect_workshop` と、返った `MANCA` / `NEXT` を見せる。
-4. 次を話す。
+4. 結果を見せながら、次の日本語を自然に話す。
 
-> VERROCCHIO helps a solo builder return after an interruption. The host uses
-> WebMCP to inspect live workshop state, not guess from the page layout. It
-> finds missing proof, the smallest next step, and the decisions that must stay
-> with me.
+> VERROCCHIOは、一人で作業する人が、中断した仕事へ戻れるようにする工房です。
+> ホストは画面の見た目から推測するのではなく、WebMCPを使って現在の状態を
+> 直接確認します。足りない証拠、次に行う最小の作業、そして人間に残すべき
+> 判断が分かります。
 
 5. 結果が読める状態で録画停止。`clip-1-inspect.mov` として保存。
 
-## 2. Clip 2を撮る（目安45秒）
+## 2. Clip 2 — 未署名の計画と人間のFIRMA（目安45秒）
+
+### 録画前にhostへ貼る
 
 Clip 1と同じミッション状態のまま、次を入力欄へ貼り、未送信にします。
 
@@ -72,25 +104,28 @@ Clip 1と同じミッション状態のまま、次を入力欄へ貼り、未�
 Using the current mission, create the smallest valid plan in Japanese. Do not publish. Leave FIRMA to me.
 ```
 
+### 録画する
+
 1. 録画開始後、すぐ送信。
 2. 実際の `propose_workshop_draft` と `FIRMA REQUIRED` を見せる。
 3. 未署名で止まっている状態を1秒見せる。
-4. 次を話す。
+4. 計画のscopeとrisksが見える状態で、次の日本語を話す。
 
-> Now the host proposes the smallest valid plan through WebMCP. VERROCCHIO
-> checks the live version, proof gates, plan size, and retry key. The plan is
-> still unsigned. A good AI answer is not approval, and the agent has no tool
-> to adopt it.
+> 次に、ホストがWebMCPを通して、最小の実行計画を提案します。VERROCCHIOは、
+> 現在の状態、必要な証拠、計画の大きさを確認します。しかし、この計画はまだ
+> 承認されていません。AIの回答が良さそうに見えても、それだけでは承認になりません。
 
 5. 自分で `署名して計画を採用 / GIVE FIRMA & ADOPT` を押す。
 6. 採用済み計画とactive work packetを見せながら、次を話す。
 
-> I read the scope and risks, then give FIRMA in the human interface. This is a
-> visible decision, not a hidden prompt.
+> 私が内容とリスクを読み、画面上でFIRMAを与えます。これは、プロンプトの中に
+> 隠された承認ではなく、人間による明示的な判断です。
 
 7. `clip-2-firma.mov` として保存。
 
-## 3. Clip 3を撮る（目安35秒）
+## 3. Clip 3 — CLAIMEDを返す（目安35秒）
+
+### 録画前にhostへ貼る
 
 active work packetがあることを確認し、次を入力欄へ貼り、未送信にします。
 
@@ -98,35 +133,50 @@ active work packetがあることを確認し、次を入力欄へ貼り、未�
 Inspect the active work. Do the smallest local task. Return the result with what changed, the check performed, an evidence reference, and the remaining risk. Do not approve it, publish it, or submit it.
 ```
 
+### 録画する
+
 1. 録画開始後、すぐ送信。
 2. 実際のtool callと返却結果を見せる。
 3. `CLAIMED / 人間の確認待ち` と、`MANCA`がまだ開いている状態を見せる。
-4. 次を話す。
+4. 次の内容が読めることを確認する：変更内容、実行したチェック、
+   evidence reference、remaining risk、`CLAIMED / 人間の確認待ち`。
+5. 結果を見せながら、次の日本語を話す。
 
-> The active packet says what to do, what to check, and when to stop. The agent
-> returns a structured claim with an evidence reference and remaining risk.
-> MANCA stays open. The result is CLAIMED, not VERIFIED, because an agent
-> response is not proof.
+> 実行中の作業パケットには、何を行い、何を確認し、どこで止まるかが
+> 書かれています。エージェントは、変更内容、確認結果、証拠の参照先、
+> 残っているリスクを返します。しかし、MANCAはまだ閉じません。この結果は
+> CLAIMED、つまり主張された状態であり、確認済みではありません。
+> エージェントの回答そのものは、証拠ではないからです。
 
-5. `clip-3-claimed.mov` として保存。
+6. `clip-3-claimed.mov` として保存。
 
 **ここで失敗した場合**
 
 1回だけクリーンなミッションから再試行します。それでも本物の`CLAIMED`が出なければ、
-Clip 3は採用せず、台本の「Safe fallback」で終えます。偽の結果は作りません。
+Clip 3は採用せず、偽の結果は作りません。Clip 2までを使い、最後に次の
+Safe fallbackを話します。
 
-## 4. Clip 4を撮る（目安20秒）
+> 次の境界付き作業は準備できました。エージェントは結果を返せますが、
+> 自分の証拠を確認したり、公開や提出を行ったりすることはできません。
+> それらの判断は人間に残ります。
+
+## 4. Clip 4 — 人間のレビュー境界を見せる（目安20秒）
+
+Clip 4では、新しいプロンプトは送信しません。
 
 1. `CLAIMED`の人間レビュー画面を開く。
-2. `VERIFY CLAIM` と `REQUEST CHANGES` を見せるが、どちらも押さない。
-3. 次を話す。
+2. 録画を開始する。
+3. 人間が確認する3つの項目を見せる。
+4. `VERIFY CLAIM` と `REQUEST CHANGES` を見せるが、どちらも押さない。
+5. 次の日本語を話す。
 
-> I can verify the evidence or send the work back. WebMCP gives the host four
-> bounded, state-aware calls: inspect, stop, propose, and return a claim.
-> Approval, proof checks, publishing, and submission stay human. VERROCCHIO is
-> a disciplined team of one.
+> 私は証拠を確認することも、作業を差し戻すこともできます。WebMCPによって、
+> ホストは状態に応じた4つの操作を使えます。確認、停止、未承認の計画提案、
+> そして作業結果の返却です。承認、証拠確認、公開、最終提出は人間に残ります。
+> VERROCCHIOは、一人でありながら規律を持って動くチームです。
 
-4. `clip-4-close.mov` として保存。
+6. `MANCA` と次のactionが見える状態で録画を停止する。
+7. `clip-4-close.mov` として保存。
 
 ## 5. 4本をつなぐ（Mac標準QuickTime）
 
@@ -138,6 +188,9 @@ Clip 3は採用せず、台本の「Safe fallback」で終えます。偽の結�
 6. 必要なら「ファイル」→「書き出す」→「1080p」を選ぶ。
 7. 最初から最後まで通常速度で一度見る。
 
+**異なるミッション状態をつながないでください。** 途中でミッションを
+読み込み直した場合、前の状態と新しい状態を一つの動画としてつなぎません。
+
 ## 撮り直し判定
 
 次のどれかがあれば、そのクリップだけ撮り直します。
@@ -147,19 +200,23 @@ Clip 3は採用せず、台本の「Safe fallback」で終えます。偽の結�
 - 画面と話した内容が違う
 - AIがFIRMAや証拠確認をしたように見える
 - 個人情報、秘密、通知、他タブ、履歴、アカウント情報が映る
-- 3分以上、無音、または重要な字幕が読めない
+- 3分以上、無音、または日本語ナレーションが聞き取れない
 
 発音の小さな揺れ、短い言い直し、少しの待ちは撮り直し理由にしません。明瞭さを優先します。
 
 ## 完成したら、ここへ戻る
 
-YouTubeへ自分でアップロードする前に、このタスクへ次の一文を送ってください。
+YouTubeへアップロードする前に、このタスクへ次の一文を送ってください。
 
-> 動画4本を撮って結合した。YouTube前チェックGO
+> 動画4本を撮って結合した。日本語音声版が完成した。字幕作成とYouTube前チェックGO
 
-可能なら完成動画のローカルファイルを添付してください。私は内容、長さ、字幕、
-公開説明文、次のOwner操作を確認します。Googleアカウント画面、YouTube Studioの
-個人情報、秘密、Cookie、メールアドレスは添付しないでください。
+可能なら完成動画を添付してください。次の工程で、AIが内容、長さ、日本語音声、
+実WebMCP操作の因果を確認し、完成動画の実際のタイミングに合わせた英語字幕を
+作成します。その後、YouTubeタイトル、説明文、動画言語、字幕設定と次のOwner操作を
+整理します。
+
+既存の英語SRTは、そのままアップロードしません。Googleアカウント画面、
+YouTube Studioの個人情報、秘密、Cookie、メールアドレスは添付しないでください。
 
 ## Do not redo
 
@@ -167,8 +224,13 @@ YouTubeへ自分でアップロードする前に、このタスクへ次の一�
 - コード、公開サイト、公開リポジトリを見栄え目的で変更しない。
 - Devpostの最終提出、YouTube公開、最終tagはまだ行わない。
 - 合格クリップ取得後は、見栄えだけを理由に実WebMCP flowを繰り返さない。
+- 字幕作成は、撮影と結合が終わるまで開始しない。
 
 ## 現在の停止地点
 
-準備物は完成。次のOwner actionは、帰宅後に集中モードをオンにしてClip 1を始めること。
-再開トリガーは「動画4本を撮って結合した。YouTube前チェックGO」です。
+撮影ガイドと日本語ナレーションは準備済みです。次のOwner actionは、集中モードを
+オンにし、新しい空のChatGPT/Codex会話とインアプリブラウザでChallenge missionを
+読み込み、Clip 1を始めることです。
+
+再開トリガーは「動画4本を撮って結合した。日本語音声版が完成した。
+字幕作成とYouTube前チェックGO」です。

@@ -2801,6 +2801,84 @@ textarea:focus-visible {
   cursor: pointer;
 }
 
+.fresh-workshop-control {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  margin: -12px 0 24px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.fresh-workshop-control p {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.fresh-workshop-control button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  background: transparent;
+  cursor: pointer;
+}
+
+.fresh-workshop-control button .action-copy-ja {
+  font-size: 10px;
+}
+
+.fresh-workshop-control button .action-copy-primary {
+  font-size: 8px;
+}
+
+.fresh-workshop-notice {
+  margin: -12px 0 24px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--blue);
+  color: var(--ink);
+  background: rgba(22, 57, 166, 0.08);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.fresh-workshop-dialog .fresh-workshop-preserved {
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.fresh-workshop-dialog .fresh-workshop-backup {
+  margin-bottom: 24px;
+}
+
+.fresh-workshop-dialog .fresh-workshop-error {
+  margin: 0 0 20px;
+  padding: 10px 12px;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  background: rgba(161, 45, 47, 0.08);
+  font-size: 11px;
+}
+
+.dialog-save.is-destructive {
+  border-color: var(--danger);
+  background: var(--danger);
+}
+
+.fresh-workshop-control button:focus-visible,
+.fresh-workshop-dialog button:focus-visible,
+.workshop-guide h2:focus-visible {
+  outline: 3px solid var(--ochre);
+  outline-offset: 3px;
+}
+
 .mission-form-heading {
   display: grid;
   grid-template-columns: minmax(280px, 0.8fr) minmax(320px, 1.2fr);
@@ -3815,6 +3893,15 @@ textarea:focus-visible {
 
   .profile-switcher {
     grid-template-columns: 1fr;
+  }
+
+  .fresh-workshop-control {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .fresh-workshop-control button {
+    width: 100%;
   }
 
   .external-cenacolo label + label,

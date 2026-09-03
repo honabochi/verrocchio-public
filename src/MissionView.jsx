@@ -167,6 +167,8 @@ function PlanDraft({ plan, onAdopt, onDiscard }) {
 export default function MissionView({
   state,
   setState,
+  freshWorkshopNotice,
+  onRequestFreshWorkshop,
   onRequestPlan,
   onImportPlan,
   onAdopt,
@@ -285,6 +287,29 @@ export default function MissionView({
             <ActionLabel copy={actions.loadMission} />
           </button>
         </div>
+
+        {onRequestFreshWorkshop && (
+          <>
+            <div className="fresh-workshop-control">
+              <p>
+                ミッションの切替は入力内容だけを変えます。計画・CLAIMED・証拠状態・履歴まで消す場合は、
+                新しい工房を始めてください。
+              </p>
+              <button
+                aria-label={actionAria(actions.startFreshWorkshop)}
+                onClick={onRequestFreshWorkshop}
+                type="button"
+              >
+                <ActionLabel copy={actions.startFreshWorkshop} />
+              </button>
+            </div>
+            {freshWorkshopNotice && (
+              <p className="fresh-workshop-notice" role="status">
+                {freshWorkshopNotice}
+              </p>
+            )}
+          </>
+        )}
 
         {hasLoadedProfile && !detailsOpen ? (
           <section className="mission-summary" aria-label="読み込んだミッションの要約">

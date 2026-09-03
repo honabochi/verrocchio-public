@@ -54,8 +54,11 @@ export const fields = {
 };
 
 export const actions = {
-  startBlank: { primary: "START BLANK", assist: "空で始める", lang: "en" },
-  loadMission: { primary: "LOAD WEBMCP MISSION", assist: "ミッションを読み込む", lang: "en" },
+  startBlank: { primary: "USE BLANK MISSION", assist: "空のミッションへ切り替える", lang: "en" },
+  loadMission: { primary: "USE WEBMCP MISSION", assist: "WebMCPミッションへ切り替える", lang: "en" },
+  startFreshWorkshop: { primary: "START A FRESH WORKSHOP", assist: "新しい工房を始める", lang: "en" },
+  keepWorkshop: { primary: "KEEP CURRENT WORKSHOP", assist: "現在の工房へ戻る", lang: "en" },
+  confirmFreshWorkshop: { primary: "RESET & START FRESH", assist: "初期化して始める", lang: "en" },
   forgeWorkshop: { primary: "SHOW HOST REQUEST", assist: "チャットへの依頼手順を表示", lang: "en" },
   replanWorkshop: { primary: "SHOW REPLAN REQUEST", assist: "再計画の依頼手順を表示", lang: "en" },
   hostRequestReady: { primary: "REQUEST READY", assist: "依頼準備済み（未送信）", lang: "en" },

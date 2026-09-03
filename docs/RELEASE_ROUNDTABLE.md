@@ -43,7 +43,7 @@ Use this order:
 5. From a clean clone of the tag, run `npm ci`, tests, and the production build;
    run a clean hosted WebMCP smoke. A full numeric evaluation is optional only if
    all numeric improvement claims are removed.
-6. Record and publish the shorter-than-three-minute English-audio/captioned demo
+6. Record and publish the shorter-than-three-minute Japanese-audio demo with accurate timed English captions
    from the same frozen public build.
 7. Read back every Devpost field, give final FIRMA, submit, and freeze the public
    artifacts.
@@ -111,7 +111,7 @@ submission NO-GO**.
 
 The local candidate was tightened accordingly: the canonical `webmcp` slug,
 event URL, and UTC deadline are now machine checked; a public YouTube URL must
-resolve to one video; audible English narration is a separate Owner attestation;
+resolve to one video; audible Japanese narration and complete English translation captions are a separate Owner attestation;
 the public repository must bind an annotated tag, its default branch, required
 files, and MIT license to the same local SHA; the live HTML carries a revision
 marker; and a commit after the deadline fails preflight. The CLAIMED card now

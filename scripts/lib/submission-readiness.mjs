@@ -41,7 +41,7 @@ export const REQUIRED_OWNER_ATTESTATIONS = [
   "rulesAndTermsAccepted",
   "secretsReviewedOffScreen",
   "cleanCloneCiTestBuildPassed",
-  "videoUnderThreeMinutesWithAudibleEnglishNarration",
+  "videoUnderThreeMinutesWithAudibleJapaneseNarrationAndEnglishCaptions",
   "englishSubmissionMaterialsOrTranslationsVerified",
   "videoAssetsAndRightsConfirmed",
   "numericClaimsVerifiedOrRemoved",

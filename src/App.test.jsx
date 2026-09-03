@@ -176,7 +176,7 @@ describe("VERROCCHIO core path", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: /ミッションを読み込む/ }));
+    await user.click(screen.getByRole("button", { name: /WebMCPミッションへ切り替える/ }));
 
     expect(screen.getByLabelText("読み込んだミッションの要約")).toBeVisible();
     expect(
@@ -229,6 +229,84 @@ describe("VERROCCHIO core path", () => {
 
     await user.click(screen.getByRole("button", { name: /最終確認を開く/ }));
     expect(screen.getByText("証拠があと5件必要。")).toBeVisible();
+  });
+
+  test("requires human confirmation before replacing a claimed workshop", async () => {
+    const user = userEvent.setup();
+    const stale = JSON.parse(JSON.stringify(initialState));
+    stale.stateVersion = 12;
+    stale.mission.profileId = "openai-webmcp-challenge-2026";
+    stale.mission.name = "The WebMCP Challenge";
+    stale.events = [{
+      id: "old-event",
+      time: "2026-09-03T12:00:00.000Z",
+      kind: "CLAIM",
+      message: "以前の主張",
+    }];
+    stale.gates[0].claims = [{
+      id: "old-claim",
+      status: "CLAIMED",
+      summary: "以前のCLAIMED",
+    }];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stale));
+    localStorage.setItem("verrocchio-theme", "light");
+    localStorage.setItem(`${STORAGE_KEY}:eval:revision:run:case`, "eval-state");
+    localStorage.setItem("verrocchio-webmcp-eval-v1:run", "eval-receipt");
+
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /新しい工房を始める/ }));
+
+    const dialog = screen.getByRole("dialog", { name: /現在の工房を初期化しますか/ });
+    expect(dialog).toHaveTextContent("CLAIMED");
+    expect(dialog).toHaveTextContent("表示テーマと正式評価レシートは残ります");
+    expect(screen.getByRole("button", { name: /現在の工房へ戻る/ })).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: /現在の工房へ戻る/ }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)).events).toHaveLength(1);
+
+    await user.click(screen.getByRole("button", { name: /新しい工房を始める/ }));
+    await user.click(screen.getByRole("button", { name: /初期化して始める/ }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("新しい工房を開始しました");
+    expect(screen.getByText("LIVE GUIDE").closest("aside")).toHaveTextContent("02 / 07");
+    expect(screen.getByText("LIVE GUIDE").closest("aside")).not.toHaveTextContent("06 / 07");
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    expect(saved.stateVersion).toBe(13);
+    expect(saved.mission.profileId).toBe("openai-webmcp-challenge-2026");
+    expect(saved.gates.every((gate) => gate.claims.length === 0)).toBe(true);
+    expect(saved.events).toEqual([]);
+    expect(localStorage.getItem("verrocchio-theme")).toBe("light");
+    expect(localStorage.getItem(`${STORAGE_KEY}:eval:revision:run:case`)).toBe("eval-state");
+    expect(localStorage.getItem("verrocchio-webmcp-eval-v1:run")).toBe("eval-receipt");
+  });
+
+  test("keeps the current workshop when fresh-workshop persistence fails", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /新しい工房を始める/ }));
+    const before = localStorage.getItem(STORAGE_KEY);
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = () => {
+      throw new Error("storage unavailable");
+    };
+
+    try {
+      await user.click(screen.getByRole("button", { name: /初期化して始める/ }));
+      expect(screen.getByRole("alert")).toHaveTextContent("現在の工房は変更していません");
+      expect(screen.getByRole("dialog")).toBeVisible();
+      expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
+    } finally {
+      localStorage.setItem = originalSetItem;
+    }
+  });
+
+  test("does not expose fresh-workshop controls in isolated evaluation URLs", () => {
+    window.history.replaceState({}, "", "/?evalRun=reset-hidden&case=manca-read");
+    render(<App />);
+
+    expect(screen.queryByRole("button", { name: /新しい工房を始める/ })).not.toBeInTheDocument();
   });
 
   test("refuses to close a MANCA gate until proof is attached", async () => {

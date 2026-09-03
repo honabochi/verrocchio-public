@@ -39,7 +39,7 @@
     "rulesAndTermsAccepted": true,
     "secretsReviewedOffScreen": false,
     "cleanCloneCiTestBuildPassed": false,
-    "videoUnderThreeMinutesWithAudibleEnglishNarration": false,
+    "videoUnderThreeMinutesWithAudibleJapaneseNarrationAndEnglishCaptions": false,
     "englishSubmissionMaterialsOrTranslationsVerified": false,
     "videoAssetsAndRightsConfirmed": false,
     "numericClaimsVerifiedOrRemoved": false,

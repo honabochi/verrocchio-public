@@ -208,6 +208,23 @@ export const initialState = {
   events: [],
 };
 
+export function createFreshWorkshop(profileId = "blank") {
+  const profile = createHackathonProfile(profileId);
+  const fresh = JSON.parse(JSON.stringify(initialState));
+  return {
+    ...fresh,
+    deadline: profile.deadline,
+    mission: {
+      ...fresh.mission,
+      ...profile,
+      status: "seed",
+      planningStatus: "idle",
+      planningError: "",
+      draftPlan: null,
+    },
+  };
+}
+
 export function loadWorkshop(storageKey = workshopStorageKey()) {
   try {
     const stored = localStorage.getItem(storageKey);

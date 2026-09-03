@@ -185,9 +185,12 @@ does not pretend to have called a model: host-originated plans are marked
 
 ## One engine, many hackathons
 
-`START BLANK` resets the mission to a neutral intake. `LOAD WEBMCP MISSION`
-loads the current working profile for The WebMCP Challenge, including the solo,
-after-hours operating constraint. Official rules remain the source of truth
+`USE BLANK MISSION` and `USE WEBMCP MISSION` switch only the mission input;
+they do not erase current plans, claims, evidence, or workshop history. The
+human-only `START A FRESH WORKSHOP` action explicitly confirms and replaces
+only the ordinary workshop state for this browser. It preserves the display
+theme and isolated formal-evaluation records, is hidden in evaluation URLs,
+and is not exposed as a WebMCP tool. Official rules remain the source of truth
 and must be rechecked before publication or final submission.
 
 The historical build log records the first self-referential development run;

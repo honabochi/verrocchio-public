@@ -3,6 +3,7 @@ import {
   adoptWorkshopPlan,
   buildWorkPacket,
   createEvent,
+  createFreshWorkshop,
   exportWorkshop,
   getPacketRoles,
   loadWorkshop,
@@ -10,6 +11,7 @@ import {
   normalizeExternalReview,
   persistWorkshop,
   remainingTime,
+  STORAGE_KEY,
   workshopStorageKey,
 } from "./model";
 import { NavIcon, SignatureIcon, WorkshopMark } from "./icons";
@@ -442,7 +444,7 @@ function EvalModePanel({ context, state }) {
   );
 }
 
-function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
+function WorkshopGuide({ activeView, focusRef, onNavigate, state, webMcpStatus }) {
   const [copied, setCopied] = useState(false);
   const current = deriveWorkshopGuide(state, webMcpStatus);
   const actor = guideActors[current.actor] || {
@@ -473,7 +475,7 @@ function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
       </div>
       <div className="guide-copy">
         <small>次にすること</small>
-        <h2 id="workshop-guide-title">{current.title}</h2>
+        <h2 id="workshop-guide-title" ref={focusRef} tabIndex="-1">{current.title}</h2>
         <p>{current.detail}</p>
         <div className="guide-success">
           <span>完了条件</span>
@@ -504,6 +506,86 @@ function WorkshopGuide({ activeView, onNavigate, state, webMcpStatus }) {
         )}
       </div>
     </aside>
+  );
+}
+
+function FreshWorkshopDialog({ error, onClose, onConfirm }) {
+  const dialogRef = useRef(null);
+  const cancelRef = useRef(null);
+
+  useEffect(() => {
+    cancelRef.current?.focus();
+  }, []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const buttons = Array.from(
+      dialogRef.current?.querySelectorAll("button:not([disabled])") || [],
+    );
+    if (!buttons.length) return;
+    const first = buttons[0];
+    const last = buttons[buttons.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  return (
+    <div className="dialog-backdrop" onMouseDown={onClose} role="presentation">
+      <section
+        aria-describedby="fresh-workshop-description fresh-workshop-preserved"
+        aria-labelledby="fresh-workshop-title"
+        aria-modal="true"
+        className="evidence-dialog fresh-workshop-dialog"
+        onKeyDown={handleKeyDown}
+        onMouseDown={(event) => event.stopPropagation()}
+        ref={dialogRef}
+        role="dialog"
+      >
+        <div className="dialog-rule" />
+        <span>FRESH WORKSHOP · 人間専用</span>
+        <h2 id="fresh-workshop-title">現在の工房を初期化しますか？</h2>
+        <p id="fresh-workshop-description">
+          現在の計画、作業状態、CLAIMED、証拠状態、工房内の履歴をこのブラウザから消し、
+          選択中のミッションで最初から始めます。この操作は取り消せません。
+        </p>
+        <p id="fresh-workshop-preserved" className="fresh-workshop-preserved">
+          表示テーマと正式評価レシートは残ります。公開サイト、GitHub、Devpostには影響しません。
+        </p>
+        <p className="fresh-workshop-backup">
+          必要なら、キャンセルしてEVIDENCEからJSONを書き出してください。
+        </p>
+        {error && <p className="fresh-workshop-error" role="alert">{error}</p>}
+        <div>
+          <button
+            aria-label={actionAria(actions.keepWorkshop)}
+            className="dialog-cancel"
+            onClick={onClose}
+            ref={cancelRef}
+            type="button"
+          >
+            <ActionLabel copy={actions.keepWorkshop} />
+          </button>
+          <button
+            aria-label={actionAria(actions.confirmFreshWorkshop)}
+            className="dialog-save is-destructive"
+            onClick={onConfirm}
+            type="button"
+          >
+            <ActionLabel copy={actions.confirmFreshWorkshop} />
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1624,6 +1706,11 @@ export default function App() {
   const [evidenceGate, setEvidenceGate] = useState(null);
   const [capobottegaOpen, setCapobottegaOpen] = useState(false);
   const [resultStroke, setResultStroke] = useState(null);
+  const [freshWorkshopOpen, setFreshWorkshopOpen] = useState(false);
+  const [freshWorkshopError, setFreshWorkshopError] = useState("");
+  const [freshWorkshopNotice, setFreshWorkshopNotice] = useState("");
+  const freshWorkshopTriggerRef = useRef(null);
+  const guideFocusRef = useRef(null);
 
   useEffect(() => {
     setPersistenceStatus(persistWorkshop(state) ? "saved" : "failed");
@@ -1643,6 +1730,46 @@ export default function App() {
     () => state.gates.filter((gate) => !gate.done).length,
     [state.gates],
   );
+
+  const openFreshWorkshop = () => {
+    freshWorkshopTriggerRef.current = document.activeElement;
+    setFreshWorkshopError("");
+    setFreshWorkshopOpen(true);
+  };
+
+  const closeFreshWorkshop = () => {
+    setFreshWorkshopOpen(false);
+    setFreshWorkshopError("");
+    window.requestAnimationFrame(() => freshWorkshopTriggerRef.current?.focus());
+  };
+
+  const confirmFreshWorkshop = () => {
+    if (evalContext.enabled) {
+      setFreshWorkshopError("正式評価中は工房を初期化できません。");
+      return;
+    }
+    const current = stateRef.current;
+    const next = {
+      ...createFreshWorkshop(current.mission?.profileId),
+      stateVersion: (current.stateVersion || 0) + 1,
+    };
+    if (!persistWorkshop(next, STORAGE_KEY)) {
+      setFreshWorkshopError(
+        "初期化した状態を保存できませんでした。現在の工房は変更していません。",
+      );
+      return;
+    }
+    stateRef.current = next;
+    rawSetState(next);
+    setPersistenceStatus("saved");
+    setEvidenceGate(null);
+    setResultStroke(null);
+    setCapobottegaOpen(false);
+    setFreshWorkshopOpen(false);
+    setFreshWorkshopError("");
+    setFreshWorkshopNotice("新しい工房を開始しました。選択中のミッションから再開できます。");
+    window.requestAnimationFrame(() => guideFocusRef.current?.focus());
+  };
 
   const saveEvidence = (value) => {
     const proof = value.trim();
@@ -1883,6 +2010,7 @@ export default function App() {
         {!evalContext.enabled && (
           <WorkshopGuide
             activeView={state.activeView}
+            focusRef={guideFocusRef}
             onNavigate={(activeView) =>
               setState((current) => ({ ...current, activeView }))
             }
@@ -1902,9 +2030,11 @@ export default function App() {
           )}
           {state.activeView === "contratto" && (
             <MissionView
+              freshWorkshopNotice={freshWorkshopNotice}
               onAdopt={adoptPlan}
               onDiscard={discardPlan}
               onImportPlan={importHostPlanFromDom}
+              onRequestFreshWorkshop={evalContext.enabled ? undefined : openFreshWorkshop}
               onRequestPlan={requestHostPlan}
               setState={setState}
               state={state}
@@ -1941,6 +2071,13 @@ export default function App() {
         <CapobottegaDialog
           state={state}
           onClose={() => setCapobottegaOpen(false)}
+        />
+      )}
+      {freshWorkshopOpen && !evalContext.enabled && (
+        <FreshWorkshopDialog
+          error={freshWorkshopError}
+          onClose={closeFreshWorkshop}
+          onConfirm={confirmFreshWorkshop}
         />
       )}
     </main>

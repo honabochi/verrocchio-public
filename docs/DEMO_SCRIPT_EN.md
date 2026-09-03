@@ -4,9 +4,9 @@ Target runtime: **2:05–2:15**
 
 Recording route: **four short screen clips with live Owner narration**
 
-Final format: public YouTube, 1080p, audible English, no background music
+Final format: public YouTube, 1080p, audible Japanese narration, accurate timed English captions, no background music
 
-Timed captions: `docs/DEMO_CAPTIONS_EN.srt`
+Timed captions: `docs/DEMO_CAPTIONS_EN.srt` (retime after the Japanese-audio edit is final)
 
 Tonight's exact handoff: `docs/TONIGHT_RECORDING_HANDOFF.md`
 

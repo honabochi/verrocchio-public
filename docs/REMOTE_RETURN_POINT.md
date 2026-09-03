@@ -13,9 +13,13 @@ is ready for tonight.
 - Registration is complete.
 - Live Devpost project readback on 2026-09-02: `VERROCCHIO`, `state: draft`,
   `submitted_at: null`, no video URL.
-- The final 2:10 Owner-narrated demo script, synchronized SRT, YouTube packet,
-  and beginner-safe recording handoff are prepared.
+- The Japanese Owner-narration script, YouTube packet, and beginner-safe
+  recording handoff are prepared. English captions will be created from the
+  timing of the completed Japanese-audio video.
 - The Owner reports that the `NoBu Builds` channel identity is configured.
+- A human-only fresh-workshop reset is implemented and locally verified. It
+  clears only ordinary browser progress while preserving theme and isolated
+  evaluation records. It is not yet deployed to the public Site.
 
 ## Intentionally incomplete
 
@@ -24,24 +28,31 @@ is ready for tonight.
 - Owner-only identity, country, self-assessment, rights, privacy, and final
   readback attestations remain pending.
 - No final Devpost submission has occurred.
+- The fresh-workshop candidate is uncommitted and not deployed. A production
+  build made before its commit must not be deployed because the embedded source
+  revision still identifies the previous HEAD.
 
 ## Exact next action
 
-At home, open [`TONIGHT_RECORDING_HANDOFF.md`](TONIGHT_RECORDING_HANDOFF.md),
-turn on Focus mode, and record Clip 1. Do not rerun the completed evaluation,
-security scan, tests, or deployment before recording.
+Before recording, the Owner must separately authorize committing and deploying
+the verified fresh-workshop candidate. After that public readback passes, open
+[`TONIGHT_RECORDING_HANDOFF.md`](TONIGHT_RECORDING_HANDOFF.md), turn on Focus
+mode, keep only one VERROCCHIO tab open, reset any old workshop state, and record
+Clip 1. Do not rerun the completed hosted evaluation, DOM baselines, or security
+scan before recording.
 
 After joining the four clips, return to this task with:
 
-> 動画4本を撮って結合した。YouTube前チェックGO
+> 動画4本を撮って結合した。日本語音声版が完成した。字幕作成とYouTube前チェックGO
 
-The next AI action will be a pre-upload review of the local video, captions,
-title, description, privacy, and runtime. YouTube upload/publication, final tag,
-and Devpost submission remain separate Owner gates.
+The next AI action will be a pre-upload review of the local video, followed by
+English-caption timing, title, description, privacy, and runtime checks.
+YouTube upload/publication, final tag, and Devpost submission remain separate
+Owner gates.
 
 ## Do-not-redo boundary
 
 - Do not repeat the seven-case evaluation, DOM baselines, or Deep Security Scan.
-- Do not modify the product for visual polish before the recording.
+- Do not modify the product further for visual polish before the recording.
 - Do not publish YouTube, create the final tag, or submit Devpost from a general
   `GO`.

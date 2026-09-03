@@ -31,7 +31,7 @@ the account email or private Studio identity in this repository.
 - Capture: **2560×1440** recommended
 - Export: **1920×1080 MP4**
 - Visuals: product and host screen only; no face is required
-- Audio: clear Owner-spoken English narration; no background music
+- Audio: clear Owner-spoken Japanese narration; no background music
 
 The current public Site and repository are reachable, and the formal hosted
 evaluation has passed. Record the real public interaction without changing the
@@ -78,7 +78,7 @@ Recheck the live-demo URL and every chapter time after the final edit.
 - **Final visibility:** Public
 - **Audience:** Owner confirms **No, it's not made for kids**
 - **Category:** Science & Technology
-- **Language:** English
+- **Language:** Japanese
 - **Captions:** upload `docs/DEMO_CAPTIONS_EN.srt` as a timed English subtitle
   file
 - **Comments:** disabled is recommended for the submission period

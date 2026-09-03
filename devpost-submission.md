@@ -235,11 +235,13 @@ data, credentials, unrelated tabs, and unsupported pass claims.
 ## Demo Video
 
 Public YouTube URL: pending Owner recording and public upload. The final video
-must be under three minutes with audible English narration.
+must be under three minutes with audible Japanese narration and complete,
+accurate timed English captions.
 
-The final English narration, timed subtitle file, and beginner-safe recording
-handoff are prepared in `docs/DEMO_SCRIPT_EN.md`,
-`docs/DEMO_CAPTIONS_EN.srt`, and `docs/TONIGHT_RECORDING_HANDOFF.md`.
+The Japanese narration and beginner-safe recording handoff are prepared in
+`docs/TONIGHT_RECORDING_HANDOFF.md`. The English reference script and caption
+source are in `docs/DEMO_SCRIPT_EN.md` and `docs/DEMO_CAPTIONS_EN.srt`; caption
+timings will be adjusted after the Japanese-audio edit is final.
 
 ### 2:10 outline
 
@@ -252,9 +254,10 @@ handoff are prepared in `docs/DEMO_SCRIPT_EN.md`,
 - **1:50–2:10 — Human review and close:** show the two human review choices and
   close on the four bounded tool types without numeric performance claims.
 
-The public video must be under three minutes, include audible English narration,
-show the functioning product in the first 10–15 seconds, and use authorized
-assets only. The detailed capture script is `docs/DEMO_SCRIPT_EN.md`.
+The public video must be under three minutes, include audible Japanese narration
+and complete English translation captions, show the functioning product in the
+first 10–15 seconds, and use authorized assets only. The detailed capture guide
+is `docs/TONIGHT_RECORDING_HANDOFF.md`.
 
 ## Known Limitations
 

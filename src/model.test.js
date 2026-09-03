@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import {
   adoptWorkshopPlan,
   buildWorkPacket,
+  createFreshWorkshop,
   exportWorkshop,
   initialState,
   loadWorkshop,
@@ -195,6 +196,22 @@ test("persistWorkshop reports a failed save instead of claiming continuity", () 
 
   localStorage.setItem = originalSetItem;
   expect(persistWorkshop(initialState)).toBe(true);
+});
+
+test("createFreshWorkshop keeps the selected mission but removes all progress", () => {
+  const fresh = createFreshWorkshop("openai-webmcp-challenge-2026");
+
+  expect(fresh.mission.profileId).toBe("openai-webmcp-challenge-2026");
+  expect(fresh.mission.status).toBe("seed");
+  expect(fresh.mission.draftPlan).toBeNull();
+  expect(fresh.cartone.revision).toBe(0);
+  expect(fresh.gates.every((gate) => !gate.done && gate.claims.length === 0)).toBe(true);
+  expect(fresh.reviews).toEqual([]);
+  expect(fresh.decisions).toEqual([]);
+  expect(fresh.events).toEqual([]);
+
+  fresh.gates[0].claims.push({ id: "new-claim" });
+  expect(initialState.gates[0].claims).toEqual([]);
 });
 
 test("adoptWorkshopPlan replaces static gates and records model proof", () => {
