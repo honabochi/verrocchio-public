@@ -216,10 +216,12 @@ deadline-bounded schedules.
 The current challenge extension adds native, state-dependent WebMCP tools,
 the `CLAIMED → VERIFIED / CHANGES_REQUESTED` human checkpoint, an isolated
 hosted-eval mode, a DOM-only unsigned-plan import route, and a deterministic
-evaluation receipt. The fresh hosted seven-case run and both DOM baselines now
-pass on deployed source `fafc887`; the receipt and deterministic verifier remain
-reproducible from `evals/webmcp-results.json`. A fresh-participant comprehension
-test still remains open.
+evaluation receipt. The hosted seven-case run and both DOM baselines remain
+historical PASS evidence for WebMCP core source `fafc887`; the receipt and
+deterministic verifier remain reproducible from `evals/webmcp-results.json`.
+The later fresh-workshop reset has separate local tests and public smoke evidence
+and does not change the four-tool WebMCP contract. A fresh-participant
+comprehension test still remains open.
 
 ## Challenge submission packet
 

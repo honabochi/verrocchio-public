@@ -21,17 +21,18 @@ browser and are never copied into this repository or an AI transcript.
 ## Current exact next action
 
 Gate 1 completed through the authenticated Devpost flow on 2026-08-30. The
-public repository is also reachable without authentication, and the current
-public working copy passed 117 automated tests and a production build.
+public repository is also reachable without authentication, and product
+candidate `a2e9417` passed 121 automated tests and a production build.
 These facts do not complete the release: the repository remains untagged, the
 Site access is now public and an unauthenticated HTTP request returned the
 expected VERROCCHIO page on 2026-08-31. The final tagged/deployed revision,
 clean demo judge path, and public video remain unverified.
 
-The public Site identifies product source `fafc887`. Formal evaluation run
+Formal evaluation run
 `c5df4f47-2768-49c4-ab66-fcc23634df66` completed all seven hosted WebMCP cases
-and both DOM baselines; the deterministic verifier reports `PASS`, and
-`evals/webmcp-results.json` preserves the receipt. The live Devpost project was
+`evals/webmcp-results.json` preserves that historical `fafc887` receipt. The
+later fresh-workshop reset leaves the four-tool contract unchanged and has
+separate local/browser verification. The live Devpost project was
 read back on 2026-09-02 as `state: draft`, `submitted_at: null`, with no video
 URL. The exact return action is now to record the four short clips in
 `docs/TONIGHT_RECORDING_HANDOFF.md`, join them, and return for the pre-upload

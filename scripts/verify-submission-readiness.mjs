@@ -196,10 +196,17 @@ const productCandidateResult = manifest.productCandidate
 const productCandidate = productCandidateResult?.status === 0
   ? productCandidateResult.stdout.trim()
   : "";
+const hostedEvaluationRevisionResult = manifest.hostedEvaluationRevision
+  ? git("rev-parse", `${manifest.hostedEvaluationRevision}^{commit}`)
+  : null;
+const hostedEvaluationRevision = hostedEvaluationRevisionResult?.status === 0
+  ? hostedEvaluationRevisionResult.stdout.trim()
+  : "";
 for (const [id, commit] of [
   ["challenge-baseline", manifest.challengeBaseline],
   ["challenge-start", manifest.challengeStart],
   ["product-candidate", manifest.productCandidate],
+  ["hosted-evaluation-revision", manifest.hostedEvaluationRevision],
 ]) {
   const exists = commit && git("cat-file", "-e", `${commit}^{commit}`).status === 0;
   add(
@@ -227,6 +234,7 @@ if (manifest.challengeBaseline && manifest.challengeStart) {
 
 for (const [id, older, newer] of [
   ["start-before-candidate", manifest.challengeStart, manifest.productCandidate],
+  ["evaluation-before-candidate", manifest.hostedEvaluationRevision, manifest.productCandidate],
   ["candidate-before-head", manifest.productCandidate, head],
 ]) {
   const ordered = older && newer && git("merge-base", "--is-ancestor", older, newer);
@@ -569,8 +577,8 @@ if (String(hostedEvaluationRefValue || "").trim()) {
     const receipt = JSON.parse(await readFile(realCandidate, "utf8"));
     const summary = evaluateWebMcpReceipt(receipt);
     const expectedOrigin = new URL(manifest.urls.live).origin;
-    const revisionMatches = Boolean(productCandidate) &&
-      receipt.sourceRevision === productCandidate;
+    const revisionMatches = Boolean(hostedEvaluationRevision) &&
+      receipt.sourceRevision === hostedEvaluationRevision;
     const originMatches = receipt.origin === expectedOrigin;
     const pass = summary.verdict === "PASS" &&
       summary.safety?.violations?.length === 0 &&
@@ -578,7 +586,7 @@ if (String(hostedEvaluationRefValue || "").trim()) {
       originMatches;
     hostedEvaluation = {
       status: pass ? "PASS" : "FAIL",
-      evidence: `verdict=${summary.verdict}; violations=${summary.safety?.violations?.length ?? "unknown"}; revision=${revisionMatches ? "match" : "mismatch"}; origin=${originMatches ? "match" : "mismatch"}; receipt=${hostedEvaluationRefValue}`,
+      evidence: `verdict=${summary.verdict}; violations=${summary.safety?.violations?.length ?? "unknown"}; historicalRevision=${revisionMatches ? "match" : "mismatch"}; currentCandidate=${productCandidate ? "separate" : "missing"}; origin=${originMatches ? "match" : "mismatch"}; receipt=${hostedEvaluationRefValue}`,
     };
   } catch (error) {
     hostedEvaluation = {
@@ -591,7 +599,7 @@ add(
   "evidence-hostedEvaluation",
   hostedEvaluation.status,
   hostedEvaluation.evidence,
-  { priority: 44, actor: "OWNER", action: "現在の凍結revisionを配信した実サイトでWebMCP評価を実行し、PASS控えをevals/へ保存する。", source: "submission-manifest.json / hosted evaluation receipt" },
+  { priority: 44, actor: "OWNER", action: "hostedEvaluationRevisionの履歴証拠と、現在のproductCandidateに対する限定公開スモークを区別して確認する。", source: "submission-manifest.json / hosted evaluation receipt" },
 );
 
 for (const id of REQUIRED_EVIDENCE_REFS.filter((item) => item !== "hostedEvaluation")) {

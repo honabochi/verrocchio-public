@@ -26,16 +26,17 @@ falsifiable verification path, not the pre-existing workshop shell.
 | --- | --- | --- | --- |
 | Pre-existing baseline | `91315a1` | 2026-07-19 JST | Last commit before the WebMCP Challenge extension |
 | First challenge commit | `0176211` | 2026-08-27 JST | First native WebMCP-governed workshop flow |
-| Current tested product candidate | `fafc887` | 2026-09-01 JST | Evaluated browser implementation, including Owner-boundary remediation, fail-closed hosted evaluation, host-request disclosure, and DOM comparison support |
+| Formally hosted-evaluated WebMCP core | `fafc887` | 2026-09-01 JST | Seven fixed WebMCP cases and two DOM baselines passed against this revision |
+| Current locally tested product candidate | `a2e9417` | 2026-09-03 JST | Adds the human-only fresh-workshop reset and Japanese-audio/English-caption release path without changing the four WebMCP tools |
 
 The audited implementation range, including the first Challenge commit, is:
 
 ```text
-0176211^..fafc887
+0176211^..a2e9417
 ```
 
-This range contains 71 commits. Against the July baseline, it changes 64 files
-with 10,868 insertions and 1,120 deletions. The metadata-only commits after the
+This range contains 76 commits. Against the July baseline, it changes 66 files
+with 11,714 insertions and 1,215 deletions. The metadata-only commits after the
 product candidate, through the final submission tag, must also be included in
 the public comparison. The tag remains an explicit Owner approval gate.
 
@@ -43,11 +44,11 @@ For the audited implementation comparison against the pre-existing baseline,
 use:
 
 ```bash
-git diff --stat 91315a1..fafc887
-git log --format='%h %aI %s' 0176211^..fafc887
+git diff --stat 91315a1..a2e9417
+git log --format='%h %aI %s' 0176211^..a2e9417
 ```
 
-For the final public comparison, replace `fafc887` in both commands with the
+For the final public comparison, replace `a2e9417` in both commands with the
 annotated submission tag so the metadata-only release commits are included.
 
 Only the work added after the Challenge submission period opened is presented as
@@ -111,12 +112,19 @@ implementation, not on the July workshop shell by itself.
   convert public URLs, official fields, freeze state, test/build evidence, and
   Owner attestations into a deterministic final preflight.
 
-## Verification status at `fafc887`
+## Verification status
 
 Confirmed in the repository:
 
-- The automated suite passes: 117 tests across state, commands, WebMCP tools,
-  planning contracts, UI interaction, and evaluation logic.
+- At current product candidate `a2e9417`, the automated suite passes 121 tests
+  across state, commands, WebMCP tools, planning contracts, UI interaction, and
+  evaluation logic.
+- The fresh-workshop delta was checked in the in-app browser: confirmation
+  defaults to cancel, reset preserves the selected mission and WebMCP readiness,
+  and the clean state survives reload. This is bounded release evidence, not a
+  rerun of the formal hosted evaluation.
+- The formal hosted seven-case and two-DOM receipt remains historical evidence
+  for `fafc887`; it is not relabelled as evaluation of `a2e9417`.
 - A local Google Chrome WebMCP smoke on the candidate registered all four
   initial tools, reduced the surface to inspection during FERMO and evidence
   review, restored it after human resume and verification, kept MANCA at 06 for

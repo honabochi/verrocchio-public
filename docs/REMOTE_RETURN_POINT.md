@@ -8,8 +8,8 @@ is ready for tonight.
 - Public repository and Site are reachable.
 - The formal hosted receipt records all seven fixed WebMCP cases and both DOM
   baselines against product source `fafc887`.
-- The checked-out public repository is synchronized at `8a7d9ba`; later commits
-  contain release/evidence documentation rather than a new product candidate.
+- Current product candidate `a2e9417` contains the human-only fresh-workshop
+  reset. Later commits contain release/evidence metadata only.
 - Registration is complete.
 - Live Devpost project readback on 2026-09-02: `VERROCCHIO`, `state: draft`,
   `submitted_at: null`, no video URL.
@@ -19,7 +19,7 @@ is ready for tonight.
 - The Owner reports that the `NoBu Builds` channel identity is configured.
 - A human-only fresh-workshop reset is implemented and locally verified. It
   clears only ordinary browser progress while preserving theme and isolated
-  evaluation records. It is not yet deployed to the public Site.
+  evaluation records. Confirm its public readback before recording.
 
 ## Intentionally incomplete
 
@@ -28,14 +28,10 @@ is ready for tonight.
 - Owner-only identity, country, self-assessment, rights, privacy, and final
   readback attestations remain pending.
 - No final Devpost submission has occurred.
-- The fresh-workshop candidate is uncommitted and not deployed. A production
-  build made before its commit must not be deployed because the embedded source
-  revision still identifies the previous HEAD.
 
 ## Exact next action
 
-Before recording, the Owner must separately authorize committing and deploying
-the verified fresh-workshop candidate. After that public readback passes, open
+After the fresh-workshop public readback passes, open
 [`TONIGHT_RECORDING_HANDOFF.md`](TONIGHT_RECORDING_HANDOFF.md), turn on Focus
 mode, keep only one VERROCCHIO tab open, reset any old workshop state, and record
 Clip 1. Do not rerun the completed hosted evaluation, DOM baselines, or security
