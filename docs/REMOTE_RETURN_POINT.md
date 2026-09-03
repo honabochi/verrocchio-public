@@ -1,54 +1,43 @@
 # Remote return point
 
-No Owner action is required while away from the computer. The recording packet
-is ready for tonight.
+The repository and Site release phase is complete. Resume from the video upload
+gate; do not repeat the four-clip recording or the historical evaluation.
 
 ## Achieved state
 
-- Public repository and Site are reachable.
-- The formal hosted receipt records all seven fixed WebMCP cases and both DOM
-  baselines against product source `fafc887`.
-- Current product candidate `a2e9417` contains the human-only fresh-workshop
-  reset. Later commits contain release/evidence metadata only.
-- Registration is complete.
-- Live Devpost project readback on 2026-09-02: `VERROCCHIO`, `state: draft`,
-  `submitted_at: null`, no video URL.
-- The Japanese Owner-narration script, YouTube packet, and beginner-safe
-  recording handoff are prepared. English captions will be created from the
-  timing of the completed Japanese-audio video.
-- The Owner reports that the `NoBu Builds` channel identity is configured.
-- A human-only fresh-workshop reset is implemented and locally verified. It
-  clears only ordinary browser progress while preserving theme and isolated
-  evaluation records. Confirm its public readback before recording.
+- The public GitHub default branch, annotated tag
+  `webmcp-submission-2026-09-03`, and live Site are frozen to the same release
+  revision.
+- The public repository and Site are reachable without authentication.
+- The formal hosted receipt remains historical evidence for product source
+  `fafc887`; it is not relabelled as evaluation of the later release metadata.
+- Product candidate `a2e9417` contains the human-only fresh-workshop reset.
+- Registration is complete and the Devpost project remains a draft.
+- Local final video is complete: 70.12 seconds, 1440×900, one video track and
+  one audible Japanese narration track.
+- Timed English subtitles are complete: 10 cues ending at 01:08.000.
+- Owner accepted normal-speed playback and caption alignment.
+- The frozen release passed 121 tests, a production build, and release readback.
 
 ## Intentionally incomplete
 
-- No final video has been recorded or published.
-- No final annotated submission tag exists.
-- Owner-only identity, country, self-assessment, rights, privacy, and final
-  readback attestations remain pending.
+- The local video has not been uploaded or made public on YouTube.
+- Video asset/generated-audio rights confirmation remains an Owner decision.
+- Owner-only identity, country, self-assessment, video publication, and final
+  Devpost readback attestations remain pending.
 - No final Devpost submission has occurred.
 
 ## Exact next action
 
-After the fresh-workshop public readback passes, open
-[`TONIGHT_RECORDING_HANDOFF.md`](TONIGHT_RECORDING_HANDOFF.md), turn on Focus
-mode, keep only one VERROCCHIO tab open, reset any old workshop state, and record
-Clip 1. Do not rerun the completed hosted evaluation, DOM baselines, or security
-scan before recording.
+Open the completed video and YouTube packet, then begin with a private upload:
 
-After joining the four clips, return to this task with:
+> YouTubeアップロード前チェックGO
 
-> 動画4本を撮って結合した。日本語音声版が完成した。字幕作成とYouTube前チェックGO
-
-The next AI action will be a pre-upload review of the local video, followed by
-English-caption timing, title, description, privacy, and runtime checks.
-YouTube upload/publication, final tag, and Devpost submission remain separate
-Owner gates.
+YouTube publication and Devpost submission remain separate Owner gates.
 
 ## Do-not-redo boundary
 
 - Do not repeat the seven-case evaluation, DOM baselines, or Deep Security Scan.
-- Do not modify the product further for visual polish before the recording.
-- Do not publish YouTube, create the final tag, or submit Devpost from a general
-  `GO`.
+- Do not re-record the accepted video for visual polish alone.
+- Do not expose credentials, private browser UI, email, or account identifiers.
+- Do not publish YouTube or submit Devpost from a general `GO`.

@@ -24,19 +24,20 @@ the account email or private Studio identity in this repository.
 
 ## Prepared video package
 
-- Storyboard and final narration: `docs/DEMO_SCRIPT_EN.md`
+- Final edit record and translation: `docs/DEMO_SCRIPT_EN.md`
 - Timed English captions: `docs/DEMO_CAPTIONS_EN.srt`
-- Tonight's step-by-step handoff: `docs/TONIGHT_RECORDING_HANDOFF.md`
-- Target runtime: **2:05–2:15**
-- Capture: **2560×1440** recommended
-- Export: **1920×1080 MP4**
+- Completed recording receipt: `docs/TONIGHT_RECORDING_HANDOFF.md`
+- Local final video: `VERROCCHIO-WebMCP-demo-v1.mov`
+- Runtime: **70.12 seconds**
+- Resolution: **1440×900**
 - Visuals: product and host screen only; no face is required
-- Audio: clear Owner-spoken Japanese narration; no background music
+- Audio: locally generated Japanese Kokoro narration; no background music
+- Captions: 10 English cues from 00:01.000 through 01:08.000
 
-The current public Site and repository are reachable, and the formal hosted
-evaluation has passed. Record the real public interaction without changing the
-product first. Final tagging and the frozen-artifact readback happen after the
-video is accepted; they do not need to be repeated before tonight's first take.
+The local edit and captions are complete, and the Owner accepted normal-speed
+playback. The current public Site and repository are reachable, and the formal
+hosted evaluation has passed. Final tagging, publication, and frozen-artifact
+readback remain separate gates.
 
 ## Proposed YouTube title
 
@@ -64,11 +65,14 @@ video is accepted; they do not need to be repeated before tonight's first take.
 > Built for The WebMCP Challenge.
 >
 > Demo flow:
-> 00:00 Inspect missing proof and the next action
-> 00:30 Create an unsigned plan through WebMCP
-> 01:03 Human FIRMA adopts the plan
-> 01:15 Return a CLAIMED result without closing proof
-> 01:50 Human review and the WebMCP boundary
+> 00:01 Inspect missing proof and the next action
+> 00:10 Propose an unsigned plan through WebMCP
+> 00:38 Human FIRMA adopts the plan
+> 00:49 Return a CLAIMED result without closing proof
+> 01:01 Human review and the WebMCP boundary
+>
+> Japanese narration was generated locally with the Apache-2.0 licensed
+> Kokoro-82M model using the built-in jf_alpha voice.
 
 Recheck the live-demo URL and every chapter time after the final edit.
 
@@ -85,8 +89,8 @@ Recheck the live-demo URL and every chapter time after the final edit.
 - **Premiere:** off
 - **Monetization:** off
 - **Paid promotion:** none
-- **Synthetic-content disclosure:** answer from the final media actually used;
-  do not infer this before narration and editing are final
+- **Synthetic-content disclosure:** answer truthfully from the final media;
+  the Japanese narration is synthetic and its provenance is disclosed above
 
 The project is a developer-tool demonstration aimed at hackathon judges, so
 "not made for kids" is the recommended audience setting. The Owner must still
@@ -111,7 +115,7 @@ is frozen. It is optional for eligibility but useful for judge recognition.
 2. Select the **NoBu Builds** channel.
 3. Confirm its public identity exposes no personal name, photo, email, or
    unrelated links.
-4. Upload the final MP4 as **Private**.
+4. Upload `VERROCCHIO-WebMCP-demo-v1.mov` as **Private**.
 5. Paste the title and description, then replace the verified live-demo URL.
 6. Select the audience and other settings above.
 7. Upload the timed English SRT file.
@@ -123,7 +127,7 @@ is frozen. It is optional for eligibility but useful for judge recognition.
 12. Change visibility to **Public** only after the Owner's final publication
     confirmation.
 13. Open the public URL in a signed-out/private browser window and verify video,
-    audio, captions, description links, and 1080p playback.
+    audio, captions, description links, and HD playback.
 14. Copy the verified public YouTube URL into the Devpost submission draft.
 
 ## Stop conditions
@@ -145,7 +149,7 @@ After publication, record only these non-secret facts in the submission packet:
 
 - final public video URL;
 - publication visibility confirmed as Public;
-- runtime and 1080p availability;
+- runtime and HD availability;
 - captions present and readable;
 - final public demo URL tested signed out;
 - source link opens without authentication;

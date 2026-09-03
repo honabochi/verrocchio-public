@@ -13,7 +13,7 @@ browser and are never copied into this repository or an AI transcript.
 | 4 | Owner | Approve one annotated submission tag at the verified HEAD | Local annotated tag peels to the exact verified HEAD | The tag name or SHA is not read back exactly |
 | 5 | Owner | Publish the repository/tag and deploy the exact tagged build; change no billing, permissions, or unrelated resources | Public GitHub and live URLs exist | The operation would expose unrelated history/data or require an unapproved paid change |
 | 6 | AI | From an unauthenticated session, verify HTTP access, MIT detection, required tag files, remote/default/tag/local SHA identity, live revision marker, and the 60-second WebMCP judge path | Preflight and clean judge smoke reference the same tagged SHA | Login is required, a SHA differs, or the tool/UI state disagrees |
-| 7 | Owner | Record and publish the under-three-minute YouTube demo with audible Japanese narration and complete, accurate timed English captions, using only the verified tagged build and authorized assets | Public video ID resolves; runtime, Japanese audio, English captions, rights, and shown revision are read back | Private browser chrome, missing translation, unsupported claims, or third-party rights are uncertain |
+| 7 | Owner | Upload and publish the completed under-three-minute YouTube demo with audible Japanese narration and complete, accurate timed English captions, after confirming it represents the verified tagged build and uses authorized assets | Public video ID resolves; runtime, Japanese audio, English captions, rights, and shown revision are read back | Private browser chrome, missing translation, unsupported claims, or third-party rights are uncertain |
 | 8 | AI + Owner | Replace publication placeholders, complete the English Devpost fields, verify English or an English translation for every judge-required material, and read back every URL, answer, limitation, and before/after link | Draft, manifest, public artifacts, translation coverage, and official form agree | Any field is inferred, stale, missing, untranslated, or points to another revision |
 | 9 | Owner | Give final FIRMA and manually submit before `2026-09-03T20:00:00Z` | Devpost shows the submitted entry and the Owner reads it back | Deadline, eligibility, ownership, or final content is uncertain |
 | 10 | Owner + AI | Freeze the submitted entry, repository, live build, and video through judging; continue later work elsewhere | Periodic read-only checks show unchanged public revision and accessibility | A submitted artifact changed or judge access broke |
@@ -21,12 +21,13 @@ browser and are never copied into this repository or an AI transcript.
 ## Current exact next action
 
 Gate 1 completed through the authenticated Devpost flow on 2026-08-30. The
-public repository is also reachable without authentication, and product
-candidate `a2e9417` passed 121 automated tests and a production build.
-These facts do not complete the release: the repository remains untagged, the
-Site access is now public and an unauthenticated HTTP request returned the
-expected VERROCCHIO page on 2026-08-31. The final tagged/deployed revision,
-clean demo judge path, and public video remain unverified.
+public repository and Site are reachable without authentication. The final
+repository release is frozen by annotated tag
+`webmcp-submission-2026-09-03`; the tag, GitHub default branch, and live Site
+were aligned and read back against one release revision. The release passed all
+121 automated tests and a production build. The local 70.12-second demo,
+Japanese narration, and timed English captions are complete, and the Owner
+accepted normal-speed playback.
 
 Formal evaluation run
 `c5df4f47-2768-49c4-ab66-fcc23634df66` completed all seven hosted WebMCP cases
@@ -34,15 +35,16 @@ Formal evaluation run
 later fresh-workshop reset leaves the four-tool contract unchanged and has
 separate local/browser verification. The live Devpost project was
 read back on 2026-09-02 as `state: draft`, `submitted_at: null`, with no video
-URL. The exact return action is now to record the four short clips in
-`docs/TONIGHT_RECORDING_HANDOFF.md`, join them, and return for the pre-upload
-review. Stop before any credential value or protected browser data is shown to
-AI.
+URL. The recording handoff is now a completed receipt in
+`docs/TONIGHT_RECORDING_HANDOFF.md`; do not repeat the four-clip flow. The exact
+next action is `YouTubeアップロード前チェックGO`. Stop before any credential
+value or protected browser data is shown to AI.
 
 Gate 2 still requires the Owner's separate off-screen confirmation that the
-public-bound files contain no secret or protected data. Gate 4 remains deferred
-until Site evidence and video metadata are stable; a general `GO` does not
-authorize the final tag, video upload, or Devpost submission.
+public-bound files contain no secret or protected data. Video rights, YouTube
+publication, Owner-only Devpost fields, final entry readback, and final FIRMA
+remain incomplete. A general `GO` does not authorize video publication or
+Devpost submission.
 
 ## Registration readback template — completed; answers stay off-repository
 

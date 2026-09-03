@@ -7,3 +7,4 @@ dist/
 *.log
 *.tgz
 .devpost-hackathon-state.json
+video-work/

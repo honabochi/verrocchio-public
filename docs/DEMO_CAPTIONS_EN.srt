@@ -1,67 +1,44 @@
 1
-00:00:00,000 --> 00:00:10,000
-VERROCCHIO helps a solo builder
-return after an interruption.
+00:00:01,000 --> 00:00:05,000
+VERROCCHIO keeps proof and the next step visible
+after an interruption.
 
 2
-00:00:10,000 --> 00:00:20,000
-The host uses WebMCP to inspect live workshop state,
-not guess from the page layout.
+00:00:05,000 --> 00:00:10,500
+inspect_workshop reads the current MANCA.
 
 3
-00:00:20,000 --> 00:00:30,000
-It finds missing proof, the smallest next step,
-and the decisions that must stay with me.
+00:00:10,500 --> 00:00:17,500
+Next, propose_workshop_draft checks the smallest plan's
+state, evidence gates, and scope.
 
 4
-00:00:30,000 --> 00:00:41,000
-Now the host proposes the smallest valid plan
-through WebMCP.
+00:00:17,500 --> 00:00:20,450
+The plan stops unsigned.
 
 5
-00:00:41,000 --> 00:00:52,000
-VERROCCHIO checks the live version,
-proof gates, plan size, and retry key.
+00:00:38,000 --> 00:00:43,500
+Only a human who has read the scope and risks
+gives FIRMA.
 
 6
-00:00:52,000 --> 00:01:03,000
-The plan is still unsigned.
-A good AI answer is not approval,
-and the agent has no tool to adopt it.
+00:00:43,500 --> 00:00:48,500
+Approval, evidence verification, publication,
+and submission remain human.
 
 7
-00:01:03,000 --> 00:01:15,000
-I read the scope and risks,
-then give FIRMA in the human interface.
-This is a visible decision, not a hidden prompt.
+00:00:49,000 --> 00:00:55,500
+After adoption, return_work_result reports the change,
+check, evidence reference, and remaining risk.
 
 8
-00:01:15,000 --> 00:01:26,000
-The active packet says what to do,
-what to check, and when to stop.
+00:00:55,500 --> 00:01:01,500
+An AI response alone is not proof.
 
 9
-00:01:26,000 --> 00:01:38,000
-The agent returns a structured claim
-with an evidence reference and remaining risk.
+00:01:01,500 --> 00:01:05,000
+The result is CLAIMED, and MANCA stays open.
 
 10
-00:01:38,000 --> 00:01:50,000
-MANCA stays open. The result is CLAIMED, not VERIFIED,
-because an agent response is not proof.
-
-11
-00:01:50,000 --> 00:01:58,000
-I can verify the evidence
-or send the work back.
-
-12
-00:01:58,000 --> 00:02:05,000
-WebMCP gives the host four bounded, state-aware calls:
-inspect, stop, propose, and return a claim.
-
-13
-00:02:05,000 --> 00:02:10,000
-Approval, proof checks, publishing,
-and submission stay human.
-VERROCCHIO is a disciplined team of one.
+00:01:05,000 --> 00:01:08,000
+The human verifies it or sends it back.

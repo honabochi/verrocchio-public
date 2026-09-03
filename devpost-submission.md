@@ -3,9 +3,10 @@
 ### ⏳ Not submitted yet
 
 No final submission has been sent. The authenticated Devpost project is a live
-draft (`state: draft`, `submitted_at: null`, read back 2026-09-02). The public
-video, final frozen-artifact readback, and Owner-only form answers remain
-pending.
+draft (`state: draft`, `submitted_at: null`, read back 2026-09-02). A 70.12-second
+local demo with Japanese synthetic narration and timed English captions is
+complete. Its public YouTube URL, final frozen-artifact readback, and Owner-only
+form answers remain pending.
 
 ## One-line Summary
 
@@ -15,29 +16,33 @@ exposes the browser workshop as four state-aware tools—inspect, stop, propose 
 return an unverified claim—so the agent acts on structured state instead of
 guessing from the DOM. In the judge path, the host inspects `MANCA`, a plan
 waits for human `FIRMA`, and a result stays `CLAIMED` until human verification;
-the evaluated checkout and deployed Site identify source `fafc887`, and formal
-hosted run `c5df4f47-2768-49c4-ab66-fcc23634df66` passed all seven fixed
+the historical formal evaluation identifies source `fafc887`, while the current
+live Site identifies release-metadata HEAD `4c0a7a3`. Hosted run
+`c5df4f47-2768-49c4-ab66-fcc23634df66` passed all seven fixed
 natural-language cases plus both DOM baselines. Final tagged clean-clone proof,
-fresh-participant comprehension, and video evidence remain incomplete.
+fresh-participant comprehension, and publication of the completed local video
+remain incomplete.
 
 ## Public Demo Link
 
 <https://verrocchio-workshop.honabochi.chatgpt.site/>
 
 Unauthenticated HTTP access returned the expected VERROCCHIO page on
-2026-09-01. The formal hosted receipt identifies deployed source `fafc887` and
-records 7/7 expected natural-language tool paths, zero recorded human-boundary
-violations, and both DOM baselines. The productive paths used two WebMCP calls
-versus three and four DOM actions; this is an action-count result, not a speed
-claim. Final frozen-tag and clean judge-path verification remain open.
+2026-09-03 with revision marker `4c0a7a3`. Separately, the historical formal
+hosted receipt identifies evaluated source `fafc887` and records 7/7 expected
+natural-language tool paths, zero recorded human-boundary violations, and both
+DOM baselines. The productive paths used two WebMCP calls versus three and four
+DOM actions; this is an action-count result, not a speed claim. Final frozen-tag
+and clean judge-path verification remain open.
 
 ## Public Repository Link
 
 <https://github.com/honabochi/verrocchio-public>
 
 The source, setup instructions, required assets, and MIT license are intended
-for public judge access. The default branch still needs the latest candidate,
-the final annotated submission tag, and an unauthenticated artifact readback.
+for public judge access. The frozen release uses annotated tag
+`webmcp-submission-2026-09-03`; the final release readback must confirm that the
+tag, default branch, and deployed Site resolve to the same revision.
 
 ## Problem
 
@@ -71,7 +76,7 @@ unproven.
 
 - **WebMCP Leverage:** four state-dependent tools form a shared contract; the
   human-only actions are deliberately absent from the tool surface.
-- **Execution:** deployed source `fafc887` completed the formal hosted 7-case
+- **Execution:** historically evaluated source `fafc887` completed the formal hosted 7-case
   WebMCP evaluation and both DOM baselines with zero recorded boundary
   violations. The final tagged clean-clone test/build proof and repository
   synchronization remain release gates.
@@ -164,8 +169,9 @@ FIRMA/FERMO controls, but it did not register WebMCP tools.
 
 - **Pre-existing baseline:** [`91315a1`](https://github.com/honabochi/verrocchio-public/commit/91315a120059cae3b9eb68566c81d5c8d87fd903) (July 19, 2026).
 - **Challenge start:** [`0176211`](https://github.com/honabochi/verrocchio-public/commit/0176211fe5a1c62ba366c1379710864a5bb2db17) (August 27, 2026).
-- **Current evaluated candidate:** `fafc887`, matching the formal hosted receipt; final annotated tag remains pending.
-- **Current comparison route:** [`91315a1...main`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...main); the final draft will point to the frozen tag after Owner approval.
+- **Current evaluated candidate:** `fafc887`, matching the historical formal hosted receipt.
+- **Frozen release tag:** `webmcp-submission-2026-09-03`.
+- **Current comparison route:** [`91315a1...webmcp-submission-2026-09-03`](https://github.com/honabochi/verrocchio-public/compare/91315a120059cae3b9eb68566c81d5c8d87fd903...webmcp-submission-2026-09-03).
 
 Beginning with `0176211` on August 27, the eligible extension added four native,
 state-aware WebMCP tools; host-driven keyless planning; phase-dependent tool
@@ -199,8 +205,9 @@ Devpost—never in the repository.
 
 - Earlier candidate evidence includes a real Chrome WebMCP smoke. The formal
   hosted product boundary is `fafc887`.
-- Candidate `fafc887` passed all 117 tests on 2026-09-01. This does not replace
-  the required clean-clone test and build on the final annotated submission tag.
+- Current local HEAD passed all 121 tests and a production build on 2026-09-03.
+  This does not replace the required clean-clone test and build on the final
+  annotated submission tag.
 - Judge-accessible hosted evaluation: **PASS** on 2026-09-01 for source
   `fafc887`, preserved in `evals/webmcp-results.json`.
 - Fresh hosted seven-case evaluation: **PASS**, 7/7 expected paths and zero
@@ -211,10 +218,11 @@ Devpost—never in the repository.
 
 ## Language and judge accessibility
 
-The submission description, testing instructions, demo narration, and captions
-will be in English. The product keeps its Japanese visual identity, while core
-actions and states use visible English labels such as `WEBMCP READY`, `MANCA`,
-`NEXT`, `FIRMA REQUIRED`, `CLAIMED`, `VERIFY CLAIM`, and `REQUEST CHANGES`.
+The submission description and testing instructions are in English. The demo
+uses Japanese narration with complete timed English captions. The product keeps
+its Japanese visual identity, while core actions and states use visible English
+labels such as `WEBMCP READY`, `MANCA`, `NEXT`, `FIRMA REQUIRED`, `CLAIMED`,
+`VERIFY CLAIM`, and `REQUEST CHANGES`.
 
 A full application language switch is not part of the submission scope. Before
 submission, the Owner must verify that every non-English item a judge needs to
@@ -234,30 +242,31 @@ data, credentials, unrelated tabs, and unsupported pass claims.
 
 ## Demo Video
 
-Public YouTube URL: pending Owner recording and public upload. The final video
-must be under three minutes with audible Japanese narration and complete,
-accurate timed English captions.
+Public YouTube URL: pending Owner upload and publication.
 
-The Japanese narration and beginner-safe recording handoff are prepared in
-`docs/TONIGHT_RECORDING_HANDOFF.md`. The English reference script and caption
-source are in `docs/DEMO_SCRIPT_EN.md` and `docs/DEMO_CAPTIONS_EN.srt`; caption
-timings will be adjusted after the Japanese-audio edit is final.
+The final local edit is `VERROCCHIO-WebMCP-demo-v1.mov`: 70.12 seconds,
+1440×900, with one video track and one audible Japanese narration track. The
+timed English subtitle source is `docs/DEMO_CAPTIONS_EN.srt`: 10 non-overlapping
+cues from 00:01.000 through 01:08.000. The local receipt is
+`evidence/demo-recording-2026-09-03.json`.
 
-### 2:10 outline
+### 70-second final flow
 
-- **0:00–0:30 — Real inspection:** send the real request immediately, show
-  `inspect_workshop`, MANCA, NEXT, and the human-only boundary.
-- **0:30–1:15 — Unsigned plan and FIRMA:** show the real proposal in causal
-  order, stop at `FIRMA REQUIRED`, then show the entrant's visible adoption.
-- **1:15–1:50 — CLAIMED:** return a structured claim through WebMCP and show
-  that MANCA remains open before human evidence review.
-- **1:50–2:10 — Human review and close:** show the two human review choices and
-  close on the four bounded tool types without numeric performance claims.
+- **0:01–0:10 — Inspect:** `inspect_workshop` reads the current MANCA.
+- **0:10–0:20 — Unsigned plan:** `propose_workshop_draft` checks the bounded
+  plan and stops unsigned.
+- **0:38–0:48 — Human FIRMA:** the entrant visibly adopts the plan.
+- **0:49–1:01 — Return a claim:** `return_work_result` reports the change,
+  check, evidence reference, and remaining risk.
+- **1:01–1:08 — Human review:** `CLAIMED` and open MANCA remain visible with
+  both review choices unclicked.
 
-The public video must be under three minutes, include audible Japanese narration
-and complete English translation captions, show the functioning product in the
-first 10–15 seconds, and use authorized assets only. The detailed capture guide
-is `docs/TONIGHT_RECORDING_HANDOFF.md`.
+The Japanese narration was generated locally with the Apache-2.0 licensed
+Kokoro-82M model using the built-in `jf_alpha` voice. The video shows the causal
+product states; direct WebMCP execution is additionally supported by the local
+capture log and source instrumentation rather than being fully readable as host
+history inside every frame. Public visibility, final rights confirmation, and
+signed-out YouTube playback remain Owner gates.
 
 ## Known Limitations
 
@@ -269,11 +278,11 @@ is `docs/TONIGHT_RECORDING_HANDOFF.md`.
 
 ## Submission Readiness Notes
 
-Local tests are not submission readiness. Registration is complete; the entrant
-must still review secrets off-screen, freeze one revision, publish the same
-repository and live build, verify judge access, record the video, read back
-every form field, and manually submit. The exact sequence is in
-`docs/OWNER_RELEASE_GATE.md`.
+Local tests and a completed local video are not submission readiness.
+Registration is complete; the entrant must still review secrets off-screen,
+freeze one revision, publish the same repository and live build, verify judge
+access, upload and publish the completed video, read back every form field, and
+manually submit. The exact sequence is in `docs/OWNER_RELEASE_GATE.md`.
 
 ## Registration Status
 

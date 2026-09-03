@@ -1,0 +1,63 @@
+{
+  "schema": "verrocchio.local-final-alignment.v1",
+  "generatedAt": "2026-09-03T14:27:08.596Z",
+  "scope": "LOCAL_ALIGNMENT_WITH_READ_ONLY_PUBLIC_TARGET_CHECKS",
+  "head": "4c0a7a3b31e14048c70eb373032feaa4759e336a",
+  "productCandidate": "a2e9417",
+  "hostedEvaluationRevision": "fafc887",
+  "verification": {
+    "automatedTests": {
+      "status": "PASS",
+      "passed": 121,
+      "expected": 121
+    },
+    "productionBuild": {
+      "status": "PASS"
+    },
+    "buildArtifactConsistency": {
+      "status": "PASS"
+    },
+    "trackedSecretBearingFilenames": {
+      "status": "PASS",
+      "scope": "filenames only; content review remains Owner-only"
+    },
+    "captionsMatchDeliveryFile": {
+      "status": "PASS",
+      "sha256": "f5bca56e7bac1dd9ce8078aa5fc441152a7eeb4b2a261d4837966223315d2aac"
+    },
+    "publicLiveUrl": {
+      "status": "PASS",
+      "httpStatus": 200,
+      "revision": "4c0a7a3b31e14048c70eb373032feaa4759e336a"
+    },
+    "publicRepositoryUrl": {
+      "status": "PASS",
+      "httpStatus": 200,
+      "remoteMain": "8a7d9ba679bd4cbd9e6a81806c302610b4bd23e6"
+    },
+    "historicalHostedEvaluation": {
+      "status": "PASS",
+      "violations": 0,
+      "receipt": "evals/webmcp-results.json"
+    }
+  },
+  "preflight": {
+    "verdict": "FAIL",
+    "readyToSubmit": false,
+    "counts": {
+      "PASS": 35,
+      "FAIL": 2,
+      "MISSING": 4,
+      "OWNER": 10
+    },
+    "expectedBlockers": [
+      "uncommitted local alignment changes",
+      "annotated submission tag is unset",
+      "GitHub remote main does not match current HEAD",
+      "clean judge smoke is unset",
+      "public YouTube URL is unset",
+      "Owner-only Devpost fields and attestations remain"
+    ]
+  },
+  "externalActionsPerformed": []
+}

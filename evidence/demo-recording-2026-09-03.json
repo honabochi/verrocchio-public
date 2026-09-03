@@ -1,0 +1,54 @@
+{
+  "schema": "verrocchio.demo-recording.v1",
+  "recordedAt": "2026-09-03",
+  "publicationStatus": "LOCAL_ONLY",
+  "video": {
+    "file": "VERROCCHIO-WebMCP-demo-v1.mov",
+    "sha256": "d7940717814b92f54a385d498580dc68278316d345e34642709b2831f7aeb06d",
+    "sizeBytes": 22852962,
+    "durationSeconds": 70.12,
+    "width": 1440,
+    "height": 900,
+    "videoTracks": 1,
+    "audioTracks": 1
+  },
+  "captions": {
+    "trackedSource": "docs/DEMO_CAPTIONS_EN.srt",
+    "deliveryFile": "VERROCCHIO-WebMCP-demo-v1.en.srt",
+    "sha256": "f5bca56e7bac1dd9ce8078aa5fc441152a7eeb4b2a261d4837966223315d2aac",
+    "language": "en",
+    "cueCount": 10,
+    "firstCueSeconds": 1,
+    "lastCueEndSeconds": 68
+  },
+  "narration": {
+    "language": "ja",
+    "engine": "Kokoro 0.9.4",
+    "model": "hexgrad/Kokoro-82M",
+    "voice": "jf_alpha",
+    "langCode": "j",
+    "speed": 0.92,
+    "sampleRateHz": 24000,
+    "channels": 1,
+    "modelLicense": "Apache-2.0"
+  },
+  "observedFlow": [
+    "inspect_workshop and MANCA",
+    "propose_workshop_draft and unsigned plan",
+    "human FIRMA and adopted plan",
+    "return_work_result and CLAIMED",
+    "open MANCA and unclicked human review controls"
+  ],
+  "evidenceBoundary": "The video shows the causal product states. Direct WebMCP execution is supported by the local capture log and source instrumentation and is not fully legible as host history in every frame.",
+  "ownerPlayback": {
+    "status": "CONFIRMED",
+    "confirmedAt": "2026-09-03",
+    "scope": "normal-speed playback, audible Japanese narration, English caption alignment, and under-three-minute runtime"
+  },
+  "pending": [
+    "Owner confirmation of all video asset and generated-audio rights",
+    "YouTube upload and Public visibility",
+    "signed-out playback and caption readback",
+    "public YouTube URL"
+  ]
+}

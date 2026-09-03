@@ -8,7 +8,7 @@
   "challengeStart": "0176211",
   "productCandidate": "a2e9417",
   "hostedEvaluationRevision": "fafc887",
-  "submissionTag": "",
+  "submissionTag": "webmcp-submission-2026-09-03",
   "expectedTestCount": 121,
   "entryContext": {
     "appStatus": "Existing"
@@ -20,7 +20,7 @@
   },
   "evidenceRefs": {
     "cleanJudgeSmoke": "",
-    "demoRecording": "",
+    "demoRecording": "evidence/demo-recording-2026-09-03.json",
     "hostedEvaluation": "evals/webmcp-results.json"
   },
   "officialFields": {
@@ -40,7 +40,7 @@
     "rulesAndTermsAccepted": true,
     "secretsReviewedOffScreen": false,
     "cleanCloneCiTestBuildPassed": false,
-    "videoUnderThreeMinutesWithAudibleJapaneseNarrationAndEnglishCaptions": false,
+    "videoUnderThreeMinutesWithAudibleJapaneseNarrationAndEnglishCaptions": true,
     "englishSubmissionMaterialsOrTranslationsVerified": false,
     "videoAssetsAndRightsConfirmed": false,
     "numericClaimsVerifiedOrRemoved": false,
