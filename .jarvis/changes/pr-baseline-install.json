@@ -1,0 +1,17 @@
+{
+  "record_version": 1,
+  "change_id": "pr-baseline-install",
+  "goal": "Install the shared read-only PR evidence baseline while preserving product code and native CI.",
+  "scope": [
+    ".github/workflows/jarvis-baseline.yml",
+    ".jarvis/changes/pr-baseline-install.json",
+    ".github/jarvis/pr-baseline.mjs"
+  ],
+  "verification_plan": [
+    "independent-checker-review",
+    "synthetic-negative-tests",
+    "trusted-installation-and-genuine-pr-readback"
+  ],
+  "limits": "Baseline contract only: no candidate execution, dependencies, model calls, new secrets, merge or deployment. Existing tests remain separate. Bootstrap installation is not live PR proof.",
+  "next_action": "Mission Control: validate trusted installation, inspect a genuine PR-event result and exact head/base; resolve review holds before authorized adoption."
+}

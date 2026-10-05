@@ -1,0 +1,42 @@
+name: JARVIS PR baseline
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Open PR number (manual smoke, not a PR-head check)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jarvis-baseline-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: JARVIS baseline (not tests or merge approval)
+    if: github.repository_owner == 'honabochi' && (github.event_name == 'pull_request_target' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trusted workflow commit only (never candidate code)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: .github/jarvis
+          sparse-checkout-cone-mode: false
+      - name: Verify release hash and inspect bounded metadata
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          JARVIS_BASELINE_CORE_SHA: df5b14b12f4125ee4aa41e9546332f13c7e53613
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; import crypto from "node:crypto"; const hash = crypto.createHash("sha256").update(fs.readFileSync(".github/jarvis/pr-baseline.mjs")).digest("hex"); if (hash !== "7c90128032739e33f95e6bf3161a1bda51c480769214c8f7288893410ddd09f8") process.exit(1);'
+          node .github/jarvis/pr-baseline.mjs
