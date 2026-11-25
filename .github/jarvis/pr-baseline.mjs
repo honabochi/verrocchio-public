@@ -246,12 +246,16 @@ async function request(fetchImpl, token, path) {
   }
 }
 
-function prMetadata(pr, repository, repositoryId, number) {
-  requireValue(pr?.state === 'open' && pr.number === number, 'PR_NOT_OPEN');
+function prMetadata(pr, repository, repositoryId, number, event) {
+  // Only the trusted manual event may inspect merged history. Candidate records,
+  // labels and event payload assertions never override this fresh API evidence.
+  requireValue((pr?.state === 'open'
+    || (event === 'workflow_dispatch' && pr?.state === 'closed' && pr.merged === true))
+    && pr.number === number, 'PR_NOT_OPEN');
   requireValue(pr.base?.repo?.full_name === repository && String(pr.base?.repo?.id) === repositoryId, 'PR_REPOSITORY_MISMATCH');
   requireValue(SHA.test(pr.head?.sha ?? '') && SHA.test(pr.base?.sha ?? ''), 'PR_REVISION');
   requireValue(Number.isInteger(pr.changed_files) && pr.changed_files > 0 && pr.changed_files <= 3000, 'FILE_COUNT_LIMIT');
-  return { head: pr.head.sha, base: pr.base.sha, count: pr.changed_files };
+  return { head: pr.head.sha, base: pr.base.sha, count: pr.changed_files, state: pr.state };
 }
 
 async function documentationModes(get, files, head, base) {
@@ -323,7 +327,7 @@ export async function runBaseline({ env = process.env, event, fetchImpl = global
     identity.pr = Number(prNumber);
     requireValue(typeof env.GITHUB_TOKEN === 'string' && env.GITHUB_TOKEN.length > 0, 'TOKEN_UNAVAILABLE');
     const get = path => request(fetchImpl, env.GITHUB_TOKEN, `/repos/${identity.repository}${path}`);
-    const first = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr);
+    const first = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr, identity.event);
     identity.subject_head = first.head;
     identity.subject_base = first.base;
     if (env.GITHUB_EVENT_NAME === 'pull_request_target') {
@@ -347,8 +351,8 @@ export async function runBaseline({ env = process.env, event, fetchImpl = global
       // Verify types without fetching narrative contents. Both sides of a rename
       // and mode changes are checked; a filename alone never proves inert data.
       await documentationModes(get, files, first.head, first.base);
-      const last = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr);
-      requireValue(last.head === first.head && last.base === first.base && last.count === first.count, 'STALE_PR');
+      const last = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr, identity.event);
+      requireValue(last.head === first.head && last.base === first.base && last.count === first.count && last.state === first.state, 'STALE_PR');
       return { result_version: 1, ...metadataResult, identity };
     }
     requireValue(records.length === 1, 'RECORD_COUNT');
@@ -381,8 +385,8 @@ export async function runBaseline({ env = process.env, event, fetchImpl = global
     identity.record_digest = createHash('sha256').update(bytes).digest('hex');
     const raw = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
     const result = evaluate({ files, record: raw, head: first.head, base: first.base });
-    const last = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr);
-    requireValue(last.head === first.head && last.base === first.base && last.count === first.count, 'STALE_PR');
+    const last = prMetadata(await get(`/pulls/${identity.pr}`), identity.repository, identity.repository_id, identity.pr, identity.event);
+    requireValue(last.head === first.head && last.base === first.base && last.count === first.count && last.state === first.state, 'STALE_PR');
     return { result_version: 1, ...result, identity };
   } catch (error) {
     return { result_version: 1, status: 'BLOCKED', reasons: [error instanceof BaselineError ? error.code : 'BASELINE_FAILURE'], identity };
@@ -431,13 +435,75 @@ export async function persistResult(result, env) {
   }
 }
 
+const FINDING_ACTIONS = new Map([
+  ['RECORD_COUNT', 'この差分に必要な変更記録がちょうど1件あるか確認し、合意した変更の記録をそろえる。'],
+  ['RECORD_STATUS', '変更記録がこのPRで追加または更新されるようにする。'],
+  ['RECORD_MISSING', '合意した目的・変更範囲・検証計画を変更記録に残す。'],
+  ['RECORD_MODE', '対象コミットの変更記録が通常のファイルであることを確認する。'],
+  ['RECORD_TOO_LARGE', '変更記録を実際の変更と検証に必要な記述へ絞る。'],
+  ['RECORD_SECRET_PATTERN', '記録を転載せず、承認済みの手順で混入の有無と必要な対応を確認する。'],
+  ['RECORD_JSON', '変更記録のJSON形式を修正する。'],
+  ['RECORD_SCHEMA', '変更記録を既存スキーマに沿って修正する。'],
+  ['SCOPE_COVERAGE', '実際の差分・合意した範囲・記録を照合する。範囲外の変更は分け、記録だけに漏れがあれば修正する。'],
+]);
+
+const EVIDENCE_ACTIONS = new Map([
+  ['STALE_EVENT', 'PRの最新の変更版とマージ先に対応する監査結果を確認する。'],
+  ['STALE_PR', 'PRの最新の変更版とマージ先に対応する監査結果を確認する。'],
+  ['PR_NOT_OPEN', 'PRの状態と、今回のイベントで監査できる対象かを確認する。'],
+  ['DOCUMENT_MODE', '対象版のGitツリーとファイル形式を照合し、文書のみの省略条件を確認する。'],
+  ['FILE_LIST_INCOMPLETE', '対象版の差分一覧をすべて取得できるか確認する。'],
+  ['RESULT_WRITE_FAILED', '監査結果の保存処理を確認し、取得できる結果をそろえる。'],
+  ['SUMMARY_WRITE_FAILED', '監査結果の表示処理を確認し、取得できる結果をそろえる。'],
+]);
+
+function auditGuidance({ status, reasons }) {
+  if (status === 'PASS') {
+    return ['機械監査通過', ['対象版のプロジェクト固有の検証と、合意範囲内の取り込み判断を確認する。']];
+  }
+  if (reasons.includes('UNKNOWN_EXTENSION')) {
+    return ['変更の影響が未確認｜取り込み保留', ['対象ファイルの用途・影響・必要な検証を確認し、判断の根拠をそろえる。']];
+  }
+  if (status === 'REVIEW_REQUIRED') {
+    return ['機械監査通過｜差分レビューが必要', ['重要な差分を読み、合意範囲・権限・検証への影響を確認する。新しい判断が必要な点だけをOwnerに返す。']];
+  }
+  const findingsOnly = reasons.every(reason => FINDING_ACTIONS.has(reason));
+  const actions = reasons.map(reason => FINDING_ACTIONS.get(reason) ?? EVIDENCE_ACTIONS.get(reason)
+    ?? '固定理由コードに従って、対象版・差分情報・実行設定のどこで確認できなかったかを調べる。');
+  return [
+    findingsOnly ? '変更記録の指摘｜取り込み保留' : '監査の証拠を確認できない｜取り込み保留',
+    [...new Set(actions)],
+  ];
+}
+
 export function resultSummary(result) {
   requireValue(validateResult(result), 'RESULT_SCHEMA');
-  return `## JARVIS PR baseline\n\nStatus: ${result.status}\n\nReasons: ${result.reasons.join(', ')}\n\nBound identity (declarations only):\n\n\`\`\`json\n${JSON.stringify(result.identity, null, 2)}\n\`\`\`\n`;
+  const { identity, status, reasons } = result;
+  const [title, actions] = auditGuidance(result);
+  return [
+    '## JARVIS PR baseline',
+    `### ${title}`,
+    ...(identity.pr ? [`対象PR \`${identity.repository ?? '未確定'} #${identity.pr}\``] : []),
+    ...(identity.subject_head && identity.subject_base
+      ? [`観測した変更版 \`${identity.subject_head.slice(0, 12)}\` ／ 比較先 \`${identity.subject_base.slice(0, 12)}\``]
+      : []),
+    ...(identity.event === 'workflow_dispatch' ? ['手動監査の結果です。通常のPRイベントの証拠は別途確認します。'] : []),
+    `分類 \`${status}\` ／ 理由 ${reasons.map(reason => `\`${reason}\``).join('、')}`,
+    ...(reasons.includes('DOCUMENTATION_ONLY') ? ['通常文書だけの差分として、追加の変更記録を省略できます。'] : []),
+    `**次の担当はPR担当AI**\n${actions.map(action => `- ${action}`).join('\n')}`,
+    'この監査は変更範囲の宣言と記録を照合します。プロジェクト固有の検証、意味レビュー、取り込み権限はそれぞれの証拠で確認します。',
+    `<details>\n<summary>観測した識別情報</summary>\n\n\`\`\`json\n${JSON.stringify(identity, null, 2)}\n\`\`\`\n</details>`,
+  ].join('\n\n') + '\n';
 }
 
 export function resultExitCode(result) {
-  return validateResult(result) && result.status === 'PASS' ? 0 : 1;
+  if (!validateResult(result)) return 1;
+  if (result.status === 'PASS') return 0;
+  // Sensitivity routes meaning review to AI; it is not a metadata failure or
+  // evidence of approval. Unknown impact and every invalid result fail closed.
+  return result.status === 'REVIEW_REQUIRED'
+    && result.reasons.includes('SENSITIVE_CHANGE')
+    && result.reasons.every(reason => ['SENSITIVE_CHANGE', 'DOCUMENTATION_ONLY'].includes(reason)) ? 0 : 1;
 }
 
 /** Only fixed codes escape publication failures. Summary and exit use the saved

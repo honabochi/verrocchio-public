@@ -1,0 +1,17 @@
+{
+  "record_version": 1,
+  "change_id": "github-audit-baseline-rollout",
+  "goal": "Adopt the reviewed PR audit version and isolate normal PR runs from manual observations.",
+  "scope": [
+    ".github/jarvis/pr-baseline.mjs",
+    ".github/workflows/jarvis-baseline.yml",
+    ".jarvis/changes/github-audit-baseline-rollout.json"
+  ],
+  "verification_plan": [
+    "Compare the exact branch and changed paths against the reviewed rollout candidate.",
+    "Verify existing workflow results and the applicable baseline reason before adoption.",
+    "Read back installed bytes and confirm the revised audit on a subsequent normal PR."
+  ],
+  "limits": "Read-only PR baseline and its change record. Existing app CI, releases, repository permissions and correspondence stay outside this purpose.",
+  "next_action": "Check the pinned audit on an actual PR event after adoption."
+}

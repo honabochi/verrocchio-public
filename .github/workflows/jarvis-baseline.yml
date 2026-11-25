@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: 'Open PR number (manual smoke, not a PR-head check)'
+        description: 'PR number: open or API-confirmed merged history (manual observation, not a PR-head event check)'
         required: true
         type: string
 
@@ -14,14 +14,15 @@ permissions:
   contents: read
   pull-requests: read
 
-concurrency:
-  group: jarvis-baseline-${{ github.event.pull_request.number || inputs.pr_number }}
-  cancel-in-progress: true
-
 jobs:
   baseline:
     name: JARVIS baseline (not tests or merge approval)
-    if: github.repository_owner == 'honabochi' && (github.event_name == 'pull_request_target' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+    if: github.repository_owner == 'honabochi' && ((github.event_name == 'pull_request_target' && github.event.pull_request.state == 'open') || (github.event_name == 'workflow_dispatch' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)))
+    # Only jobs that run can replace an inspection. Manual observations have
+    # their own group, since they cannot replace PR-event evidence.
+    concurrency:
+      group: jarvis-baseline-${{ github.event_name }}-${{ github.event.pull_request.number || inputs.pr_number }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -36,9 +37,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ inputs.pr_number }}
-          JARVIS_BASELINE_CORE_SHA: 0d52dcbb6e337e5054668051a7ae142c02428686
+          JARVIS_BASELINE_CORE_SHA: 84729f84a11bac40e8dbdedc7b3b0c2473d262fa
         run: |
-          node --input-type=module -e 'import fs from "node:fs"; import crypto from "node:crypto"; const hash = crypto.createHash("sha256").update(fs.readFileSync(".github/jarvis/pr-baseline.mjs")).digest("hex"); if (hash !== "011caa2c2cc850ca27132de1b5d204822dc2434e101d43de5c5573db58734963") process.exit(1);'
+          node --input-type=module -e 'import fs from "node:fs"; import crypto from "node:crypto"; const hash = crypto.createHash("sha256").update(fs.readFileSync(".github/jarvis/pr-baseline.mjs")).digest("hex"); if (hash !== "8a3740a24fe968c2a8c7c46bd66a14c1463ffecac6b268175b7b9827685b1c91") process.exit(1);'
           node .github/jarvis/pr-baseline.mjs
       - name: Retain bounded PR baseline result
         if: ${{ always() }}
